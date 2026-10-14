@@ -3,43 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — كل الاشتراكات</title>
+    <title>TOBIM — اشتراكاتي</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <style> 
-        body { font-family: 'Cairo', sans-serif; }
-        .glass-card { background: rgba(17, 24, 39, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    </style>
+    <style> body { font-family: 'Cairo', sans-serif; }</style>
 </head>
 <body class="bg-[#0b0f19] text-gray-100 min-h-screen flex flex-col">
+    <script>if(!localStorage.getItem('tobim_logged')) window.location.href = 'login.html';</script>
 
-    <script>
-        if(!localStorage.getItem('tobim_role')) window.location.href = 'login.html';
-    </script>
-
-    <!-- Unified Navbar -->
-    <header class="bg-[#0f172a]/90 backdrop-blur border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50 shadow-lg">
+    <header class="bg-[#0f172a] border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-40">
         <div class="flex items-center gap-6">
-            <div class="flex items-center gap-3">
-                <img src="TobimLogo.jpg" class="w-11 h-11 rounded-xl object-cover border border-gray-700 shadow" alt="Logo">
-                <span class="text-xl font-black text-white tracking-wider">TO BIM</span>
-            </div>
+            <span class="text-xl font-black text-white">TO BIM</span>
             <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
                 <a href="dashboard.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">الرئيسية</a>
-                <a href="subscriptions.html" class="bg-blue-600 text-white px-4 py-2 rounded-xl transition shadow">الاشتراكات</a>
+                <a href="subscriptions.html" class="bg-blue-600 text-white px-4 py-2 rounded-xl transition">اشتراكاتي</a>
                 <a href="new-sub.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">+ اشتراك جديد</a>
             </nav>
         </div>
-        <button onclick="localStorage.removeItem('tobim_role'); location.href='login.html';" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-sm font-bold transition">خروج</button>
+        <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-sm font-bold">خروج</button>
     </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
-        <div class="glass-card p-6 rounded-3xl border border-gray-800 shadow-xl">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-                <h2 class="text-xl font-black text-white">قاعدة بيانات الاشتراكات المسجلة</h2>
-                <input type="text" id="searchInput" onkeyup="filterSubs()" placeholder="بحث بالاسم أو رقم الموبايل..." class="bg-[#131b2e] border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none w-full sm:w-72">
-            </div>
+        <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800">
+            <h2 class="text-lg font-black text-white mb-4">سجل الاشتراكات (اضغط على الاسم لعرض الريسيت)</h2>
             
             <div class="overflow-x-auto">
                 <table class="w-full text-right text-sm">
@@ -53,11 +40,10 @@
                             <th class="p-4">المدفوع</th>
                             <th class="p-4">المتبقي</th>
                             <th class="p-4">الحالة</th>
+                            <th class="p-4">إجراءات</th>
                         </tr>
                     </thead>
-                    <tbody id="fullSubsTable" class="divide-y divide-gray-800">
-                        <!-- Dynamic JS -->
-                    </tbody>
+                    <tbody id="tableBody" class="divide-y divide-gray-800"></tbody>
                 </table>
             </div>
         </div>
@@ -65,35 +51,35 @@
 
     <script>
         let subs = JSON.parse(localStorage.getItem('tobim_subs') || '[]');
-        
-        function renderTable(data) {
-            let tbody = document.getElementById('fullSubsTable');
-            tbody.innerHTML = '';
-            if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-gray-500">لا توجد اشتراكات مسجلة حالياً.</td></tr>`;
-                return;
-            }
-            data.forEach(s => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-blue-600/10 cursor-pointer transition" onclick="location.href='receipt.html?id=${s.id}'">
-                        <td class="p-4 font-mono font-bold text-gray-400">${s.id}</td>
-                        <td class="p-4 font-bold text-white underline decoration-blue-500/50">${s.fullName}</td>
-                        <td class="p-4 text-gray-300 font-mono">${s.mobile}</td>
-                        <td class="p-4 text-blue-400 font-semibold">${s.department} / ${s.round}</td>
-                        <td class="p-4 font-mono">${s.totalPrice} EGP</td>
-                        <td class="p-4 font-mono text-emerald-400">${s.paidAmount} EGP</td>
-                        <td class="p-4 font-mono text-amber-400">${s.remainingAmount} EGP</td>
-                        <td class="p-4"><span class="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-bold border border-amber-500/30">${s.status}</span></td>
-                    </tr>`;
-            });
+        if(subs.length === 0) {
+            subs = [{id: 201135, department: 'إنشائي', round: 'Round 27', status: 'Rest', fullName: 'SHADY MOSTAFA ELSAYED', mobile: '0111111111', totalPrice: 12000, paidAmount: 9500, remainingAmount: 2500, paySource: 'إنستاباي CIB', senderName: 'SHADY MOSTAFA'}];
+            localStorage.setItem('tobim_subs', JSON.stringify(subs));
         }
 
-        renderTable(subs);
+        let tbody = document.getElementById('tableBody');
+        subs.forEach(s => {
+            tbody.innerHTML += `
+                <tr class="hover:bg-blue-600/10 transition">
+                    <td class="p-4 font-bold text-gray-400">${s.id}</td>
+                    <td class="p-4 font-bold text-white underline cursor-pointer" onclick="location.href='receipt.html?id=${s.id}'">${s.fullName}</td>
+                    <td class="p-4 text-gray-300 font-mono">${s.mobile}</td>
+                    <td class="p-4 text-blue-400">${s.department} / ${s.round}</td>
+                    <td class="p-4 font-mono">${s.totalPrice} EGP</td>
+                    <td class="p-4 font-mono text-emerald-400">${s.paidAmount} EGP</td>
+                    <td class="p-4 font-mono text-amber-400">${s.remainingAmount} EGP</td>
+                    <td class="p-4"><span class="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-bold">${s.status}</span></td>
+                    <td class="p-4 flex gap-2">
+                        <button onclick="deleteSub(${s.id})" class="bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold">حذف</button>
+                    </td>
+                </tr>`;
+        });
 
-        function filterSubs() {
-            let query = document.getElementById('searchInput').value.toLowerCase();
-            let filtered = subs.filter(s => s.fullName.toLowerCase().includes(query) || s.mobile.includes(query));
-            renderTable(filtered);
+        function deleteSub(id) {
+            if(confirm('هل أنت متأكد من الحذف؟')) {
+                subs = subs.filter(s => s.id !== id);
+                localStorage.setItem('tobim_subs', JSON.stringify(subs));
+                location.reload();
+            }
         }
     </script>
 </body>

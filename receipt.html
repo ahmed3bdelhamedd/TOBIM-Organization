@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO BIM — ريسيت المشترك</title>
+    <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Cairo', sans-serif; }</style>
+</head>
+<body class="bg-[#0b0f19] text-gray-100 min-h-screen p-6">
+    <div class="max-w-4xl mx-auto bg-[#111827] p-8 rounded-3xl border border-gray-800 shadow-2xl space-y-8">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-gray-800 pb-5">
+            <div class="flex items-center gap-3">
+                <span class="bg-amber-500/20 text-amber-400 px-3.5 py-1 rounded-full text-xs font-bold border border-amber-500/30">Rest</span>
+                <h1 class="text-xl font-black text-white">ريسيت SHADY MOSTAFA — 201135</h1>
+            </div>
+            <a href="subscriptions.html" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-bold transition">العودة للاشتراكات</a>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
+                <span class="text-xs text-gray-400 block mb-1">سعر البيع</span>
+                <span class="text-xl font-black text-white">12,000 EGP</span>
+            </div>
+            <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
+                <span class="text-xs text-gray-400 block mb-1">المدفوع</span>
+                <span class="text-xl font-black text-emerald-400">9,500 EGP</span>
+            </div>
+            <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
+                <span class="text-xs text-gray-400 block mb-1">المتبقي</span>
+                <span class="text-xl font-black text-amber-400">2,500 EGP</span>
+            </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="bg-[#131b2e]/50 p-6 rounded-2xl border border-gray-800 grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
+            <div>
+                <span class="text-xs text-gray-400 block mb-1">القسم / الراوند</span>
+                <span class="font-bold text-white">إنشائي / Round 27</span>
+            </div>
+            <div>
+                <span class="text-xs text-gray-400 block mb-1">الموبايل</span>
+                <span class="font-mono text-gray-200">0111111111</span>
+            </div>
+            <div>
+                <span class="text-xs text-gray-400 block mb-1">Sales</span>
+                <span class="text-gray-200">صلاح احمد</span>
+            </div>
+            <div>
+                <span class="text-xs text-gray-400 block mb-1">Course ID</span>
+                <span class="text-gray-400">—</span>
+            </div>
+        </div>
+
+        <!-- Payments Table -->
+        <div>
+            <h3 class="text-sm font-bold text-gray-300 mb-4">الدفعات</h3>
+            <div class="border border-gray-800 rounded-2xl overflow-hidden">
+                <table class="w-full text-right text-xs">
+                    <thead class="bg-[#131b2e] text-gray-400 uppercase border-b border-gray-800">
+                        <tr>
+                            <th class="p-3">#</th>
+                            <th class="p-3">المبلغ</th>
+                            <th class="p-3">التاريخ</th>
+                            <th class="p-3">المصدر</th>
+                            <th class="p-3">المحوّل</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        <tr>
+                            <td class="p-3 font-bold">1</td>
+                            <td class="p-3 font-mono text-emerald-400">9,500 EGP</td>
+                            <td class="p-3 font-mono">2026-10-05</td>
+                            <td class="p-3">InstaPay CIB</td>
+                            <td class="p-3">SHADY MOSTAFA</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

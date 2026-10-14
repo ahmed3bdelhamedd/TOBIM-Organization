@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — هندسة البناء ونمذجة معلومات البناء (BIM)</title>
+    <title>TOBIM — أكاديمية هندسة البناء ونمذجة معلومات البناء (BIM)</title>
+    <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -15,21 +16,51 @@
     <header class="bg-[#0f172a]/90 backdrop-blur border-b border-gray-800 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="TobimLogo.jpg" class="w-11 h-11 rounded-xl object-cover border border-gray-700 shadow" alt="Logo">
-                <span class="text-2xl font-black text-blue-500 tracking-wider">TOBIM</span>
+                <img src="TobimLogo.jpg" class="w-12 h-12 rounded-xl object-cover border border-gray-700 shadow-md" alt="TOBIM Logo">
+                <div>
+                    <span class="text-2xl font-black text-blue-500 tracking-wider">TOBIM</span>
+                    <span class="block text-[10px] text-gray-400 font-bold">Engineering Academy</span>
+                </div>
             </div>
-            <a href="login.html" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-blue-600/30">تسجيل الدخول الإداري</a>
+            <div>
+                <a href="login.html" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-6 py-2.5 rounded-xl transition shadow-lg shadow-blue-600/30 text-sm">تسجيل الدخول</a>
+            </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 py-24 text-center px-6">
-        <div class="max-w-4xl mx-auto space-y-6">
-            <span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-4 py-1.5 rounded-full border border-blue-400/30 inline-block">أكاديمية الهندسة والـ BIM الأولى</span>
-            <h1 class="text-4xl sm:text-6xl font-black text-white leading-tight">احترف برمجيات البناء والهندسة المعمارية والإنشائية</h1>
-            <p class="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">نقدم دبلومات متخصصة في Revit, 3Ds Max, ACC, و Enscape بشهادات معتمدة وتطبيق عملي من قلب سوق العمل.</p>
-            <div class="pt-4">
-                <a href="login.html" class="inline-block bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-blue-600/30 transition">دخول لوحة التحكم</a>
+    <section class="relative bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 py-24 text-center px-6 overflow-hidden">
+        <div class="max-w-4xl mx-auto space-y-6 relative z-10">
+            <span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-4 py-1.5 rounded-full border border-blue-400/30 inline-block">المنصة الهندسية الأولى للـ BIM</span>
+            <h1 class="text-4xl sm:text-6xl font-black text-white leading-tight">ابدأ مسيرتك المهنية باحترافية مع دبلومات TOBIM الهندسية</h1>
+            <p class="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">نقدم أحدث البرامج التدريبية في Revit, 3Ds Max, ACC, و Enscape بشهادات معتمدة وتأهيل كامل لسوق العمل الهندسي.</p>
+            <div class="pt-4 flex justify-center gap-4">
+                <a href="login.html" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-blue-600/30 transition">دخول لوحة النظام</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Overview -->
+    <section class="py-20 max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-black text-white mb-3">لماذا أكاديمية TOBIM؟</h2>
+            <p class="text-gray-400 text-sm">معايير عالمية في التدريب العملي وإدارة المشاريع الهندسية.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-[#111827] p-8 rounded-3xl border border-gray-800">
+                <div class="w-12 h-12 bg-blue-600/20 text-blue-400 rounded-xl flex items-center justify-center font-bold text-xl mb-4">🎓</div>
+                <h3 class="text-lg font-bold text-white mb-2">شهادات معتمدة</h3>
+                <p class="text-gray-400 text-xs leading-relaxed">توجيه ومساعدة كاملة في توثيق شهادات Autodesk العالمية الرسمية.</p>
+            </div>
+            <div class="bg-[#111827] p-8 rounded-3xl border border-gray-800">
+                <div class="w-12 h-12 bg-emerald-600/20 text-emerald-400 rounded-xl flex items-center justify-center font-bold text-xl mb-4">🚀</div>
+                <h3 class="text-lg font-bold text-white mb-2">تطبيقات عملية</h3>
+                <p class="text-gray-400 text-xs leading-relaxed">مشاريع واقعية من سوق العمل لتكتسب خبرة عملية حقيقية وفورية.</p>
+            </div>
+            <div class="bg-[#111827] p-8 rounded-3xl border border-gray-800">
+                <div class="w-12 h-12 bg-amber-600/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-xl mb-4">🔒</div>
+                <h3 class="text-lg font-bold text-white mb-2">إدارة متكاملة</h3>
+                <p class="text-gray-400 text-xs leading-relaxed">منظومة إدارية ذكية ومخصصة لمتابعة الاشتراكات والدفعات بدقة فائقة.</p>
             </div>
         </div>
     </section>

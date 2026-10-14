@@ -3,71 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — أكاديمية هندسة البناء ونمذجة معلومات البناء (BIM)</title>
+    <title>TO BIM — نظام الإدارة والمدفوعات</title>
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Fonts Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Cairo', sans-serif; }</style>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        [x-cloak] { display: none !important; }
+        .glass-card { background: rgba(17, 24, 39, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .modal-glass { background: rgba(11, 15, 25, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.12); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
 </head>
-<body class="bg-[#0b0f19] text-gray-100 min-h-screen">
+<body class="bg-[#0b0f19] text-gray-100 min-h-screen selection:bg-blue-600 selection:text-white" x-data="tobimSystem()">
 
-    <!-- Navbar -->
-    <header class="bg-[#0f172a]/90 backdrop-blur border-b border-gray-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <img src="TobimLogo.jpg" class="w-12 h-12 rounded-xl object-cover border border-gray-700 shadow-md" alt="TOBIM Logo">
+    <!-- ================= 1. شاشة تسجيل الدخول ================= -->
+    <div x-show="!isLoggedIn" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-[#07090e] p-4">
+        <div class="glass-card w-full max-w-md p-8 rounded-3xl shadow-2xl border border-gray-800 text-center relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl"></div>
+            
+            <img src="TobimLogo.jpg" alt="TOBIM Logo" class="w-16 h-16 rounded-2xl mx-auto object-cover mb-4 border border-gray-700 shadow-lg" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=80'">
+            <h1 class="text-2xl font-black text-white mb-1">تسجيل الدخول لنظام TO BIM</h1>
+            <p class="text-xs text-gray-400 mb-6">اختر الصلاحية وأدخل بياناتك</p>
+
+            <form @submit.prevent="login()" class="space-y-4 text-right">
                 <div>
-                    <span class="text-2xl font-black text-blue-500 tracking-wider">TOBIM</span>
-                    <span class="block text-[10px] text-gray-400 font-bold">Engineering Academy</span>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2">نوع الحساب</label>
+                    <select x-model="loginRole" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white outline-none">
+                        <option value="employee">موظف (Employee)</option>
+                        <option value="admin">مدير النظام (Admin)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2">اسم المستخدم أو الإيميل</label>
+                    <input type="text" x-model="loginUser" required placeholder="name@tobim.com" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2">كلمة المرور (للمدير: tobim@2023)</label>
+                    <input type="password" x-model="loginPass" required placeholder="••••••••" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white outline-none">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-blue-600/30 mt-2">
+                    دخول للنظام
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= 2. لوحة التحكم والعمليات ================= -->
+    <div x-show="isLoggedIn" x-cloak class="min-h-screen flex flex-col animate-fade-in">
+        
+        <!-- Navbar -->
+        <header class="bg-[#0f172a]/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-40 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-3">
+                        <img src="TobimLogo.jpg" alt="Logo" class="w-11 h-11 rounded-xl object-cover border border-gray-700 shadow" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=80'">
+                        <span class="text-xl font-black tracking-wider text-white">TO BIM</span>
+                    </div>
+
+                    <!-- Tabs Navigation -->
+                    <nav class="hidden lg:flex items-center gap-1.5 font-semibold text-sm">
+                        <template x-for="tab in tabs">
+                            <button @click="currentTab = tab.id" 
+                                    :class="currentTab === tab.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-gray-400 hover:text-white hover:bg-gray-800/60'"
+                                    class="px-4 py-2.5 rounded-xl transition duration-200">
+                                <span x-text="tab.name"></span>
+                            </button>
+                        </template>
+                    </nav>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <span class="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/30 px-3.5 py-1.5 rounded-xl font-bold" x-text="role === 'admin' ? 'مدير (Admin)' : 'موظف (Employee)'"></span>
+                    <button @click="logout()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-sm font-bold transition">خروج</button>
                 </div>
             </div>
-            <div>
-                <a href="login.html" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-6 py-2.5 rounded-xl transition shadow-lg shadow-blue-600/30 text-sm">تسجيل الدخول</a>
-            </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 py-24 text-center px-6 overflow-hidden">
-        <div class="max-w-4xl mx-auto space-y-6 relative z-10">
-            <span class="bg-blue-500/20 text-blue-300 text-xs font-bold px-4 py-1.5 rounded-full border border-blue-400/30 inline-block">المنصة الهندسية الأولى للـ BIM</span>
-            <h1 class="text-4xl sm:text-6xl font-black text-white leading-tight">ابدأ مسيرتك المهنية باحترافية مع دبلومات TOBIM الهندسية</h1>
-            <p class="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">نقدم أحدث البرامج التدريبية في Revit, 3Ds Max, ACC, و Enscape بشهادات معتمدة وتأهيل كامل لسوق العمل الهندسي.</p>
-            <div class="pt-4 flex justify-center gap-4">
-                <a href="login.html" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-blue-600/30 transition">دخول لوحة النظام</a>
-            </div>
-        </div>
-    </section>
+        <!-- Main Content -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- TAB 1: اشتراك جديد -->
+            <div x-show="currentTab === 'new'" class="space-y-6 animate-fade-in">
+                <div class="glass-card p-6 sm:p-8 rounded-3xl border border-gray-800 shadow-xl">
+                    <h2 class="text-xl font-black text-white mb-6 flex items-center gap-3">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full animate-ping"></span>
+                        اشتراك جديد
+                    </h2>
 
-    <!-- Features Overview -->
-    <section class="py-20 max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16">
-            <h2 class="text-3xl font-black text-white mb-3">لماذا أكاديمية TOBIM؟</h2>
-            <p class="text-gray-400 text-sm">معايير عالمية في التدريب العملي وإدارة المشاريع الهندسية.</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-[#111827] p-8 rounded-3xl border border-gray-800">
-                <div class="w-12 h-12 bg-blue-600/20 text-blue-400 rounded-xl flex items-center justify-center font-bold text-xl mb-4">🎓</div>
-                <h3 class="text-lg font-bold text-white mb-2">شهادات معتمدة</h3>
-                <p class="text-gray-400 text-xs leading-relaxed">توجيه ومساعدة كاملة في توثيق شهادات Autodesk العالمية الرسمية.</p>
-            </div>
-            <div class="bg-[#111827] p-8 rounded-3xl border border-gray-800">
-                <div class="w-12 h-12 bg-emerald-600/20 text-emerald-400 rounded-xl flex items-center justify-center font-bold text-xl mb-4">🚀</div>
-                <h3 class="text-lg font-bold text-white mb-2">تطبيقات عملية</h3>
-                <p class="text-gray-400 text-xs leading-relaxed">مشاريع واقعية من سوق العمل لتكتسب خبرة عملية حقيقية وفورية.</p>
-            </div>
-            <div class="bg-[#111827] p-8 rounded-3xl border border-gray-800">
-                <div class="w-12 h-12 bg-amber-600/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-xl mb-4">🔒</div>
-                <h3 class="text-lg font-bold text-white mb-2">إدارة متكاملة</h3>
-                <p class="text-gray-400 text-xs leading-relaxed">منظومة إدارية ذكية ومخصصة لمتابعة الاشتراكات والدفعات بدقة فائقة.</p>
-            </div>
-        </div>
-    </section>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-2">القسم</label>
+                            <select x-model="form.department" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl p-3 text-sm text-white outline-none">
+                                <option>معماري</option>
+                                <option>إنشائي</option>
+                                <option>كورسات</option>
+                                <option>منتجات</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-2">الراوند</label>
+                            <select x-model="form.round" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl p-3 text-sm text-white outline-none">
+                                <option>Round 27</option>
+                                <option>Round 26</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-2">الحالة</label>
+                            <select x-model="form.status" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl p-3 text-sm text-white outline-none">
+                                <option value="Rest">تلقائي (Rest / Full Pay)</option>
+                                <option value="Full Pay">Full Pay</option>
+                                <option value="Hold">Hold</option>
+                            </select>
+                        </div>
+                    </div>
 
-    <!-- Footer -->
-    <footer class="bg-[#07090e] border-t border-gray-800 py-8 text-center text-xs text-gray-500">
-        جميع الحقوق محفوظة © 2026 TOBIM Academy
-    </footer>
+                    <div class="border-2 border-dashed border-gray-700 hover:border-blue-500 transition bg-[#131b2e]/60 p-6 rounded-2xl text-center mb-6">
+                        <p class="text-sm text-gray-200 font-bold mb-1">صورة التحويل والدفعات</p>
+                        <input type="file" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white cursor-pointer mt-2">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-2">اسم المشترك (ثلاثي)</label>
+                            <input type="text" x-model="form.fullName" placeholder="الاسم ثلاثي" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl p-3 text-sm text-white outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-2">موبايل المشترك</label>
+                            <input type="text" x-model="form.mobile" placeholder="01111111111" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl p-3 text-sm text-white outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-2">سعر البيع (EGP)</label>
+                            <input type="number" x-model="form.totalPrice" placeholder="12000" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl p-3 text-sm text-white outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-2">المبلغ المدفوع (EGP)</label>
+                            <input type="number" x-model="form.paidAmount" placeholder="9500" class="w-full bg-[#131b2e] border border-gray-700 rounded-xl p-3 text-sm text-white outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-4 border-t border-gray-800 pt-6">
+                        <button @click="saveSubscription()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg text-sm">حفظ الاشتراك</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: اشتراكاتي -->
+            <div x-show="currentTab === 'subscriptions'" class="space-y-6 animate-fade-in">
+                
+                <!-- Stats (تظهر للمدير فقط) -->
+                <div x-show="role === 'admin'" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="glass-card p-4 rounded-2xl text-center border-t-2 border-blue-500">
+                        <span class="text-2xl font-black text-white" x-text="subscriptions.length">0</span>
+                        <p class="text-xs text-gray-400 mt-1 font-semibold">إجمالي الاشتراكات</p>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl text-center border-t-2 border-amber-500">
+                        <span class="text-2xl font-black text-amber-400" x-text="subscriptions.filter(s => s.status === 'Rest').length">0</span>
+                        <p class="text-xs text-gray-400 mt-1 font-semibold">Rest — عليهم متبقي</p>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl text-center border-t-2 border-emerald-500">
+                        <span class="text-2xl font-black text-emerald-400" x-text="subscriptions.filter(s => s.status === 'Full Pay').length">0</span>
+                        <p class="text-xs text-gray-400 mt-1 font-semibold">Full Pay</p>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl text-center border-t-2 border-purple-500">
+                        <span class="text-2xl font-black text-purple-400">1</span>
+                        <p class="text-xs text-gray-400 mt-1 font-semibold">Hold</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl border border-gray-800">
+                    <input type="text" x-model="searchQuery" placeholder="بحث بالاسم أو الموبايل..." class="w-full bg-[#131b2e] border border-gray-700 rounded-xl p-3.5 text-sm text-white mb-6 outline-none">
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-sm">
+                            <thead class="bg-[#131b2e] text-gray-400 text-xs uppercase border-b border-gray-800">
+                                <tr>
+                                    <th class="p-4"># ID</th>
+                                    <th class="p-4">الاسم</th>
+                                    <th class="p-4">الموبايل</th>
+                                    <th class="p-4">الراوند / القسم</th>
+                                    <th class="p-4">سعر البيع</th>
+                                    <th class="p-4">المدفوع</th>
+                                    <th class="p-4">المتبقي</th>
+                                    <th class="p-4">الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800">
+                                <template x-for="sub in filteredSubs">
+                                    <tr @click="openReceipt(sub)" class="hover:bg-blue-600/10 cursor-pointer transition">
+                                        <td class="p-4 font-bold text-gray-400" x-text="sub.id"></td>
+                                        <td class="p-4 font-bold text-white underline decoration-blue-500/50" x-text="sub.fullName"></td>
+                                        <td class="p-4 text-gray-300 font-mono" x-text="sub.mobile"></td>
+                                        <td class="p-4 text-blue-400 font-semibold" x-text="sub.department + ' / ' + sub.round"></td>
+                                        <td class="p-4 font-mono" x-text="sub.totalPrice + ' EGP'"></td>
+                                        <td class="p-4 font-mono text-emerald-400" x-text="sub.paidAmount + ' EGP'"></td>
+                                        <td class="p-4 font-mono text-amber-400" x-text="sub.remainingAmount + ' EGP'"></td>
+                                        <td class="p-4"><span class="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-bold border border-amber-500/30" x-text="sub.status"></span></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: كل المشتركين -->
+            <div x-show="currentTab === 'all'" class="space-y-6 animate-fade-in">
+                <div class="glass-card p-6 rounded-3xl border border-gray-800">
+                    <h2 class="text-lg font-black text-white mb-2">قاعدة بيانات جميع المشتركين</h2>
+                    <p class="text-xs text-gray-400 mb-6 bg-blue-500/10 p-3 rounded-xl border border-blue-500/20">قراءة فقط — تتيح لك استعراض كافة المشتركين المسجلين بالنظام.</p>
+                </div>
+            </div>
+
+            <!-- TAB 4: المستحق -->
+            <div x-show="currentTab === 'due'" class="space-y-6 animate-fade-in">
+                <div class="glass-card p-8 rounded-3xl border border-gray-800 text-center py-16">
+                    <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl mb-4 border border-amber-500/20">💰</div>
+                    <h2 class="text-xl font-black text-white mb-2">المستحق والمتأخر</h2>
+                    <p class="text-sm text-gray-400">متابعة الحسابات المعلقة والمبالغ الواجب تحصيلها.</p>
+                </div>
+            </div>
+
+            <!-- TAB 5: طلباتي -->
+            <div x-show="currentTab === 'requests'" class="space-y-6 animate-fade-in">
+                <div class="glass-card p-6 rounded-3xl border border-gray-800">
+                    <h2 class="text-lg font-black text-white mb-2">طلباتي</h2>
+                    <p class="text-xs text-gray-400 mb-6">متابعة حالة فتح الكورسات وإنشاء الـ IDs.</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ================= RECEIPT MODAL (الريسيت المنبثق) ================= -->
+    <div x-show="showReceipt" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+        <div class="modal-glass w-full max-w-3xl p-6 sm:p-8 rounded-3xl shadow-2xl border border-gray-700 animate-fade-in relative my-8">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-5 mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="bg-amber-500/20 text-amber-400 px-3.5 py-1 rounded-full text-xs font-bold border border-amber-500/30" x-text="selectedSub.status"></span>
+                    <h2 class="text-xl font-black text-white" x-text="'ريسيت ' + selectedSub.fullName + ' — ' + selectedSub.id"></h2>
+                </div>
+                <button @click="showReceipt = false" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-bold transition">إغلاق</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
+                    <span class="text-xs text-gray-400 block mb-1">سعر البيع</span>
+                    <span class="text-xl font-black text-white" x-text="selectedSub.totalPrice + ' EGP'"></span>
+                </div>
+                <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
+                    <span class="text-xs text-gray-400 block mb-1">المدفوع</span>
+                    <span class="text-xl font-black text-emerald-400" x-text="selectedSub.paidAmount + ' EGP'"></span>
+                </div>
+                <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
+                    <span class="text-xs text-gray-400 block mb-1">المتبقي</span>
+                    <span class="text-xl font-black text-amber-400" x-text="selectedSub.remainingAmount + ' EGP'"></span>
+                </div>
+            </div>
+
+            <div class="bg-[#131b2e]/50 p-5 rounded-2xl border border-gray-800 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                <div>
+                    <span class="text-xs text-gray-400 block mb-1">القسم / الراوند</span>
+                    <span class="font-bold text-white" x-text="selectedSub.department + ' / ' + selectedSub.round"></span>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-400 block mb-1">الموبايل</span>
+                    <span class="font-mono text-gray-200" x-text="selectedSub.mobile"></span>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-400 block mb-1">Sales</span>
+                    <span class="text-gray-200">صلاح احمد</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function tobimSystem() {
+            return {
+                isLoggedIn: localStorage.getItem('tobim_logged') === 'true',
+                role: localStorage.getItem('tobim_role') || 'employee',
+                loginRole: 'employee',
+                loginUser: '',
+                loginPass: '',
+                currentTab: 'subscriptions',
+                searchQuery: '',
+                showReceipt: false,
+                selectedSub: {},
+                tabs: [
+                    { id: 'new', name: 'اشتراك جديد' },
+                    { id: 'subscriptions', name: 'اشتراكاتي' },
+                    { id: 'all', name: 'كل المشتركين' },
+                    { id: 'due', name: 'المستحق' },
+                    { id: 'requests', name: 'طلباتي' }
+                ],
+                form: { department: 'معماري', round: 'Round 27', status: 'Rest', fullName: '', mobile: '', totalPrice: 12000, paidAmount: 9500 },
+                subscriptions: JSON.parse(localStorage.getItem('tobim_subs') || '[]'),
+                
+                init() {
+                    if(this.subscriptions.length === 0) {
+                        this.subscriptions = [
+                            { id: 201135, department: 'إنشائي', round: 'Round 27', status: 'Rest', fullName: 'SHADY MOSTAFA ABDELATEF ELSAYED', mobile: '0111111111', totalPrice: 12000, paidAmount: 9500, remainingAmount: 2500 },
+                            { id: 201134, department: 'إنشائي', round: 'Round 27', status: 'Rest', fullName: 'رنا جمال مصطفى محمود', mobile: '01011125250', totalPrice: 8000, paidAmount: 4300, remainingAmount: 3700 }
+                        ];
+                        localStorage.setItem('tobim_subs', JSON.stringify(this.subscriptions));
+                    }
+                },
+
+                login() {
+                    if(this.loginRole === 'admin') {
+                        if(this.loginPass === 'tobim@2023') {
+                            localStorage.setItem('tobim_role', 'admin');
+                            localStorage.setItem('tobim_logged', 'true');
+                            this.role = 'admin';
+                            this.isLoggedIn = true;
+                        } else {
+                            alert('كلمة المرور غير صحيحة للمدير! الباسورد هو: tobim@2023');
+                        }
+                    } else {
+                        localStorage.setItem('tobim_role', 'employee');
+                        localStorage.setItem('tobim_logged', 'true');
+                        this.role = 'employee';
+                        this.isLoggedIn = true;
+                    }
+                },
+
+                logout() {
+                    localStorage.removeItem('tobim_logged');
+                    localStorage.removeItem('tobim_role');
+                    this.isLoggedIn = false;
+                    this.loginPass = '';
+                },
+
+                saveSubscription() {
+                    if(!this.form.fullName || !this.form.mobile) {
+                        alert('برجاء إدخال الاسم والموبايل');
+                        return;
+                    }
+                    let total = parseFloat(this.form.totalPrice);
+                    let paid = parseFloat(this.form.paidAmount);
+                    let rem = total - paid;
+
+                    let newSub = {
+                        id: Math.floor(200000 + Math.random() * 900000),
+                        department: this.form.department,
+                        round: this.form.round,
+                        status: rem <= 0 ? 'Full Pay' : this.form.status,
+                        fullName: this.form.fullName,
+                        mobile: this.form.mobile,
+                        totalPrice: total,
+                        paidAmount: paid,
+                        remainingAmount: rem > 0 ? rem : 0
+                    };
+
+                    this.subscriptions.push(newSub);
+                    localStorage.setItem('tobim_subs', JSON.stringify(this.subscriptions));
+                    alert('تم حفظ الاشتراك بنجاح!');
+                    this.currentTab = 'subscriptions';
+                    this.form.fullName = '';
+                    this.form.mobile = '';
+                },
+
+                openReceipt(sub) {
+                    this.selectedSub = sub;
+                    this.showReceipt = true;
+                },
+
+                get filteredSubs() {
+                    if (!this.searchQuery) return this.subscriptions;
+                    return this.subscriptions.filter(s => 
+                        s.fullName.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                        s.mobile.includes(this.searchQuery)
+                    );
+                }
+            }
+        }
+    </script>
 </body>
 </html>

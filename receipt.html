@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOBIM — ريسيت المشترك</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -13,39 +12,36 @@
         .glass-card { background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
     </style>
 </head>
-<body class="bg-[#0b0f19] text-gray-100 min-h-screen p-6 flex flex-col">
+<body class="bg-[#0b0f19] text-gray-100 min-h-screen p-6 flex flex-col justify-center">
 
-    <!-- تحقق من تسجيل الدخول -->
     <script>
-        if(!localStorage.getItem('tobim_role')) {
-            window.location.href = 'login.html';
-        }
+        if(!localStorage.getItem('tobim_role')) window.location.href = 'login.html';
     </script>
 
-    <div class="max-w-4xl w-full mx-auto glass-card p-8 rounded-3xl border border-gray-800 shadow-2xl space-y-8 my-auto">
+    <div class="max-w-4xl w-full mx-auto glass-card p-8 rounded-3xl border border-gray-800 shadow-2xl space-y-8">
         
         <!-- Header -->
         <div class="flex items-center justify-between border-b border-gray-800 pb-5">
             <div class="flex items-center gap-3">
-                <span class="bg-amber-500/20 text-amber-400 px-3.5 py-1 rounded-full text-xs font-bold border border-amber-500/30">Rest</span>
-                <h1 class="text-xl font-black text-white">ريسيت SHADY MOSTAFA ABDELATEF — 201135</h1>
+                <span class="bg-amber-500/20 text-amber-400 px-3.5 py-1 rounded-full text-xs font-bold border border-amber-500/30" id="receiptStatus">Rest</span>
+                <h1 class="text-xl font-black text-white" id="receiptTitle">ريسيت المشترك</h1>
             </div>
-            <a href="dashboard.html" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-bold transition">العودة للوحة التحكم</a>
+            <a href="subscriptions.html" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-bold transition">العودة للاشتراكات</a>
         </div>
 
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
                 <span class="text-xs text-gray-400 block mb-1">سعر البيع</span>
-                <span class="text-xl font-black text-white">12,000 EGP</span>
+                <span class="text-xl font-black text-white" id="rTotal">0 EGP</span>
             </div>
             <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
                 <span class="text-xs text-gray-400 block mb-1">المدفوع</span>
-                <span class="text-xl font-black text-emerald-400">9,500 EGP</span>
+                <span class="text-xl font-black text-emerald-400" id="rPaid">0 EGP</span>
             </div>
             <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
                 <span class="text-xs text-gray-400 block mb-1">المتبقي</span>
-                <span class="text-xl font-black text-amber-400">2,500 EGP</span>
+                <span class="text-xl font-black text-amber-400" id="rRemaining">0 EGP</span>
             </div>
         </div>
 
@@ -53,66 +49,43 @@
         <div class="bg-[#131b2e]/50 p-6 rounded-2xl border border-gray-800 grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
             <div>
                 <span class="text-xs text-gray-400 block mb-1">القسم / الراوند</span>
-                <span class="font-bold text-white">إنشائي / Round 27</span>
+                <span class="font-bold text-white" id="rDeptRound">-</span>
             </div>
             <div>
                 <span class="text-xs text-gray-400 block mb-1">الموبايل</span>
-                <span class="font-mono text-gray-200">0111111111</span>
+                <span class="font-mono text-gray-200" id="rMobile">-</span>
+            </div>
+            <div>
+                <span class="text-xs text-gray-400 block mb-1">الإيميل</span>
+                <span class="text-gray-200" id="rEmail">-</span>
             </div>
             <div>
                 <span class="text-xs text-gray-400 block mb-1">Sales</span>
                 <span class="text-gray-200">صلاح احمد</span>
             </div>
-            <div>
-                <span class="text-xs text-gray-400 block mb-1">Course ID</span>
-                <span class="text-gray-400">—</span>
-            </div>
         </div>
 
-        <!-- Payments Table -->
-        <div>
-            <h3 class="text-sm font-bold text-gray-300 mb-4">الدفعات المسجلة</h3>
-            <div class="border border-gray-800 rounded-2xl overflow-hidden">
-                <table class="w-full text-right text-xs">
-                    <thead class="bg-[#131b2e] text-gray-400 uppercase border-b border-gray-800">
-                        <tr>
-                            <th class="p-3">#</th>
-                            <th class="p-3">المبلغ</th>
-                            <th class="p-3">التاريخ</th>
-                            <th class="p-3">المصدر</th>
-                            <th class="p-3">المحوّل</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-800">
-                        <tr>
-                            <td class="p-3 font-bold">1</td>
-                            <td class="p-3 font-mono text-emerald-400">9,500 EGP</td>
-                            <td class="p-3 font-mono">2026-10-05</td>
-                            <td class="p-3">InstaPay CIB</td>
-                            <td class="p-3">SHADY MOSTAFA</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="flex justify-end pt-4">
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow">طباعة الريسيت</button>
         </div>
-
-        <!-- Due Dates & Notes -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <h3 class="text-sm font-bold text-gray-300 mb-3">مواعيد الاستحقاق</h3>
-                <div class="bg-[#131b2e] p-3.5 rounded-xl border border-blue-500/40 text-center w-36">
-                    <span class="text-xs text-gray-400 block mb-1">دفعة 2</span>
-                    <span class="font-mono font-bold text-white text-sm">21/11/2026</span>
-                </div>
-            </div>
-            <div>
-                <h3 class="text-sm font-bold text-gray-300 mb-3">الطلبات والتعليقات</h3>
-                <div class="bg-[#131b2e] p-3 rounded-xl border border-gray-800 text-[11px] text-gray-400 font-mono">
-                    2026-10-13 — إنشاء ID — صلاح احمد — تم التنفيذ
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const subId = urlParams.get('id');
+        let subs = JSON.parse(localStorage.getItem('tobim_subs') || '[]');
+        let currentSub = subs.find(s => s.id == subId) || subs[0];
+
+        if(currentSub) {
+            document.getElementById('receiptTitle').innerText = `ريسيت ${currentSub.fullName} — ${currentSub.id}`;
+            document.getElementById('receiptStatus').innerText = currentSub.status;
+            document.getElementById('rTotal').innerText = currentSub.totalPrice + ' EGP';
+            document.getElementById('rPaid').innerText = currentSub.paidAmount + ' EGP';
+            document.getElementById('rRemaining').innerText = currentSub.remainingAmount + ' EGP';
+            document.getElementById('rDeptRound').innerText = `${currentSub.department} / ${currentSub.round}`;
+            document.getElementById('rMobile').innerText = currentSub.mobile;
+            document.getElementById('rEmail').innerText = currentSub.email || 'غير مسجل';
+        }
+    </script>
 </body>
 </html>

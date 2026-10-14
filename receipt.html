@@ -7,66 +7,36 @@
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <style> 
-        body { font-family: 'Cairo', sans-serif; }
-        .glass-card { background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    </style>
+    <style> body { font-family: 'Cairo', sans-serif; }</style>
 </head>
-<body class="bg-[#0b0f19] text-gray-100 min-h-screen p-6 flex flex-col justify-center">
+<body class="bg-[#0b0f19] text-gray-100 min-h-screen p-8 flex flex-col items-center justify-center">
+    <script>if(!localStorage.getItem('tobim_logged')) window.location.href = 'login.html';</script>
 
-    <script>
-        if(!localStorage.getItem('tobim_role')) window.location.href = 'login.html';
-    </script>
-
-    <div class="max-w-4xl w-full mx-auto glass-card p-8 rounded-3xl border border-gray-800 shadow-2xl space-y-8">
-        
-        <!-- Header -->
-        <div class="flex items-center justify-between border-b border-gray-800 pb-5">
-            <div class="flex items-center gap-3">
-                <span class="bg-amber-500/20 text-amber-400 px-3.5 py-1 rounded-full text-xs font-bold border border-amber-500/30" id="receiptStatus">Rest</span>
-                <h1 class="text-xl font-black text-white" id="receiptTitle">ريسيت المشترك</h1>
-            </div>
-            <a href="subscriptions.html" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-bold transition">العودة للاشتراكات</a>
+    <div class="max-w-3xl w-full bg-[#111827] p-8 rounded-3xl border border-gray-800 shadow-2xl space-y-6">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+            <h1 class="text-xl font-black text-white" id="title">ريسيت المشترك</h1>
+            <a href="subscriptions.html" class="bg-gray-800 text-gray-300 px-4 py-2 rounded-xl text-xs font-bold">العودة</a>
         </div>
 
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
-                <span class="text-xs text-gray-400 block mb-1">سعر البيع</span>
-                <span class="text-xl font-black text-white" id="rTotal">0 EGP</span>
+        <div class="grid grid-cols-3 gap-4 text-center">
+            <div class="bg-[#131b2e] p-4 rounded-2xl">
+                <span class="text-xs text-gray-400 block">سعر البيع</span>
+                <span class="text-lg font-black text-white" id="tPrice">0 EGP</span>
             </div>
-            <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
-                <span class="text-xs text-gray-400 block mb-1">المدفوع</span>
-                <span class="text-xl font-black text-emerald-400" id="rPaid">0 EGP</span>
+            <div class="bg-[#131b2e] p-4 rounded-2xl">
+                <span class="text-xs text-gray-400 block">المدفوع</span>
+                <span class="text-lg font-black text-emerald-400" id="pPaid">0 EGP</span>
             </div>
-            <div class="bg-[#131b2e] p-4 rounded-2xl border border-gray-800 text-center">
-                <span class="text-xs text-gray-400 block mb-1">المتبقي</span>
-                <span class="text-xl font-black text-amber-400" id="rRemaining">0 EGP</span>
+            <div class="bg-[#131b2e] p-4 rounded-2xl">
+                <span class="text-xs text-gray-400 block">المتبقي</span>
+                <span class="text-lg font-black text-amber-400" id="rRem">0 EGP</span>
             </div>
         </div>
 
-        <!-- Details Grid -->
-        <div class="bg-[#131b2e]/50 p-6 rounded-2xl border border-gray-800 grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
-            <div>
-                <span class="text-xs text-gray-400 block mb-1">القسم / الراوند</span>
-                <span class="font-bold text-white" id="rDeptRound">-</span>
-            </div>
-            <div>
-                <span class="text-xs text-gray-400 block mb-1">الموبايل</span>
-                <span class="font-mono text-gray-200" id="rMobile">-</span>
-            </div>
-            <div>
-                <span class="text-xs text-gray-400 block mb-1">الإيميل</span>
-                <span class="text-gray-200" id="rEmail">-</span>
-            </div>
-            <div>
-                <span class="text-xs text-gray-400 block mb-1">Sales</span>
-                <span class="text-gray-200">صلاح احمد</span>
-            </div>
-        </div>
-
-        <div class="flex justify-end pt-4">
-            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition shadow">طباعة الريسيت</button>
+        <div class="bg-[#131b2e]/50 p-5 rounded-2xl grid grid-cols-3 gap-4 text-sm">
+            <div><span class="text-xs text-gray-400 block">الموبايل</span><span id="mobile">-</span></div>
+            <div><span class="text-xs text-gray-400 block">القسم والراوند</span><span id="dept">-</span></div>
+            <div><span class="text-xs text-gray-400 block">مصدر الدفع</span><span id="source">-</span></div>
         </div>
     </div>
 
@@ -74,17 +44,16 @@
         const urlParams = new URLSearchParams(window.location.search);
         const subId = urlParams.get('id');
         let subs = JSON.parse(localStorage.getItem('tobim_subs') || '[]');
-        let currentSub = subs.find(s => s.id == subId) || subs[0];
+        let sub = subs.find(s => s.id == subId) || subs[0];
 
-        if(currentSub) {
-            document.getElementById('receiptTitle').innerText = `ريسيت ${currentSub.fullName} — ${currentSub.id}`;
-            document.getElementById('receiptStatus').innerText = currentSub.status;
-            document.getElementById('rTotal').innerText = currentSub.totalPrice + ' EGP';
-            document.getElementById('rPaid').innerText = currentSub.paidAmount + ' EGP';
-            document.getElementById('rRemaining').innerText = currentSub.remainingAmount + ' EGP';
-            document.getElementById('rDeptRound').innerText = `${currentSub.department} / ${currentSub.round}`;
-            document.getElementById('rMobile').innerText = currentSub.mobile;
-            document.getElementById('rEmail').innerText = currentSub.email || 'غير مسجل';
+        if(sub) {
+            document.getElementById('title').innerText = `ريسيت ${sub.fullName} — ${sub.id}`;
+            document.getElementById('tPrice').innerText = sub.totalPrice + ' EGP';
+            document.getElementById('pPaid').innerText = sub.paidAmount + ' EGP';
+            document.getElementById('rRem').innerText = sub.remainingAmount + ' EGP';
+            document.getElementById('mobile').innerText = sub.mobile;
+            document.getElementById('dept').innerText = `${sub.department} / ${sub.round}`;
+            document.getElementById('source').innerText = sub.paySource;
         }
     </script>
 </body>

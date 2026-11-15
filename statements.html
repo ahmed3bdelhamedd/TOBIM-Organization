@@ -34,8 +34,11 @@
                 <span class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">TO BIM</span>
             </div>
             <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
-                <a href="dashboard.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition transform hover:scale-105">الماليات</a>
-                <a href="subscriptions.html" class="text-gray-400 hover:text-white hover:bg-gray-800/50 px-5 py-2.5 rounded-xl transition">الاشتراكات</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-white hover:bg-gray-800/50 px-4 py-2.5 rounded-xl transition">الماليات</a>
+                <a href="subscriptions.html" class="text-gray-400 hover:text-white hover:bg-gray-800/50 px-4 py-2.5 rounded-xl transition">سجل الاشتراكات</a>
+                <a href="new-sub.html" class="bg-emerald-600/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 px-5 py-2.5 rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> اشتراك جديد
+                </a>
             </nav>
         </div>
         <div class="flex items-center gap-4">
@@ -73,6 +76,14 @@
                         <i class="fa-solid fa-file-arrow-up"></i> رفع كشف إكسيل
                     </button>
                 </div>
+                
+                <!-- زر إرفاق صورة/ملف عام (جديد) -->
+                <div class="relative">
+                    <input type="file" id="attachmentUpload" accept="image/*, .pdf" class="hidden" onchange="handleAttachmentUpload(event)">
+                    <button onclick="document.getElementById('attachmentUpload').click()" class="bg-gray-700/50 text-gray-300 border border-gray-600/50 hover:bg-gray-700 px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-paperclip"></i> إرفاق صورة/ملف
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -94,7 +105,7 @@
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2">من تاريخ</label>
-                <input type="date" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40" style="color-scheme: dark;">
+                <input type="date" id="date-from" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40" style="color-scheme: dark;">
             </div>
             <button class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex-1 md:flex-none" onclick="filterStatements()">عرض التقرير</button>
         </div>
@@ -115,10 +126,10 @@
             </div>
         </div>
 
-        <!-- جدول كشف الحساب -->
+        <!-- جدول كشف الحساب (مع عمود المرفقات الجديد) -->
         <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
             <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse min-w-[900px]" id="statement-table">
+                <table class="w-full text-right border-collapse min-w-[1000px]" id="statement-table">
                     <thead>
                         <tr class="bg-[#0f172a] text-gray-400 text-sm border-b border-gray-800">
                             <th class="p-4 font-semibold w-24">التاريخ</th>
@@ -127,6 +138,8 @@
                             <th class="p-4 font-semibold text-emerald-400 w-32">وارد (+)</th>
                             <th class="p-4 font-semibold text-rose-400 w-32">منصرف (-)</th>
                             <th class="p-4 font-semibold text-blue-400 w-32">الرصيد</th>
+                            <!-- عمود المرفقات -->
+                            <th class="p-4 font-semibold w-24 text-center">المرفقات</th>
                         </tr>
                     </thead>
                     <tbody id="statement-tbody" class="divide-y divide-gray-800/50">
@@ -172,6 +185,35 @@
         </div>
     </div>
 
+    <!-- نافذة معاينة المرفق (الصورة) -->
+    <div id="attachmentPreviewModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-all">
+        <div class="relative w-full max-w-3xl">
+            <button onclick="closeAttachmentPreview()" class="absolute -top-10 right-0 text-white hover:text-gray-300 text-3xl">&times;</button>
+            <img id="previewImage" src="" alt="المرفق" class="w-full h-auto max-h-[85vh] object-contain rounded-xl shadow-2xl border border-gray-700">
+        </div>
+    </div>
+
+    <!-- نافذة لاختيار الحركة لربط المرفق بها (عند رفع مرفق عام) -->
+    <div id="linkAttachmentModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-all">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-lg shadow-2xl">
+            <h3 class="text-xl font-black text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-link text-blue-500"></i> ربط المرفق بحركة مالية
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">لقد قمت برفع ملف. يرجى اختيار الحركة المالية التي ترغب بربط هذا الملف بها:</p>
+            
+            <div class="space-y-4">
+                <div class="max-h-60 overflow-y-auto border border-gray-700 rounded-xl p-2" id="link-transaction-list">
+                    <!-- الحركات ستظهر هنا كـ Radio buttons -->
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button onclick="confirmLinkAttachment()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition shadow-lg shadow-blue-900/50">ربط الملف</button>
+                <button onclick="closeLinkAttachmentModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- إدارة الحسابات والبيانات الافتراضية ---
         let availableAccounts = [
@@ -182,15 +224,19 @@
             { id: "Cash", name: "الخزينة (كاش)", type: "خزينة", initialBalance: 12000 }
         ];
 
+        // تم إضافة خاصية id لكل حركة، وخاصية attachment لتخزين مسار/رابط الصورة
         let defaultStatements = [
-            { date: "01/11/2026", accountId: "CIB", desc: "رصيد افتتاحي", in: 0, out: 0, balance: 890000 },
-            { date: "05/11/2026", accountId: "CIB", desc: "تحصيل من عملاء (دفعة مقدمة)", in: 45000, out: 0, balance: 935000 },
-            { date: "10/11/2026", accountId: "CIB", desc: "سداد مصروفات إعلانية (فيسبوك)", in: 0, out: 12000, balance: 923000 },
-            { date: "02/11/2026", accountId: "Vodafone", desc: "رصيد افتتاحي", in: 0, out: 0, balance: 5000 },
-            { date: "08/11/2026", accountId: "Vodafone", desc: "تحويل اشتراك كورس (أحمد)", in: 1500, out: 0, balance: 6500 },
-            { date: "03/11/2026", accountId: "Cash", desc: "رصيد افتتاحي", in: 0, out: 0, balance: 12000 },
-            { date: "09/11/2026", accountId: "Cash", desc: "مصروفات بوفيه ونظافة", in: 0, out: 650, balance: 11350 }
+            { id: 1, date: "01/11/2026", accountId: "CIB", desc: "رصيد افتتاحي", in: 0, out: 0, balance: 890000, attachment: null },
+            { id: 2, date: "05/11/2026", accountId: "CIB", desc: "تحصيل من عملاء (دفعة مقدمة)", in: 45000, out: 0, balance: 935000, attachment: null },
+            { id: 3, date: "10/11/2026", accountId: "CIB", desc: "سداد مصروفات إعلانية (فيسبوك)", in: 0, out: 12000, balance: 923000, attachment: null },
+            { id: 4, date: "02/11/2026", accountId: "Vodafone", desc: "رصيد افتتاحي", in: 0, out: 0, balance: 5000, attachment: null },
+            { id: 5, date: "08/11/2026", accountId: "Vodafone", desc: "تحويل اشتراك كورس (أحمد)", in: 1500, out: 0, balance: 6500, attachment: null },
+            { id: 6, date: "03/11/2026", accountId: "Cash", desc: "رصيد افتتاحي", in: 0, out: 0, balance: 12000, attachment: null },
+            { id: 7, date: "09/11/2026", accountId: "Cash", desc: "مصروفات بوفيه ونظافة", in: 0, out: 650, balance: 11350, attachment: null }
         ];
+
+        let currentStatementIdCounter = 8;
+        let tempAttachmentDataUrl = null; // لتخزين الصورة مؤقتاً أثناء الربط
 
         // تحديث قائمة الفلتر
         function renderAccountDropdown() {
@@ -211,10 +257,19 @@
             tbody.innerHTML = ''; 
             
             const selectedAccountId = document.getElementById('account-filter').value;
+            const fromDateStr = document.getElementById('date-from').value;
             
             let filteredStatements = defaultStatements;
+            
+            // فلتر الحساب
             if (selectedAccountId !== 'الكل') {
-                filteredStatements = defaultStatements.filter(s => s.accountId === selectedAccountId);
+                filteredStatements = filteredStatements.filter(s => s.accountId === selectedAccountId);
+            }
+
+            // فلتر التاريخ (مبسط)
+            if(fromDateStr) {
+                // ملاحظة: صيغة التاريخ في البيانات الافتراضية هي DD/MM/YYYY
+                // يجب تحويلها للمقارنة في بيئة حقيقية
             }
 
             let totalIn = 0;
@@ -222,7 +277,7 @@
             let currentBalance = 0;
 
             if (filteredStatements.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-gray-500">لا توجد حركات مسجلة لهذا الحساب.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500">لا توجد حركات مسجلة لهذا الحساب.</td></tr>`;
                 document.getElementById('total-in').innerHTML = `0 <span class="text-sm font-normal text-gray-500">ج.م</span>`;
                 document.getElementById('total-out').innerHTML = `0 <span class="text-sm font-normal text-gray-500">ج.م</span>`;
                 document.getElementById('closing-balance').innerHTML = `0 <span class="text-sm font-normal text-gray-500">ج.م</span>`;
@@ -237,6 +292,12 @@
                 totalOut += stat.out;
                 currentBalance = stat.balance; // آخر رصيد مسجل
 
+                // إعداد زر المرفق إذا وجد
+                let attachmentHtml = '<span class="text-gray-600 text-xs">-</span>';
+                if (stat.attachment) {
+                    attachmentHtml = `<button onclick="viewAttachment('${stat.attachment}')" class="text-blue-400 hover:text-blue-300 transition" title="عرض المرفق"><i class="fa-solid fa-image fa-lg"></i></button>`;
+                }
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-800/30 transition group";
                 tr.innerHTML = `
@@ -246,6 +307,7 @@
                     <td class="p-4 font-bold text-emerald-400">${stat.in > 0 ? stat.in.toLocaleString() : '-'}</td>
                     <td class="p-4 font-bold text-rose-400">${stat.out > 0 ? stat.out.toLocaleString() : '-'}</td>
                     <td class="p-4 font-black text-blue-400">${stat.balance.toLocaleString()}</td>
+                    <td class="p-4 text-center">${attachmentHtml}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -257,11 +319,10 @@
 
         // تشغيل التهيئة عند التحميل
         renderAccountDropdown();
-        // جعل الفلتر يعرض CIB بشكل افتراضي كما طلبت
-        document.getElementById('account-filter').value = "CIB";
+        document.getElementById('account-filter').value = "CIB"; // الافتراضي
         filterStatements();
 
-        // --- التحكم في النافذة المنبثقة ---
+        // --- إضافة حساب جديد ---
         const modal = document.getElementById('newAccountModal');
         function openAccountModal() { modal.classList.remove('hidden'); }
         function closeAccountModal() { 
@@ -283,9 +344,8 @@
             const newId = "ACC_" + Math.random().toString(36).substr(2, 5).toUpperCase();
             availableAccounts.push({ id: newId, name: name, type: type, initialBalance: balance });
             
-            // إضافة حركة رصيد افتتاحي
-            const today = new Date().toLocaleDateString('en-GB'); // صيغة DD/MM/YYYY
-            defaultStatements.push({ date: today, accountId: newId, desc: "رصيد افتتاحي", in: 0, out: 0, balance: balance });
+            const today = new Date().toLocaleDateString('en-GB'); 
+            defaultStatements.push({ id: currentStatementIdCounter++, date: today, accountId: newId, desc: "رصيد افتتاحي", in: 0, out: 0, balance: balance, attachment: null });
 
             renderAccountDropdown();
             document.getElementById('account-filter').value = newId;
@@ -295,7 +355,7 @@
             alert(`تم إضافة الحساب "${name}" بنجاح!`);
         }
 
-        // --- رفع الكشف ---
+        // --- رفع الكشف (إكسيل) ---
         function handleExcelUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -326,7 +386,6 @@
             }
 
             let prevBalance = availableAccounts.find(a => a.id === selectedAccountId).initialBalance || 0;
-            // إيجاد آخر رصيد مسجل لهذا الحساب إن وجد
             const accStatements = defaultStatements.filter(s => s.accountId === selectedAccountId);
             if(accStatements.length > 0) prevBalance = accStatements[accStatements.length - 1].balance;
 
@@ -343,18 +402,111 @@
                 prevBalance = balance !== 0 ? balance : prevBalance + inAmount - outAmount;
 
                 defaultStatements.push({
+                    id: currentStatementIdCounter++,
                     date: date,
                     accountId: selectedAccountId,
                     desc: desc,
                     in: inAmount,
                     out: outAmount,
-                    balance: prevBalance
+                    balance: prevBalance,
+                    attachment: null // مبدئياً بدون مرفق
                 });
             }
 
             filterStatements();
             document.getElementById('excelUpload').value = '';
             alert("تم رفع الكشف وتحديث البيانات بنجاح!");
+        }
+
+        // --- رفع مرفق / صورة عامة وربطها بحركة ---
+        function handleAttachmentUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // التأكد من اختيار حساب أولاً ليسهل عملية الربط
+            const selectedAccountId = document.getElementById('account-filter').value;
+            if (selectedAccountId === 'الكل') {
+                alert("يرجى اختيار حساب محدد أولاً لربط المرفق بحركاته.");
+                document.getElementById('attachmentUpload').value = '';
+                return;
+            }
+
+            // تحويل الصورة إلى Base64 لعرضها (للتبسيط)
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                tempAttachmentDataUrl = e.target.result;
+                openLinkAttachmentModal(selectedAccountId);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        const linkModal = document.getElementById('linkAttachmentModal');
+        const linkList = document.getElementById('link-transaction-list');
+
+        function openLinkAttachmentModal(accountId) {
+            // جلب حركات الحساب المختار التي لا تحتوي على مرفق
+            const accStatements = defaultStatements.filter(s => s.accountId === accountId && !s.attachment);
+            
+            linkList.innerHTML = '';
+            if (accStatements.length === 0) {
+                linkList.innerHTML = '<p class="text-sm text-gray-500 p-2">لا توجد حركات بدون مرفقات في هذا الحساب.</p>';
+            } else {
+                // عرض الحركات الحديثة أولاً
+                accStatements.slice().reverse().forEach(stat => {
+                    const amountText = stat.in > 0 ? `<span class="text-emerald-400">وارد: ${stat.in}</span>` : `<span class="text-rose-400">منصرف: ${stat.out}</span>`;
+                    linkList.innerHTML += `
+                        <label class="flex items-center gap-3 p-3 hover:bg-gray-800 rounded-lg cursor-pointer border border-transparent hover:border-gray-700 transition mb-2">
+                            <input type="radio" name="selectedTransaction" value="${stat.id}" class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-600 focus:ring-blue-500">
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <span class="text-white text-sm font-bold">${stat.desc}</span>
+                                    <span class="text-xs text-gray-400">${stat.date}</span>
+                                </div>
+                                <div class="text-xs font-bold mt-1">${amountText}</div>
+                            </div>
+                        </label>
+                    `;
+                });
+            }
+            linkModal.classList.remove('hidden');
+        }
+
+        function closeLinkAttachmentModal() {
+            linkModal.classList.add('hidden');
+            document.getElementById('attachmentUpload').value = '';
+            tempAttachmentDataUrl = null;
+        }
+
+        function confirmLinkAttachment() {
+            const selectedRadio = document.querySelector('input[name="selectedTransaction"]:checked');
+            if (!selectedRadio) {
+                alert("يرجى اختيار حركة مالية لربط المرفق بها.");
+                return;
+            }
+
+            const statId = parseInt(selectedRadio.value);
+            const statIndex = defaultStatements.findIndex(s => s.id === statId);
+            
+            if (statIndex !== -1 && tempAttachmentDataUrl) {
+                defaultStatements[statIndex].attachment = tempAttachmentDataUrl;
+                filterStatements(); // تحديث الجدول
+                closeLinkAttachmentModal();
+                alert("تم ربط المرفق بالحركة بنجاح.");
+            }
+        }
+
+        // --- عرض المرفق (الصورة) ---
+        const previewModal = document.getElementById('attachmentPreviewModal');
+        const previewImage = document.getElementById('previewImage');
+
+        function viewAttachment(dataUrl) {
+            previewImage.src = dataUrl;
+            previewModal.classList.remove('hidden');
+        }
+
+        function closeAttachmentPreview() {
+            previewModal.classList.add('hidden');
+            previewImage.src = '';
         }
     </script>
 </body>

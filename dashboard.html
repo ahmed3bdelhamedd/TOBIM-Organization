@@ -57,16 +57,15 @@
             <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
         </div>
 
-        <!-- فلاتر الداشبورد المتقدمة -->
+        <!-- فلاتر الداشبورد المتقدمة (تم تحويل الفترة إلى Calendar من وإلى) -->
         <div class="bg-[#111827]/80 backdrop-blur-xl p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
-                <label class="block text-sm text-gray-400 mb-2">الفترة الزمنية</label>
-                <select id="filter-time" onchange="updateDashboard()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
-                    <option value="هذا الشهر" selected>هذا الشهر (نوفمبر)</option>
-                    <option value="الشهر الماضي">الشهر الماضي</option>
-                    <option value="الربع الحالي">الربع الحالي</option>
-                    <option value="هذا العام">هذا العام (2026)</option>
-                </select>
+                <label class="block text-sm text-gray-400 mb-2">من تاريخ</label>
+                <input type="date" id="filter-date-from" onchange="updateDashboard()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40" style="color-scheme: dark;">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">إلى تاريخ</label>
+                <input type="date" id="filter-date-to" onchange="updateDashboard()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40" style="color-scheme: dark;">
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2">تصنيف الأعمال</label>
@@ -78,6 +77,9 @@
                     <option value="برامج">البرامج والأدوات (Software)</option>
                 </select>
             </div>
+            <button onclick="resetDates()" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                <i class="fa-solid fa-rotate-right"></i> إعادة ضبط
+            </button>
         </div>
 
         <!-- بطاقات الملخص المالي -->
@@ -88,8 +90,8 @@
                     <h3 class="font-bold text-gray-400">إجمالي الإيرادات</h3>
                     <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
                 </div>
-                <p id="total-revenue" class="text-4xl font-black text-white mb-2 tracking-tight">145,200 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
-                <p class="text-sm text-emerald-400 font-semibold"><i class="fa-solid fa-arrow-trend-up ml-1"></i> +12% مقارنة بالشهر السابق</p>
+                <p id="total-revenue" class="text-4xl font-black text-white mb-2 tracking-tight">0 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
+                <p id="trend-revenue" class="text-sm text-emerald-400 font-semibold"><i class="fa-solid fa-chart-line ml-1"></i> للفترة المحددة</p>
             </div>
 
             <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-6 rounded-3xl border border-gray-800 hover:border-rose-500/50 transition-all duration-300 group relative overflow-hidden">
@@ -98,8 +100,8 @@
                     <h3 class="font-bold text-gray-400">إجمالي المصروفات</h3>
                     <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-lg"><i class="fa-solid fa-arrow-down-right-dots"></i></div>
                 </div>
-                <p id="total-expenses" class="text-4xl font-black text-white mb-2 tracking-tight">32,450 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
-                <p class="text-sm text-rose-400 font-semibold"><i class="fa-solid fa-arrow-trend-up ml-1"></i> +5% زيادة طفيفة</p>
+                <p id="total-expenses" class="text-4xl font-black text-white mb-2 tracking-tight">0 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
+                <p id="trend-expenses" class="text-sm text-rose-400 font-semibold"><i class="fa-solid fa-chart-line ml-1"></i> للفترة المحددة</p>
             </div>
 
             <div class="bg-gradient-to-br from-blue-900/40 to-[#111827] p-6 rounded-3xl border border-blue-500/30 hover:border-blue-400 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.1)] group relative overflow-hidden">
@@ -108,7 +110,7 @@
                     <h3 class="font-bold text-blue-200">صافي الربح</h3>
                     <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg shadow-[0_0_15px_rgba(59,130,246,0.3)]"><i class="fa-solid fa-sack-dollar"></i></div>
                 </div>
-                <p id="net-profit" class="text-4xl font-black text-white mb-2 tracking-tight">112,750 <span class="text-sm text-blue-300/50 font-normal">ج.م</span></p>
+                <p id="net-profit" class="text-4xl font-black text-white mb-2 tracking-tight">0 <span class="text-sm text-blue-300/50 font-normal">ج.م</span></p>
                 <p class="text-sm text-blue-300">بعد خصم كافة الرواتب والمصروفات</p>
             </div>
         </div>
@@ -120,8 +122,8 @@
             <div class="lg:col-span-2 bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl">
                 <div class="flex justify-between items-center mb-6">
                     <div>
-                        <h3 class="font-black text-xl text-white">معدل النمو الشهري</h3>
-                        <p class="text-sm text-gray-400 mt-1">تحليل الإيرادات والمصروفات لآخر 6 أشهر</p>
+                        <h3 class="font-black text-xl text-white">معدل التدفق النقدي</h3>
+                        <p class="text-sm text-gray-400 mt-1">تحليل الإيرادات والمصروفات للفترة المحددة</p>
                     </div>
                 </div>
                 <div class="relative h-72 w-full">
@@ -163,7 +165,7 @@
             <thead>
                 <tr>
                     <th>القسم</th>
-                    <th>الإيرادات (نوفمبر)</th>
+                    <th>الإيرادات</th>
                     <th>النسبة المئوية</th>
                 </tr>
             </thead>
@@ -190,10 +192,10 @@
         let growthChart = new Chart(ctxGrowth, {
             type: 'bar',
             data: {
-                labels: ['يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر'],
+                labels: ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'],
                 datasets: [
-                    { label: 'الإيرادات', data: [50000, 70000, 65000, 90000, 110000, 145200], backgroundColor: gradIn, borderRadius: 6, barPercentage: 0.6 },
-                    { label: 'المصروفات', data: [20000, 25000, 22000, 28000, 30000, 32450], backgroundColor: gradOut, borderRadius: 6, barPercentage: 0.6 }
+                    { label: 'الإيرادات', data: [35000, 42000, 28000, 40200], backgroundColor: gradIn, borderRadius: 6, barPercentage: 0.6 },
+                    { label: 'المصروفات', data: [8000, 9000, 7500, 7950], backgroundColor: gradOut, borderRadius: 6, barPercentage: 0.6 }
                 ]
             },
             options: {
@@ -201,7 +203,7 @@
                 plugins: { legend: { display: false } },
                 scales: {
                     x: { grid: { display: false }, border: { display: false } },
-                    y: { grid: { color: 'rgba(30, 41, 59, 0.5)' }, border: { display: false } }
+                    y: { grid: { color: 'rgba(30, 41, 59, 0.5)' }, border: { display: false }, beginAtZero: true }
                 }
             }
         });
@@ -236,81 +238,99 @@
             }
         });
 
-        // بيانات وهمية لكل قسم
-        const mockData = {
-            'الكل': {
-                'هذا الشهر': { rev: 145200, exp: 32450, categories: [45, 25, 20, 10] },
-                'الشهر الماضي': { rev: 110000, exp: 30000, categories: [40, 30, 15, 15] },
-                'الربع الحالي': { rev: 345200, exp: 90450, categories: [50, 20, 20, 10] },
-                'هذا العام': { rev: 980000, exp: 250000, categories: [45, 25, 20, 10] },
-            },
-            'إنشائي': {
-                'هذا الشهر': { rev: 29040, exp: 8000, categories: [0, 0, 100, 0] },
-                'الشهر الماضي': { rev: 16500, exp: 6000, categories: [0, 0, 100, 0] },
-                'الربع الحالي': { rev: 69040, exp: 20000, categories: [0, 0, 100, 0] },
-                'هذا العام': { rev: 196000, exp: 50000, categories: [0, 0, 100, 0] },
-            },
-            'معماري': {
-                'هذا الشهر': { rev: 36300, exp: 10000, categories: [0, 100, 0, 0] },
-                'الشهر الماضي': { rev: 33000, exp: 9000, categories: [0, 100, 0, 0] },
-                'الربع الحالي': { rev: 69000, exp: 22000, categories: [0, 100, 0, 0] },
-                'هذا العام': { rev: 245000, exp: 70000, categories: [0, 100, 0, 0] },
-            },
-            'كورسات': {
-                'هذا الشهر': { rev: 65340, exp: 12000, categories: [100, 0, 0, 0] },
-                'الشهر الماضي': { rev: 44000, exp: 11000, categories: [100, 0, 0, 0] },
-                'الربع الحالي': { rev: 172600, exp: 40000, categories: [100, 0, 0, 0] },
-                'هذا العام': { rev: 441000, exp: 100000, categories: [100, 0, 0, 0] },
-            },
-            'برامج': {
-                'هذا الشهر': { rev: 14520, exp: 2450, categories: [0, 0, 0, 100] },
-                'الشهر الماضي': { rev: 16500, exp: 4000, categories: [0, 0, 0, 100] },
-                'الربع الحالي': { rev: 34520, exp: 8450, categories: [0, 0, 0, 100] },
-                'هذا العام': { rev: 98000, exp: 30000, categories: [0, 0, 0, 100] },
-            }
+        // بيانات أساسية للمتوسط اليومي لكل قسم
+        const baseDailyData = {
+            'الكل': { rev: 4840, exp: 1081, categories: [45, 25, 20, 10] },
+            'إنشائي': { rev: 968, exp: 266, categories: [0, 0, 100, 0] },
+            'معماري': { rev: 1210, exp: 333, categories: [0, 100, 0, 0] },
+            'كورسات': { rev: 2178, exp: 400, categories: [100, 0, 0, 0] },
+            'برامج': { rev: 484, exp: 82, categories: [0, 0, 0, 100] }
         };
 
-        function updateDashboard() {
-            const timeFilter = document.getElementById('filter-time').value;
-            const catFilter = document.getElementById('filter-category').value;
+        function resetDates() {
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
             
-            const data = mockData[catFilter][timeFilter];
-            
-            // Update Summary Cards
-            document.getElementById('total-revenue').innerHTML = `${data.rev.toLocaleString()} <span class="text-sm text-gray-500 font-normal">ج.م</span>`;
-            document.getElementById('total-expenses').innerHTML = `${data.exp.toLocaleString()} <span class="text-sm text-gray-500 font-normal">ج.م</span>`;
-            document.getElementById('net-profit').innerHTML = `${(data.rev - data.exp).toLocaleString()} <span class="text-sm text-blue-300/50 font-normal">ج.م</span>`;
-
-            // Update Doughnut Chart
-            categoryChart.data.datasets[0].data = data.categories;
-            categoryChart.update();
-            
-            document.getElementById('cat-courses').innerText = `${data.categories[0]}%`;
-            document.getElementById('cat-arch').innerText = `${data.categories[1]}%`;
-            document.getElementById('cat-struct').innerText = `${data.categories[2]}%`;
-            document.getElementById('cat-soft').innerText = `${data.categories[3]}%`;
-            
-            // Update Export Table
-            const tbody = document.getElementById('exportTableBody');
-            tbody.innerHTML = `
-                <tr><td>الكورسات والتدريب</td><td>${(data.rev * data.categories[0] / 100).toFixed(0)}</td><td>${data.categories[0]}%</td></tr>
-                <tr><td>القسم المعماري</td><td>${(data.rev * data.categories[1] / 100).toFixed(0)}</td><td>${data.categories[1]}%</td></tr>
-                <tr><td>القسم الإنشائي</td><td>${(data.rev * data.categories[2] / 100).toFixed(0)}</td><td>${data.categories[2]}%</td></tr>
-                <tr><td>البرامج والأدوات (Software)</td><td>${(data.rev * data.categories[3] / 100).toFixed(0)}</td><td>${data.categories[3]}%</td></tr>
-                <tr><td>الإجمالي</td><td>${data.rev}</td><td>100%</td></tr>
-            `;
-
+            document.getElementById('filter-date-from').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('filter-date-to').value = today.toISOString().split('T')[0];
+            document.getElementById('filter-category').value = 'الكل';
+            updateDashboard();
         }
 
-        // دالة التصدير للإكسيل
+        function updateDashboard() {
+            const dateFromStr = document.getElementById('filter-date-from').value;
+            const dateToStr = document.getElementById('filter-date-to').value;
+            const catFilter = document.getElementById('filter-category').value;
+            
+            if(!dateFromStr || !dateToStr) return;
+
+            const d1 = new Date(dateFromStr);
+            const d2 = new Date(dateToStr);
+            
+            // حساب فرق الأيام (بحد أدنى يوم واحد لتجنب القيم الصفرية)
+            let diffDays = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+            if (diffDays < 1) diffDays = 1;
+
+            const base = baseDailyData[catFilter];
+            
+            // توليد أرقام متناسبة مع عدد الأيام مع إضافة لمسة عشوائية طفيفة للواقعية (±5%)
+            let totalRev = Math.round(base.rev * diffDays * (0.95 + Math.random() * 0.1));
+            let totalExp = Math.round(base.exp * diffDays * (0.95 + Math.random() * 0.1));
+            let net = totalRev - totalExp;
+
+            // تحديث بطاقات الأرقام
+            document.getElementById('total-revenue').innerHTML = `${totalRev.toLocaleString()} <span class="text-sm text-gray-500 font-normal">ج.م</span>`;
+            document.getElementById('total-expenses').innerHTML = `${totalExp.toLocaleString()} <span class="text-sm text-gray-500 font-normal">ج.م</span>`;
+            document.getElementById('net-profit').innerHTML = `${net.toLocaleString()} <span class="text-sm text-blue-300/50 font-normal">ج.م</span>`;
+
+            // تحديث الدونات شارت والنسب
+            categoryChart.data.datasets[0].data = base.categories;
+            categoryChart.update();
+            
+            document.getElementById('cat-courses').innerText = `${base.categories[0]}%`;
+            document.getElementById('cat-arch').innerText = `${base.categories[1]}%`;
+            document.getElementById('cat-struct').innerText = `${base.categories[2]}%`;
+            document.getElementById('cat-soft').innerText = `${base.categories[3]}%`;
+            
+            // تحديث جدول الإكسيل المخفي
+            const tbody = document.getElementById('exportTableBody');
+            tbody.innerHTML = `
+                <tr><td>الكورسات والتدريب</td><td>${Math.round(totalRev * base.categories[0] / 100)}</td><td>${base.categories[0]}%</td></tr>
+                <tr><td>القسم المعماري</td><td>${Math.round(totalRev * base.categories[1] / 100)}</td><td>${base.categories[1]}%</td></tr>
+                <tr><td>القسم الإنشائي</td><td>${Math.round(totalRev * base.categories[2] / 100)}</td><td>${base.categories[2]}%</td></tr>
+                <tr><td>البرامج والأدوات (Software)</td><td>${Math.round(totalRev * base.categories[3] / 100)}</td><td>${base.categories[3]}%</td></tr>
+                <tr><td>الإجمالي</td><td>${totalRev}</td><td>100%</td></tr>
+            `;
+
+            // تحديث الرسم البياني للنمو ليعرض التدفق النقدي مقسماً على فترات
+            let parts = diffDays <= 7 ? diffDays : 4;
+            let labels = [];
+            let revData = [];
+            let expData = [];
+            
+            for(let i=1; i<=parts; i++) {
+                labels.push(diffDays <= 7 ? `يوم ${i}` : `فترة ${i}`);
+                // تقسيم القيمة على الأجزاء مع عشوائية
+                let partRev = (totalRev / parts) * (0.8 + Math.random() * 0.4);
+                let partExp = (totalExp / parts) * (0.8 + Math.random() * 0.4);
+                revData.push(Math.round(partRev));
+                expData.push(Math.round(partExp));
+            }
+            
+            growthChart.data.labels = labels;
+            growthChart.data.datasets[0].data = revData;
+            growthChart.data.datasets[1].data = expData;
+            growthChart.update();
+        }
+
         function exportToExcel() {
             var table = document.getElementById("exportTable");
             var wb = XLSX.utils.table_to_book(table, {sheet: "تحليل الأقسام"});
-            XLSX.writeFile(wb, 'TOBIM_Dashboard_Categories.xlsx');
+            XLSX.writeFile(wb, 'TOBIM_Dashboard_Filtered.xlsx');
         }
         
-        // Initialize dashboard with default data
-        updateDashboard();
+        // تعيين التواريخ الافتراضية عند تحميل الصفحة (أول الشهر وحتى اليوم)
+        resetDates();
     </script>
 </body>
 </html>

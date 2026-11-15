@@ -73,7 +73,7 @@
         <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white">المصروفات العامة</h2>
-                <p class="text-sm text-gray-400 mt-1">متابعة وتسجيل المصروفات الإدارية والتشغيلية</p>
+                <p class="text-sm text-gray-400 mt-1">متابعة وتسجيل المصروفات الإدارية والتشغيلية وحالة السداد</p>
             </div>
             <button id="add-exp-btn" onclick="openExpenseModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> إضافة مصروف جديد
@@ -109,13 +109,29 @@
             </div>
         </div>
 
-        <!-- ملخص المصروفات -->
-        <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
-            <div>
-                <h3 class="text-gray-400 text-sm font-bold">إجمالي المصروفات العامة</h3>
-                <p id="total-expenses-display" class="text-3xl font-black text-rose-400 mt-1">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+        <!-- ملخصات المصروفات (إجمالي، مدفوع، مستحق) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-400 text-sm font-bold">إجمالي المصروفات العامة</h3>
+                    <p id="total-expenses-display" class="text-3xl font-black text-rose-400 mt-1">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                </div>
+                <i class="fa-solid fa-receipt text-rose-500/20 text-4xl"></i>
             </div>
-            <i class="fa-solid fa-receipt text-rose-500/20 text-5xl"></i>
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-400 text-sm font-bold">إجمالي المدفوع</h3>
+                    <p id="total-paid-display" class="text-3xl font-black text-emerald-400 mt-1">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                </div>
+                <i class="fa-solid fa-circle-check text-emerald-500/20 text-4xl"></i>
+            </div>
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-400 text-sm font-bold">إجمالي المستحق</h3>
+                    <p id="total-due-display" class="text-3xl font-black text-amber-400 mt-1">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                </div>
+                <i class="fa-solid fa-clock text-amber-500/20 text-4xl"></i>
+            </div>
         </div>
 
         <!-- جدول المصروفات -->
@@ -127,6 +143,7 @@
                             <th class="p-4 font-semibold">التاريخ</th>
                             <th class="p-4 font-semibold">بيان المصروف</th>
                             <th class="p-4 font-semibold">التصنيف</th>
+                            <th class="p-4 font-semibold">الحالة</th>
                             <th class="p-4 font-semibold text-rose-400">القيمة (ج.م)</th>
                         </tr>
                     </thead>
@@ -137,7 +154,7 @@
         </div>
     </main>
 
-    <!-- نافذة إضافة مصروف (مع حقل تاريخ العملية) -->
+    <!-- نافذة إضافة مصروف (مع تاريخ العملية وحالة المبلغ) -->
     <div id="expenseModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
             <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-receipt text-blue-500 ml-2"></i> إضافة مصروف جديد</h3>
@@ -157,6 +174,13 @@
                         <option value="فواتير ومرافق">فواتير ومرافق</option>
                         <option value="بوفيه ونظافة">بوفيه ونظافة</option>
                         <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">حالة المبلغ *</label>
+                    <select id="expStatus" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                        <option value="مدفوع">مدفوع</option>
+                        <option value="مستحق">مستحق</option>
                     </select>
                 </div>
                 <div>
@@ -203,8 +227,8 @@
                 if (financeNav) financeNav.style.display = 'none';
             }
 
-            // ضبط تاريخ اليوم افتراضياً في حقل التاريخ داخل النافذة
             document.getElementById('expDate').valueAsDate = new Date();
+            renderExpenses();
         });
 
         function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
@@ -224,10 +248,11 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        let expensesList = JSON.parse(localStorage.getItem('tobim_expenses_v4')) || [
-            { id: 1, date: '01/11/2026', desc: 'إيجار المقر', category: 'إيجار', amount: 12500 },
-            { id: 2, date: '05/11/2026', desc: 'فواتير كهرباء ومياه', category: 'فواتير ومرافق', amount: 3500 },
-            { id: 3, date: '10/11/2026', desc: 'بوفيه ونظافة', category: 'بوفيه ونظافة', amount: 4000 }
+        // المصروفات مع الإيجار 10,000 ج.م وحالة السداد
+        let expensesList = JSON.parse(localStorage.getItem('tobim_expenses_v5')) || [
+            { id: 1, date: '01/11/2026', desc: 'إيجار المقر', category: 'إيجار', status: 'مدفوع', amount: 10000 },
+            { id: 2, date: '05/11/2026', desc: 'فواتير كهرباء ومياه', category: 'فواتير ومرافق', status: 'مستحق', amount: 3500 },
+            { id: 3, date: '10/11/2026', desc: 'بوفيه ونظافة', category: 'بوفيه ونظافة', status: 'مدفوع', amount: 4000 }
         ];
 
         function renderExpenses() {
@@ -236,19 +261,36 @@
             const filterCat = document.getElementById('filter-category').value;
             
             let total = 0;
+            let paidTotal = 0;
+            let dueTotal = 0;
+
             let filteredList = filterCat === 'الكل' ? expensesList : expensesList.filter(e => e.category === filterCat);
 
             filteredList.forEach(exp => {
                 total += exp.amount;
+                if (exp.status === 'مدفوع') {
+                    paidTotal += exp.amount;
+                } else {
+                    dueTotal += exp.amount;
+                }
+
+                let statusBadge = exp.status === 'مدفوع' 
+                    ? '<span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-lg font-bold">مدفوع</span>' 
+                    : '<span class="bg-amber-500/20 text-amber-400 text-xs px-2.5 py-1 rounded-lg font-bold">مستحق</span>';
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-800/30 transition">
                         <td class="p-4 text-sm text-gray-400">${exp.date}</td>
                         <td class="p-4 text-sm font-bold text-white">${exp.desc}</td>
                         <td class="p-4 text-sm text-gray-300"><span class="bg-gray-800 px-2.5 py-1 rounded-lg text-xs">${exp.category}</span></td>
+                        <td class="p-4">${statusBadge}</td>
                         <td class="p-4 font-bold text-rose-400">${exp.amount.toLocaleString()} ج.م</td>
                     </tr>`;
             });
+
             document.getElementById('total-expenses-display').innerHTML = `${total.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+            document.getElementById('total-paid-display').innerHTML = `${paidTotal.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+            document.getElementById('total-due-display').innerHTML = `${dueTotal.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
         }
 
         renderExpenses();
@@ -265,15 +307,16 @@
             e.preventDefault();
             if(!isAdmin) return;
             
-            let rawDate = document.getElementById('expDate').value; // YYYY-MM-DD
+            let rawDate = document.getElementById('expDate').value;
             let formattedDate = rawDate ? rawDate.split('-').reverse().join('/') : new Date().toLocaleDateString('en-GB');
             
             let desc = document.getElementById('expDesc').value;
             let category = document.getElementById('expCategory').value;
+            let status = document.getElementById('expStatus').value;
             let amount = parseFloat(document.getElementById('expAmount').value) || 0;
 
-            expensesList.push({ id: Date.now(), date: formattedDate, desc, category, amount });
-            localStorage.setItem('tobim_expenses_v4', JSON.stringify(expensesList));
+            expensesList.push({ id: Date.now(), date: formattedDate, desc, category, status, amount });
+            localStorage.setItem('tobim_expenses_v5', JSON.stringify(expensesList));
             renderExpenses();
             closeExpenseModal();
         }

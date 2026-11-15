@@ -3,84 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — اشتراكاتي</title>
+    <title>TOBIM — سجل الاشتراكات</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Cairo', sans-serif; }</style>
+    <style> 
+        body { font-family: 'Cairo', sans-serif; background-color: #0b0f19; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
 </head>
-<body class="bg-[#0b0f19] text-gray-100 min-h-screen flex flex-col">
-    <script>if(!localStorage.getItem('tobim_logged')) window.location.href = 'login.html';</script>
+<body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
 
-    <header class="bg-[#0f172a] border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-40">
+    <!-- الهيدر العصري -->
+    <header class="bg-[#0f172a]/80 backdrop-blur-md border-b border-gray-800/60 h-20 flex items-center px-6 justify-between sticky top-0 z-50 transition-all">
         <div class="flex items-center gap-6">
-            <span class="text-xl font-black text-white">TO BIM</span>
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-blue-500 blur-md opacity-0 group-hover:opacity-40 transition duration-500"></div>
+                    <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="relative w-10 h-10 rounded-xl object-cover border border-gray-700 shadow-lg" alt="Logo">
+                </div>
+                <span class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">TO BIM</span>
+            </div>
             <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
-                <a href="dashboard.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">الرئيسية</a>
-                <a href="subscriptions.html" class="bg-blue-600 text-white px-4 py-2 rounded-xl transition">اشتراكاتي</a>
-                <a href="new-sub.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">+ اشتراك جديد</a>
+                <a href="dashboard.html" class="text-gray-400 hover:text-white hover:bg-gray-800/50 px-5 py-2.5 rounded-xl transition">الماليات</a>
+                <a href="subscriptions.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition transform hover:scale-105">الاشتراكات والمبيعات</a>
             </nav>
         </div>
-        <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-sm font-bold">خروج</button>
+        <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 px-4 py-2 rounded-xl text-sm font-bold transition">خروج</button>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
-        <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800">
-            <h2 class="text-lg font-black text-white mb-4">سجل الاشتراكات (اضغط على الاسم لعرض الريسيت)</h2>
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6 relative z-10">
+        
+        <div class="flex justify-between items-center mb-2">
+            <div>
+                <h2 class="text-2xl font-black text-white">سجل الاشتراكات والمبيعات</h2>
+                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات حسب الموظف والقسم (للعرض فقط)</p>
+            </div>
+            <!-- زر الانتقال لصفحة إضافة اشتراك جديد -->
+            <a href="new-sub.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg shadow-emerald-900/50 flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> اشتراك جديد
+            </a>
+        </div>
+
+        <!-- فلاتر متقدمة -->
+        <div class="bg-[#111827]/80 backdrop-blur-xl p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">مسؤول المبيعات (Sales)</label>
+                <select id="filter-sales" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
+                    <option value="الكل">جميع الموظفين</option>
+                    <option value="عمر">عمر</option>
+                    <option value="محسن">محسن</option>
+                    <option value="صباح">صباح</option>
+                </select>
+            </div>
             
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">نوع المنتج</label>
+                <select id="filter-type" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
+                    <option value="الكل">الكل</option>
+                    <option value="دبلومة">دبلومات</option>
+                    <option value="كورس">كورسات</option>
+                    <option value="برنامج">برامج (Software)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">التخصص</label>
+                <select id="filter-spec" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
+                    <option value="الكل">الكل</option>
+                    <option value="إنشائي">إنشائي</option>
+                    <option value="معماري">معماري</option>
+                    <option value="عام">عام</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ملخص أداء المبيعات -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
+                <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-chart-line mr-2 text-blue-400"></i> إجمالي قيمة المبيعات</h3>
+                <p id="summary-total" class="text-3xl font-black text-white mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+            </div>
+            <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
+                <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-money-bill-wave mr-2 text-emerald-400"></i> المحصل (المدفوع)</h3>
+                <p id="summary-paid" class="text-3xl font-black text-emerald-400 mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+            </div>
+            <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
+                <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-clock mr-2 text-amber-400"></i> المتبقي (الآجل)</h3>
+                <p id="summary-rest" class="text-3xl font-black text-amber-400 mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+            </div>
+        </div>
+
+        <!-- جدول عرض الاشتراكات -->
+        <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
+            <div class="p-4 border-b border-gray-800 bg-[#0f172a]">
+                <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-list ml-2"></i>اضغط على اسم المشترك لعرض إيصال الدفع (الريسيت)</h3>
+            </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-right text-sm">
-                    <thead class="bg-[#131b2e] text-gray-400 text-xs uppercase border-b border-gray-800">
+                <table class="w-full text-right text-sm min-w-[1000px]">
+                    <thead class="bg-[#0f172a] text-gray-400 text-xs uppercase border-b border-gray-800">
                         <tr>
                             <th class="p-4"># ID</th>
                             <th class="p-4">الاسم</th>
-                            <th class="p-4">الموبايل</th>
-                            <th class="p-4">القسم / الراوند</th>
+                            <th class="p-4">مسؤول المبيعات</th>
+                            <th class="p-4">المنتج / التخصص</th>
+                            <th class="p-4">الراوند</th>
                             <th class="p-4">سعر البيع</th>
-                            <th class="p-4">المدفوع</th>
-                            <th class="p-4">المتبقي</th>
+                            <th class="p-4 text-emerald-400">المدفوع</th>
+                            <th class="p-4 text-amber-400">المتبقي</th>
                             <th class="p-4">الحالة</th>
-                            <th class="p-4">إجراءات</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody" class="divide-y divide-gray-800"></tbody>
+                    <tbody id="tableBody" class="divide-y divide-gray-800/50">
+                        <!-- سيتم إدراج البيانات هنا -->
+                    </tbody>
                 </table>
             </div>
         </div>
+
     </main>
 
     <script>
+        // بيانات افتراضية موسعة لتجربة الفلاتر
         let subs = JSON.parse(localStorage.getItem('tobim_subs') || '[]');
+        
         if(subs.length === 0) {
-            subs = [{id: 201135, department: 'إنشائي', round: 'Round 27', status: 'Rest', fullName: 'SHADY MOSTAFA ELSAYED', mobile: '0111111111', totalPrice: 12000, paidAmount: 9500, remainingAmount: 2500, paySource: 'إنستاباي CIB', senderName: 'SHADY MOSTAFA'}];
+            subs = [
+                {id: 201135, fullName: 'شادي مصطفى', mobile: '0111111111', salesRep: 'عمر', prodType: 'دبلومة', spec: 'إنشائي', round: 'Round 27', totalPrice: 12000, paidAmount: 9500, remainingAmount: 2500, status: 'متبقي (Rest)'},
+                {id: 201136, fullName: 'أحمد محمود', mobile: '0122222222', salesRep: 'محسن', prodType: 'كورس', spec: 'معماري', round: 'Round 15', totalPrice: 4000, paidAmount: 4000, remainingAmount: 0, status: 'خالص (Paid)'},
+                {id: 201137, fullName: 'سارة خالد', mobile: '0100000000', salesRep: 'صباح', prodType: 'برنامج', spec: 'عام', round: 'N/A', totalPrice: 1500, paidAmount: 1500, remainingAmount: 0, status: 'خالص (Paid)'},
+                {id: 201138, fullName: 'محمد علي', mobile: '0155555555', salesRep: 'عمر', prodType: 'دبلومة', spec: 'معماري', round: 'Round 28', totalPrice: 12000, paidAmount: 6000, remainingAmount: 6000, status: 'متبقي (Rest)'}
+            ];
             localStorage.setItem('tobim_subs', JSON.stringify(subs));
         }
 
-        let tbody = document.getElementById('tableBody');
-        subs.forEach(s => {
-            tbody.innerHTML += `
-                <tr class="hover:bg-blue-600/10 transition">
-                    <td class="p-4 font-bold text-gray-400">${s.id}</td>
-                    <td class="p-4 font-bold text-white underline cursor-pointer" onclick="location.href='receipt.html?id=${s.id}'">${s.fullName}</td>
-                    <td class="p-4 text-gray-300 font-mono">${s.mobile}</td>
-                    <td class="p-4 text-blue-400">${s.department} / ${s.round}</td>
-                    <td class="p-4 font-mono">${s.totalPrice} EGP</td>
-                    <td class="p-4 font-mono text-emerald-400">${s.paidAmount} EGP</td>
-                    <td class="p-4 font-mono text-amber-400">${s.remainingAmount} EGP</td>
-                    <td class="p-4"><span class="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-bold">${s.status}</span></td>
-                    <td class="p-4 flex gap-2">
-                        <button onclick="deleteSub(${s.id})" class="bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-bold">حذف</button>
-                    </td>
-                </tr>`;
-        });
+        const tbody = document.getElementById('tableBody');
 
-        function deleteSub(id) {
-            if(confirm('هل أنت متأكد من الحذف؟')) {
-                subs = subs.filter(s => s.id !== id);
-                localStorage.setItem('tobim_subs', JSON.stringify(subs));
-                location.reload();
+        // دالة الفلترة والرسم
+        window.filterTable = function() {
+            const filterSales = document.getElementById('filter-sales').value;
+            const filterType = document.getElementById('filter-type').value;
+            const filterSpec = document.getElementById('filter-spec').value;
+
+            tbody.innerHTML = '';
+            
+            let totalSales = 0;
+            let totalPaid = 0;
+            let totalRest = 0;
+            let displayedCount = 0;
+
+            subs.forEach(s => {
+                // شروط الفلترة
+                const matchSales = filterSales === 'الكل' || s.salesRep === filterSales;
+                const matchType = filterType === 'الكل' || s.prodType === filterType;
+                const matchSpec = filterSpec === 'الكل' || s.spec === filterSpec;
+
+                if (matchSales && matchType && matchSpec) {
+                    displayedCount++;
+                    totalSales += parseFloat(s.totalPrice) || 0;
+                    totalPaid += parseFloat(s.paidAmount) || 0;
+                    totalRest += parseFloat(s.remainingAmount) || 0;
+
+                    // تحديد لون الحالة
+                    const statusBadge = s.remainingAmount == 0 
+                        ? `<span class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold">خالص</span>`
+                        : `<span class="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-bold">متبقي</span>`;
+                    
+                    // تحديد أيقونة المنتج
+                    let typeIcon = '';
+                    if(s.prodType === 'دبلومة') typeIcon = '<i class="fa-solid fa-graduation-cap text-blue-400 ml-1"></i>';
+                    else if(s.prodType === 'كورس') typeIcon = '<i class="fa-solid fa-video text-purple-400 ml-1"></i>';
+                    else if(s.prodType === 'برنامج') typeIcon = '<i class="fa-solid fa-compact-disc text-amber-400 ml-1"></i>';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-800/40 transition group">
+                            <td class="p-4 font-bold text-gray-400">${s.id}</td>
+                            <td class="p-4 font-bold text-white cursor-pointer hover:text-blue-400" onclick="location.href='receipt.html?id=${s.id}'">${s.fullName}</td>
+                            <td class="p-4 text-sm text-gray-300"><span class="bg-blue-900/30 text-blue-300 px-2 py-1 rounded border border-blue-800/50">${s.salesRep}</span></td>
+                            <td class="p-4 text-sm text-gray-200">${typeIcon} ${s.prodType} (${s.spec})</td>
+                            <td class="p-4 text-sm text-gray-400">${s.round}</td>
+                            <td class="p-4 font-bold text-white">${s.totalPrice.toLocaleString()}</td>
+                            <td class="p-4 font-bold text-emerald-400">${s.paidAmount.toLocaleString()}</td>
+                            <td class="p-4 font-bold text-amber-400">${s.remainingAmount.toLocaleString()}</td>
+                            <td class="p-4">${statusBadge}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            if(displayedCount === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-gray-500">لا توجد بيانات مطابقة للفلاتر المحددة</td></tr>`;
             }
-        }
+
+            // تحديث بطاقات الملخص
+            document.getElementById('summary-total').innerHTML = `${totalSales.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+            document.getElementById('summary-paid').innerHTML = `${totalPaid.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+            document.getElementById('summary-rest').innerHTML = `${totalRest.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+        };
+
+        // عرض البيانات فور التحميل
+        filterTable();
     </script>
 </body>
 </html>

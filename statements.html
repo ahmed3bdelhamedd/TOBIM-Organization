@@ -96,7 +96,7 @@
                 <label class="block text-sm text-gray-400 mb-2">من تاريخ</label>
                 <input type="date" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40" style="color-scheme: dark;">
             </div>
-            <button class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex-1 md:flex-none">عرض التقرير</button>
+            <button class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex-1 md:flex-none" onclick="filterStatements()">عرض التقرير</button>
         </div>
 
         <!-- ملخص الحساب المختار -->
@@ -130,7 +130,7 @@
                         </tr>
                     </thead>
                     <tbody id="statement-tbody" class="divide-y divide-gray-800/50">
-                        <tr><td colspan="6" class="p-8 text-center text-gray-500">اختر حساباً وارفع كشف إكسيل لعرض البيانات هنا</td></tr>
+                        <!-- سيتم إدراج البيانات هنا -->
                     </tbody>
                 </table>
             </div>
@@ -173,20 +173,29 @@
     </div>
 
     <script>
-        // --- إدارة الحسابات المتاحة ---
-        // القائمة الافتراضية
+        // --- إدارة الحسابات والبيانات الافتراضية ---
         let availableAccounts = [
-            { id: "الكل", name: "جميع الحسابات", type: "عام" },
-            { id: "CIB", name: "البنك التجاري الدولي (CIB)", type: "بنك" },
-            { id: "HDB", name: "بنك التعمير والإسكان", type: "بنك" },
-            { id: "Vodafone", name: "فودافون كاش", type: "محفظة" },
-            { id: "Cash", name: "الخزينة (كاش)", type: "خزينة" }
+            { id: "الكل", name: "جميع الحسابات", type: "عام", initialBalance: 0 },
+            { id: "CIB", name: "البنك التجاري الدولي (CIB)", type: "بنك", initialBalance: 890000 },
+            { id: "HDB", name: "بنك التعمير والإسكان", type: "بنك", initialBalance: 150000 },
+            { id: "Vodafone", name: "فودافون كاش", type: "محفظة", initialBalance: 5000 },
+            { id: "Cash", name: "الخزينة (كاش)", type: "خزينة", initialBalance: 12000 }
         ];
 
-        // دالة تحديث قائمة الفلتر (Dropdown)
+        let defaultStatements = [
+            { date: "01/11/2026", accountId: "CIB", desc: "رصيد افتتاحي", in: 0, out: 0, balance: 890000 },
+            { date: "05/11/2026", accountId: "CIB", desc: "تحصيل من عملاء (دفعة مقدمة)", in: 45000, out: 0, balance: 935000 },
+            { date: "10/11/2026", accountId: "CIB", desc: "سداد مصروفات إعلانية (فيسبوك)", in: 0, out: 12000, balance: 923000 },
+            { date: "02/11/2026", accountId: "Vodafone", desc: "رصيد افتتاحي", in: 0, out: 0, balance: 5000 },
+            { date: "08/11/2026", accountId: "Vodafone", desc: "تحويل اشتراك كورس (أحمد)", in: 1500, out: 0, balance: 6500 },
+            { date: "03/11/2026", accountId: "Cash", desc: "رصيد افتتاحي", in: 0, out: 0, balance: 12000 },
+            { date: "09/11/2026", accountId: "Cash", desc: "مصروفات بوفيه ونظافة", in: 0, out: 650, balance: 11350 }
+        ];
+
+        // تحديث قائمة الفلتر
         function renderAccountDropdown() {
             const filterSelect = document.getElementById('account-filter');
-            filterSelect.innerHTML = ''; // تفريغ القائمة
+            filterSelect.innerHTML = ''; 
             
             availableAccounts.forEach(acc => {
                 const option = document.createElement('option');
@@ -196,8 +205,61 @@
             });
         }
 
-        // تشغيل الدالة عند تحميل الصفحة
+        // --- عرض البيانات وتحديث الملخص ---
+        function filterStatements() {
+            const tbody = document.getElementById('statement-tbody');
+            tbody.innerHTML = ''; 
+            
+            const selectedAccountId = document.getElementById('account-filter').value;
+            
+            let filteredStatements = defaultStatements;
+            if (selectedAccountId !== 'الكل') {
+                filteredStatements = defaultStatements.filter(s => s.accountId === selectedAccountId);
+            }
+
+            let totalIn = 0;
+            let totalOut = 0;
+            let currentBalance = 0;
+
+            if (filteredStatements.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-gray-500">لا توجد حركات مسجلة لهذا الحساب.</td></tr>`;
+                document.getElementById('total-in').innerHTML = `0 <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+                document.getElementById('total-out').innerHTML = `0 <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+                document.getElementById('closing-balance').innerHTML = `0 <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+                return;
+            }
+
+            filteredStatements.forEach(stat => {
+                const accInfo = availableAccounts.find(a => a.id === stat.accountId);
+                const accName = accInfo ? accInfo.name : stat.accountId;
+                
+                totalIn += stat.in;
+                totalOut += stat.out;
+                currentBalance = stat.balance; // آخر رصيد مسجل
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-800/30 transition group";
+                tr.innerHTML = `
+                    <td class="p-4 text-sm text-gray-400">${stat.date}</td>
+                    <td class="p-4 text-sm font-bold text-white whitespace-nowrap"><span class="bg-blue-900/30 text-blue-300 border border-blue-800/50 px-2 py-1 rounded-lg text-xs">${accName}</span></td>
+                    <td class="p-4 text-sm text-gray-300">${stat.desc}</td>
+                    <td class="p-4 font-bold text-emerald-400">${stat.in > 0 ? stat.in.toLocaleString() : '-'}</td>
+                    <td class="p-4 font-bold text-rose-400">${stat.out > 0 ? stat.out.toLocaleString() : '-'}</td>
+                    <td class="p-4 font-black text-blue-400">${stat.balance.toLocaleString()}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('total-in').innerHTML = `${totalIn.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+            document.getElementById('total-out').innerHTML = `${totalOut.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+            document.getElementById('closing-balance').innerHTML = `${currentBalance.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+        }
+
+        // تشغيل التهيئة عند التحميل
         renderAccountDropdown();
+        // جعل الفلتر يعرض CIB بشكل افتراضي كما طلبت
+        document.getElementById('account-filter').value = "CIB";
+        filterStatements();
 
         // --- التحكم في النافذة المنبثقة ---
         const modal = document.getElementById('newAccountModal');
@@ -208,33 +270,32 @@
             document.getElementById('newAccBalance').value = '0';
         }
 
-        // دالة حفظ حساب جديد
         function saveNewAccount() {
             const name = document.getElementById('newAccName').value.trim();
             const type = document.getElementById('newAccType').value;
-            const balance = document.getElementById('newAccBalance').value;
+            const balance = parseFloat(document.getElementById('newAccBalance').value) || 0;
 
             if (!name) {
                 alert("يرجى إدخال اسم الحساب!");
                 return;
             }
 
-            // إنشاء ID فريد للحساب
             const newId = "ACC_" + Math.random().toString(36).substr(2, 5).toUpperCase();
-            
-            // إضافة الحساب للمصفوفة
             availableAccounts.push({ id: newId, name: name, type: type, initialBalance: balance });
             
-            // إعادة رسم القائمة واختيار الحساب الجديد
+            // إضافة حركة رصيد افتتاحي
+            const today = new Date().toLocaleDateString('en-GB'); // صيغة DD/MM/YYYY
+            defaultStatements.push({ date: today, accountId: newId, desc: "رصيد افتتاحي", in: 0, out: 0, balance: balance });
+
             renderAccountDropdown();
             document.getElementById('account-filter').value = newId;
+            filterStatements();
 
-            // إغلاق النافذة
             closeAccountModal();
-            alert(`تم إضافة الحساب "${name}" بنجاح! يمكنك الآن رفع كشف الإكسيل الخاص به.`);
+            alert(`تم إضافة الحساب "${name}" بنجاح!`);
         }
 
-        // --- معالجة ملفات الإكسيل (SheetJS) ---
+        // --- رفع الكشف ---
         function handleExcelUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -243,13 +304,12 @@
             reader.onload = function(e) {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
-                
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
                 const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                 
                 if (jsonData.length > 1) {
-                    populateTableFromExcel(jsonData);
+                    processExcelData(jsonData);
                 } else {
                     alert("الملف فارغ أو لا يحتوي على تنسيق صحيح.");
                 }
@@ -257,52 +317,44 @@
             reader.readAsArrayBuffer(file);
         }
 
-        function populateTableFromExcel(data) {
-            const tbody = document.getElementById('statement-tbody');
-            tbody.innerHTML = ''; 
-            
-            // جلب اسم الحساب المختار حالياً
-            const accountSelectedId = document.getElementById('account-filter').value;
-            const selectedAccount = availableAccounts.find(acc => acc.id === accountSelectedId);
-            const currentAccountName = selectedAccount ? selectedAccount.name : "غير محدد";
+        function processExcelData(data) {
+            const selectedAccountId = document.getElementById('account-filter').value;
+            if (selectedAccountId === 'الكل') {
+                alert("يرجى اختيار حساب محدد لرفع الكشف إليه.");
+                document.getElementById('excelUpload').value = '';
+                return;
+            }
 
-            let totalIn = 0;
-            let totalOut = 0;
-            let currentBalance = 0;
+            let prevBalance = availableAccounts.find(a => a.id === selectedAccountId).initialBalance || 0;
+            // إيجاد آخر رصيد مسجل لهذا الحساب إن وجد
+            const accStatements = defaultStatements.filter(s => s.accountId === selectedAccountId);
+            if(accStatements.length > 0) prevBalance = accStatements[accStatements.length - 1].balance;
 
             for (let i = 1; i < data.length; i++) {
                 const row = data[i];
                 if (row.length === 0) continue;
 
-                // قراءة الحقول من الإكسيل (يرجى مطابقتها مع هيكل كشوفات بنك CIB والتعمير)
-                const date = row[0] || '';
-                const desc = row[1] || '';
+                const date = row[0] || new Date().toLocaleDateString('en-GB');
+                const desc = row[1] || 'حركة مسجلة';
                 const outAmount = parseFloat(row[2]) || 0; 
                 const inAmount = parseFloat(row[3]) || 0;
                 let balance = parseFloat(row[4]) || 0;
 
-                totalIn += inAmount;
-                totalOut += outAmount;
-                currentBalance = balance !== 0 ? balance : currentBalance + inAmount - outAmount;
+                prevBalance = balance !== 0 ? balance : prevBalance + inAmount - outAmount;
 
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-800/30 transition group";
-                tr.innerHTML = `
-                    <td class="p-4 text-sm text-gray-400">${date}</td>
-                    <td class="p-4 text-sm font-bold text-white whitespace-nowrap"><span class="bg-blue-900/30 text-blue-300 border border-blue-800/50 px-2 py-1 rounded-lg text-xs">${currentAccountName}</span></td>
-                    <td class="p-4 text-sm text-gray-300">${desc}</td>
-                    <td class="p-4 font-bold text-emerald-400">${inAmount > 0 ? inAmount.toLocaleString() : '-'}</td>
-                    <td class="p-4 font-bold text-rose-400">${outAmount > 0 ? outAmount.toLocaleString() : '-'}</td>
-                    <td class="p-4 font-black text-blue-400">${currentBalance.toLocaleString()}</td>
-                `;
-                tbody.appendChild(tr);
+                defaultStatements.push({
+                    date: date,
+                    accountId: selectedAccountId,
+                    desc: desc,
+                    in: inAmount,
+                    out: outAmount,
+                    balance: prevBalance
+                });
             }
 
-            document.getElementById('total-in').innerHTML = `${totalIn.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
-            document.getElementById('total-out').innerHTML = `${totalOut.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
-            document.getElementById('closing-balance').innerHTML = `${currentBalance.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
-            
+            filterStatements();
             document.getElementById('excelUpload').value = '';
+            alert("تم رفع الكشف وتحديث البيانات بنجاح!");
         }
     </script>
 </body>

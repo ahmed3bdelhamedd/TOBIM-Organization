@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOBIM — قسم التسويق</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style> body { font-family: 'Cairo', sans-serif; }</style>
+</head>
+<body class="bg-[#0b0f19] text-gray-100 min-h-screen">
+    
+    <!-- الهيدر مدمج للاختصار (انسخ الهيدر من الداشبورد هنا) -->
+    
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+        
+        <!-- Sub-header -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-gray-800 mb-6">
+            <a href="dashboard.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold transition">الداشبورد العام</a>
+            <a href="payroll.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold transition">إدارة الرواتب</a>
+            <a href="marketing.html" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold">التسويق</a>
+            <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold transition">المصروفات العامة</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800">
+                <h3 class="text-gray-400 text-sm font-bold mb-2">ميزانية إعلانات فيسبوك (نوفمبر)</h3>
+                <p class="text-3xl font-black text-blue-500">12,000 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                <div class="w-full bg-gray-800 rounded-full h-2 mt-4"><div class="bg-blue-500 h-2 rounded-full" style="width: 75%"></div></div>
+                <p class="text-xs text-gray-400 mt-2">المتبقي: 3,000 ج.م</p>
+            </div>
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800">
+                <h3 class="text-gray-400 text-sm font-bold mb-2">العملاء المحتملين (Leads)</h3>
+                <p class="text-3xl font-black text-emerald-400">342 <span class="text-sm font-normal text-gray-500">عميل</span></p>
+                <p class="text-sm text-emerald-400 mt-2"><i class="fa-solid fa-arrow-trend-up"></i> تكلفة العميل: 35 ج.م</p>
+            </div>
+        </div>
+
+        <div class="bg-[#111827] rounded-3xl border border-gray-800 p-6">
+            <h2 class="text-xl font-black text-white mb-4">الحملات النشطة</h2>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center p-4 bg-[#0b0f19] rounded-xl border border-gray-800">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-brands fa-facebook text-blue-500 text-2xl"></i>
+                        <div><p class="font-bold">حملة اشتراكات الباقات السنوية</p><p class="text-xs text-gray-400">بدأت: 1 نوفمبر</p></div>
+                    </div>
+                    <span class="text-sm font-bold text-rose-400">صُرف: 4,500 ج.م</span>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

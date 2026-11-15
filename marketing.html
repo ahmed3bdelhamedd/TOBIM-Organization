@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — قسم التسويق</title>
+    <title>TOBIM — قسم التسويق والحملات</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style> body { font-family: 'Cairo', sans-serif; }</style>
 </head>
-<body class="bg-[#0b0f19] text-gray-100 min-h-screen">
+<body class="bg-[#0b0f19] text-gray-100 min-h-screen relative">
     
+    <!-- الهيدر الرئيسي -->
     <header class="bg-[#0f172a] border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-40">
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-3">
@@ -28,6 +29,7 @@
     
     <main class="max-w-7xl mx-auto p-4 md:p-8">
         
+        <!-- شريط التنقل -->
         <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-gray-800 mb-6">
             <a href="dashboard.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold transition">الداشبورد العام</a>
             <a href="payroll.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold transition">إدارة الرواتب</a>
@@ -35,32 +37,213 @@
             <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold transition">المصروفات العامة</a>
         </div>
 
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black text-white">إدارة الحملات الإعلانية</h2>
+            <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
+                <i class="fa-solid fa-plus ml-1"></i> إضافة حملة / مصروف
+            </button>
+        </div>
+
+        <!-- فلاتر التقارير والمدة -->
+        <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 mb-6">
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">من تاريخ</label>
+                <input type="date" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40" style="color-scheme: dark;">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">إلى تاريخ</label>
+                <input type="date" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40" style="color-scheme: dark;">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">المنصة</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40">
+                    <option value="الكل">جميع المنصات</option>
+                    <option value="فيسبوك">فيسبوك</option>
+                    <option value="إنستجرام">إنستجرام</option>
+                    <option value="تيك توك">تيك توك</option>
+                    <option value="يوتيوب">يوتيوب</option>
+                    <option value="لينكد إن">لينكد إن</option>
+                </select>
+            </div>
+            <button class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex-1 md:flex-none">
+                <i class="fa-solid fa-filter ml-1"></i> تصفية
+            </button>
+        </div>
+
+        <!-- ملخص الميزانية -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800">
-                <h3 class="text-gray-400 text-sm font-bold mb-2">ميزانية الإعلانات (نوفمبر)</h3>
-                <p class="text-3xl font-black text-blue-500">12,000 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
-                <div class="w-full bg-gray-800 rounded-full h-2 mt-4"><div class="bg-blue-500 h-2 rounded-full" style="width: 75%"></div></div>
-                <p class="text-xs text-gray-400 mt-2">المتبقي: 3,000 ج.م</p>
+                <h3 class="text-gray-400 text-sm font-bold mb-2">إجمالي المصروفات الإعلانية (للفترة المحددة)</h3>
+                <p class="text-3xl font-black text-blue-500">18,500 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                <p class="text-xs text-gray-400 mt-2">موزعة على 4 منصات</p>
             </div>
             <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800">
                 <h3 class="text-gray-400 text-sm font-bold mb-2">العملاء المحتملين (Leads)</h3>
-                <p class="text-3xl font-black text-emerald-400">342 <span class="text-sm font-normal text-gray-500">عميل</span></p>
-                <p class="text-sm text-emerald-400 mt-2"><i class="fa-solid fa-arrow-trend-up"></i> تكلفة العميل: 35 ج.م</p>
+                <p class="text-3xl font-black text-emerald-400">450 <span class="text-sm font-normal text-gray-500">عميل</span></p>
+                <p class="text-sm text-emerald-400 mt-2"><i class="fa-solid fa-arrow-trend-up"></i> متوسط التكلفة: 41 ج.م</p>
             </div>
         </div>
 
-        <div class="bg-[#111827] rounded-3xl border border-gray-800 p-6">
-            <h2 class="text-xl font-black text-white mb-4">الحملات النشطة</h2>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center p-4 bg-[#0b0f19] rounded-xl border border-gray-800">
-                    <div class="flex items-center gap-4">
-                        <i class="fa-brands fa-facebook text-blue-500 text-2xl"></i>
-                        <div><p class="font-bold">حملة اشتراكات الباقات السنوية</p><p class="text-xs text-gray-400">بدأت: 1 نوفمبر</p></div>
-                    </div>
-                    <span class="text-sm font-bold text-rose-400">صُرف: 4,500 ج.م</span>
-                </div>
-            </div>
+        <!-- جدول الحملات الإعلانية -->
+        <div class="bg-[#111827] rounded-3xl border border-gray-800 overflow-hidden">
+            <table class="w-full text-right min-w-[900px]">
+                <thead class="bg-[#0f172a] text-gray-400 text-sm">
+                    <tr>
+                        <th class="p-4">اسم الحملة</th>
+                        <th class="p-4">المنصة</th>
+                        <th class="p-4">تاريخ البداية</th>
+                        <th class="p-4">تاريخ النهاية (المدة)</th>
+                        <th class="p-4">الميزانية</th>
+                        <th class="p-4">الحالة</th>
+                    </tr>
+                </thead>
+                <tbody id="campaigns-table-body" class="divide-y divide-gray-800">
+                    <tr class="hover:bg-gray-800/30">
+                        <td class="p-4 font-bold text-white">حملة اشتراكات الباقات السنوية</td>
+                        <td class="p-4"><i class="fa-brands fa-facebook text-blue-600 text-xl ml-2"></i>فيسبوك</td>
+                        <td class="p-4 text-sm text-gray-400">01 نوفمبر 2026</td>
+                        <td class="p-4 text-sm text-gray-400">30 نوفمبر 2026</td>
+                        <td class="p-4 font-bold text-white">5,000 ج.م</td>
+                        <td class="p-4"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">نشطة</span></td>
+                    </tr>
+                    <tr class="hover:bg-gray-800/30">
+                        <td class="p-4 font-bold text-white">إعلان توظيف مصممين</td>
+                        <td class="p-4"><i class="fa-brands fa-linkedin text-blue-400 text-xl ml-2"></i>لينكد إن</td>
+                        <td class="p-4 text-sm text-gray-400">10 نوفمبر 2026</td>
+                        <td class="p-4 text-sm text-gray-400">15 نوفمبر 2026</td>
+                        <td class="p-4 font-bold text-white">2,500 ج.م</td>
+                        <td class="p-4"><span class="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-bold">منتهية</span></td>
+                    </tr>
+                    <tr class="hover:bg-gray-800/30">
+                        <td class="p-4 font-bold text-white">فيديو ترويجي للمنصة</td>
+                        <td class="p-4"><i class="fa-brands fa-tiktok text-white text-xl ml-2"></i>تيك توك</td>
+                        <td class="p-4 text-sm text-gray-400">12 نوفمبر 2026</td>
+                        <td class="p-4 text-sm text-gray-400">20 نوفمبر 2026</td>
+                        <td class="p-4 font-bold text-white">6,000 ج.م</td>
+                        <td class="p-4"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">نشطة</span></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </main>
+
+    <!-- النافذة المنبثقة (Modal) لإضافة حملة إعلانية -->
+    <div id="campaignModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <h3 class="text-xl font-bold text-white mb-6">إضافة مصروف / حملة إعلانية</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">اسم الحملة / الهدف</label>
+                    <input type="text" id="campName" placeholder="مثال: حملة زيادة المبيعات" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">المنصة الإعلانية</label>
+                    <select id="campPlatform" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                        <option value="فيسبوك">فيسبوك</option>
+                        <option value="إنستجرام">إنستجرام</option>
+                        <option value="تيك توك">تيك توك</option>
+                        <option value="يوتيوب">يوتيوب</option>
+                        <option value="لينكد إن">لينكد إن</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">تاريخ البداية</label>
+                        <input type="date" id="campStart" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">تاريخ النهاية</label>
+                        <input type="date" id="campEnd" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">الميزانية (المصروف ج.م)</label>
+                    <input type="number" id="campBudget" placeholder="0" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">الحالة</label>
+                    <select id="campStatus" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                        <option value="نشطة">نشطة (جارية)</option>
+                        <option value="مجدولة">مجدولة</option>
+                        <option value="منتهية">منتهية</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button onclick="addCampaign()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إضافة الحملة</button>
+                <button onclick="closeModal()" class="flex-1 bg-[#0b0f19] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- سكريبت تشغيل النافذة وإضافة البيانات -->
+    <script>
+        const modal = document.getElementById('campaignModal');
+        const tableBody = document.getElementById('campaigns-table-body');
+        
+        document.getElementById('campStart').valueAsDate = new Date();
+        document.getElementById('campEnd').valueAsDate = new Date();
+
+        function openModal() { modal.classList.remove('hidden'); }
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.getElementById('campName').value = '';
+            document.getElementById('campBudget').value = '';
+        }
+
+        // دالة مساعدة لتحديد أيقونة المنصة
+        function getPlatformIcon(platform) {
+            switch(platform) {
+                case 'فيسبوك': return '<i class="fa-brands fa-facebook text-blue-600 text-xl ml-2"></i>';
+                case 'إنستجرام': return '<i class="fa-brands fa-instagram text-pink-500 text-xl ml-2"></i>';
+                case 'تيك توك': return '<i class="fa-brands fa-tiktok text-white text-xl ml-2"></i>';
+                case 'يوتيوب': return '<i class="fa-brands fa-youtube text-red-500 text-xl ml-2"></i>';
+                case 'لينكد إن': return '<i class="fa-brands fa-linkedin text-blue-400 text-xl ml-2"></i>';
+                default: return '';
+            }
+        }
+
+        function addCampaign() {
+            const name = document.getElementById('campName').value;
+            const platform = document.getElementById('campPlatform').value;
+            const startRaw = document.getElementById('campStart').value;
+            const endRaw = document.getElementById('campEnd').value;
+            const budget = document.getElementById('campBudget').value;
+            const status = document.getElementById('campStatus').value;
+
+            if (!name || !budget) return alert("يرجى إدخال اسم الحملة والميزانية!");
+
+            const dateOptions = { day: '2-digit', month: 'long', year: 'numeric' };
+            const startFmt = new Date(startRaw).toLocaleDateString('ar-EG', dateOptions);
+            const endFmt = new Date(endRaw).toLocaleDateString('ar-EG', dateOptions);
+
+            let statusBadge = '';
+            if(status === 'نشطة') statusBadge = `<span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">نشطة</span>`;
+            else if(status === 'مجدولة') statusBadge = `<span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs font-bold">مجدولة</span>`;
+            else statusBadge = `<span class="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-bold">منتهية</span>`;
+
+            const iconHTML = getPlatformIcon(platform);
+
+            const newRow = document.createElement('tr');
+            newRow.className = "hover:bg-gray-800/30";
+            newRow.innerHTML = `
+                <td class="p-4 font-bold text-white">${name}</td>
+                <td class="p-4">${iconHTML}${platform}</td>
+                <td class="p-4 text-sm text-gray-400">${startFmt}</td>
+                <td class="p-4 text-sm text-gray-400">${endFmt}</td>
+                <td class="p-4 font-bold text-white">${parseFloat(budget).toLocaleString()} ج.م</td>
+                <td class="p-4">${statusBadge}</td>
+            `;
+            
+            tableBody.insertBefore(newRow, tableBody.firstChild);
+            closeModal();
+        }
+    </script>
 </body>
 </html>

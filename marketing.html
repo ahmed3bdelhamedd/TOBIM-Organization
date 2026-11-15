@@ -3,25 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — الحملات الإعلانية والتسويق</title>
+    <title>TOBIM — إدارة الرواتب والأقسام</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <style> 
-        body { font-family: 'Cairo', sans-serif; background-color: #0b0f19; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style> body { font-family: 'Cairo', sans-serif; background-color: #0b0f19; }</style>
 </head>
-<body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
+<body class="text-gray-100 min-h-screen flex flex-col">
 
-    <!-- حماية الصفحة للأدمن فقط -->
+    <!-- حماية صفحة الرواتب للإدارة فقط -->
     <script>
         if (localStorage.getItem('tobim_user_email') !== 'info@ahmedabdelhamed.com') {
-            alert("عذراً، هذه الصفحة مخصصة للإدارة فقط.");
-            location.href = 'subscriptions.html';
+            alert("عذراً، هذه الصفحة مخصصة لمدير النظام (الإدارة) فقط.");
+            window.location.href = 'subscriptions.html';
         }
     </script>
 
@@ -73,74 +68,102 @@
         <div class="flex items-center gap-3 overflow-x-auto pb-4 border-b border-gray-800/50">
             <a href="dashboard.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-chart-pie ml-2"></i>الداشبورد العام</a>
             <a href="statements.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-file-invoice-dollar ml-2"></i>كشف الحسابات</a>
-            <a href="payroll.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</a>
-            <a href="marketing.html" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap shadow-lg"><i class="fa-solid fa-bullhorn ml-2"></i>التسويق</a>
+            <a href="payroll.html" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap shadow-lg"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</a>
+            <a href="marketing.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-bullhorn ml-2"></i>التسويق</a>
             <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
         </div>
 
-        <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-            <div>
-                <h2 class="text-2xl font-black text-white">الحملات الإعلانية والتسويق</h2>
-                <p class="text-sm text-gray-400 mt-1">متابعة ميزانية وتكاليف الحملات على المنصات الرقمية</p>
+        <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+            <h2 class="text-2xl font-black text-white">إدارة الرواتب والأقسام</h2>
+            <div class="flex gap-3">
+                <button onclick="openEmployeeModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i> إضافة موظف جديد
+                </button>
+                <button onclick="alert('تم اعتماد الرواتب بنجاح!')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-check-double"></i> اعتماد الرواتب
+                </button>
             </div>
-            <button onclick="openMarketingModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i> إضافة حملة جديدة
-            </button>
         </div>
 
-        <!-- ملخص التسويق -->
-        <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+        <!-- فلاتر التقارير والمدة والقسم مع الأيقونات -->
+        <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 mb-6 shadow-lg">
             <div>
-                <h3 class="text-gray-400 text-sm font-bold">إجمالي تكاليف الحملات</h3>
-                <p id="total-marketing-display" class="text-3xl font-black text-fuchsia-400 mt-1">25,000 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-filter text-blue-500 ml-1"></i> القسم</label>
+                <select id="filter-dept" onchange="renderDepartments()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-48">
+                    <option value="الكل">جميع الأقسام</option>
+                    <option value="الإدارة">الإدارة</option>
+                    <option value="المبيعات">المبيعات</option>
+                    <option value="تقنية المعلومات">تقنية المعلومات</option>
+                    <option value="الجرافيك">الجرافيك</option>
+                    <option value="المدربين">المدربين</option>
+                    <option value="السوشيال ميديا">السوشيال ميديا</option>
+                </select>
             </div>
-            <i class="fa-solid fa-bullhorn text-fuchsia-500/20 text-5xl"></i>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar-days text-emerald-500 ml-1"></i> الشهر</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
+                    <option value="1">يناير</option>
+                    <option value="11" selected>نوفمبر</option>
+                    <option value="12">ديسمبر</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar text-amber-500 ml-1"></i> السنة</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
+                    <option value="2026" selected>2026</option>
+                    <option value="2027">2027</option>
+                </select>
+            </div>
         </div>
 
-        <!-- جدول الحملات -->
-        <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
-            <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse min-w-[700px]">
-                    <thead>
-                        <tr class="bg-[#0f172a] text-gray-400 text-sm border-b border-gray-800">
-                            <th class="p-4 font-semibold">التاريخ</th>
-                            <th class="p-4 font-semibold">اسم الحملة / الوصف</th>
-                            <th class="p-4 font-semibold">المنصة</th>
-                            <th class="p-4 font-semibold text-fuchsia-400">التكلفة (ج.م)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="marketing-tbody" class="divide-y divide-gray-800/50">
-                    </tbody>
-                </table>
+        <!-- حاوية الأقسام -->
+        <div id="departments-container" class="space-y-8"></div>
+
+        <!-- الإجمالي العام -->
+        <div id="grand-total-container" class="bg-gradient-to-r from-blue-900/40 to-[#111827] p-6 rounded-3xl border border-blue-500/30 shadow-xl flex justify-between items-center mt-8">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-sack-dollar text-blue-400 text-3xl"></i>
+                <span class="text-xl font-bold text-blue-200">الإجمالي العام للرواتب المعتمدة</span>
             </div>
+            <span id="grand-total-payroll" class="text-4xl font-black text-white">0 <span class="text-lg font-normal text-blue-300">ج.م</span></span>
         </div>
     </main>
 
-    <!-- نافذة إضافة حملة -->
-    <div id="marketingModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
-            <h3 class="text-xl font-black text-white mb-6">إضافة حملة إعلانية جديدة</h3>
-            <form onsubmit="saveMarketing(event)" class="space-y-4">
+    <!-- نافذة إضافة موظف جديد -->
+    <div id="newEmployeeModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
+            <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-user-plus text-blue-500 ml-2"></i> تسجيل موظف جديد</h3>
+            <form onsubmit="saveNewEmployee(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">اسم الحملة / الوصف</label>
-                    <input type="text" id="mktDesc" required placeholder="مثال: إعلان دبلومة البيم نوفمبر" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none">
+                    <label class="block text-sm text-gray-400 mb-1">اسم الموظف *</label>
+                    <input type="text" id="newEmpName" required placeholder="مثال: أحمد محمد" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">المنصة</label>
-                    <select id="mktPlatform" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none">
-                        <option value="فيسبوك / إنستجرام">فيسبوك / إنستجرام</option>
-                        <option value="جوجل أدز">جوجل أدز</option>
-                        <option value="تيك توك">تيك توك</option>
-                        <option value="أخرى">أخرى</option>
+                    <label class="block text-sm text-gray-400 mb-1">المسمى الوظيفي *</label>
+                    <input type="text" id="newEmpRole" required placeholder="مثال: محاسب، مصمم" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">نبذة عنه (السطر تحت الاسم)</label>
+                    <input type="text" id="newEmpBio" placeholder="مثال: خبرة 3 سنوات" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">القسم *</label>
+                    <select id="newEmpDept" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                        <option value="الإدارة">الإدارة</option>
+                        <option value="المبيعات">المبيعات</option>
+                        <option value="تقنية المعلومات">تقنية المعلومات</option>
+                        <option value="الجرافيك">الجرافيك</option>
+                        <option value="المدربين">المدربين</option>
+                        <option value="السوشيال ميديا">السوشيال ميديا</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">التكلفة (ج.م)</label>
-                    <input type="number" id="mktAmount" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none">
+                    <label class="block text-sm text-gray-400 mb-1">الراتب الأساسي (ج.م) *</label>
+                    <input type="number" id="newEmpSalary" required placeholder="5000" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                 </div>
                 <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold">حفظ</button>
-                    <button type="button" onclick="closeMarketingModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold">إلغاء</button>
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition">حفظ</button>
+                    <button type="button" onclick="closeEmployeeModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
                 </div>
             </form>
         </div>
@@ -188,44 +211,161 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // التسويق
-        let marketingList = JSON.parse(localStorage.getItem('tobim_marketing_v1')) || [
-            { id: 1, date: '02/11/2026', desc: 'حملة إعلانية فيسبوك (دبلومة)', platform: 'فيسبوك / إنستجرام', amount: 15000 },
-            { id: 2, date: '12/11/2026', desc: 'حملة إعلانية جوجل (كورسات)', platform: 'جوجل أدز', amount: 10000 }
+        // الرواتب والأقسام والأيقونات
+        const departmentsList = ['الإدارة', 'المبيعات', 'تقنية المعلومات', 'الجرافيك', 'المدربين', 'السوشيال ميديا'];
+        const departmentIcons = {
+            'الإدارة': 'fa-briefcase',
+            'المبيعات': 'fa-handshake',
+            'تقنية المعلومات': 'fa-laptop-code',
+            'الجرافيك': 'fa-palette',
+            'المدربين': 'fa-chalkboard-user',
+            'السوشيال ميديا': 'fa-share-nodes'
+        };
+
+        const defaultEmployees = [
+            { id: 1, name: "صلاح البدوي", role: "المدير", bio: "الإدارة العليا", department: "الإدارة", baseSalary: 40000, isManager: true },
+            { id: 2, name: "هشام غيب", role: "محاسب مالي", bio: "الحسابات والمراجعة", department: "الإدارة", baseSalary: 8000, isManager: false },
+            { id: 7, name: "صلاح الدين", role: "عامل نظافة", bio: "خدمات المقر", department: "الإدارة", baseSalary: 4500, isManager: false },
+            { id: 5, name: "صباح شعبان", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
+            { id: 6, name: "محسن إسلام", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 10000, isManager: false },
+            { id: 4, name: "عمر عبد العزيز", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
+            { id: 3, name: "أحمد عبد الحميد", role: "موظف IT", bio: "تطوير وأنظمة", department: "تقنية المعلومات", baseSalary: 6500, isManager: false },
+            { id: 8, name: "عامر علي", role: "مصمم جرافيك", bio: "التصميم والهوية البصرية", department: "الجرافيك", baseSalary: 16000, isManager: false },
+            { id: 9, name: "حسناء يسري", role: "مدرب معماري", bio: "تدريب هندسي معماري", department: "المدربين", baseSalary: 5500, isManager: false },
+            { id: 10, name: "مصطفى حنفي", role: "مدرب إنشائي", bio: "تدريب هندسي إنشائي", department: "المدربين", baseSalary: 7000, isManager: false },
+            { id: 11, name: "سحر الوزير", role: "أخصائي سوشيال ميديا", bio: "إدارة منصات التواصل", department: "السوشيال ميديا", baseSalary: 7000, isManager: false }
         ];
 
-        function renderMarketing() {
-            const tbody = document.getElementById('marketing-tbody');
-            tbody.innerHTML = '';
-            let total = 0;
-            marketingList.forEach(mkt => {
-                total += mkt.amount;
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-800/30 transition">
-                        <td class="p-4 text-sm text-gray-400">${mkt.date}</td>
-                        <td class="p-4 text-sm font-bold text-white">${mkt.desc}</td>
-                        <td class="p-4 text-sm text-gray-300"><span class="bg-gray-800 px-2.5 py-1 rounded-lg text-xs">${mkt.platform}</span></td>
-                        <td class="p-4 font-bold text-fuchsia-400">${mkt.amount.toLocaleString()} ج.م</td>
-                    </tr>`;
+        let employees = JSON.parse(localStorage.getItem('tobim_employees_v10')) || defaultEmployees;
+
+        function renderDepartments() {
+            const container = document.getElementById('departments-container');
+            container.innerHTML = '';
+            const selectedDept = document.getElementById('filter-dept').value;
+            let deptsToRender = selectedDept === 'الكل' ? departmentsList : [selectedDept];
+            
+            let grandTotal = 0;
+            const grandTotalContainer = document.getElementById('grand-total-container');
+
+            if (selectedDept !== 'الكل') {
+                grandTotalContainer.classList.add('hidden');
+            } else {
+                grandTotalContainer.classList.remove('hidden');
+            }
+
+            deptsToRender.forEach(dept => {
+                const list = employees.filter(e => e.department === dept);
+                if(list.length > 0) {
+                    let rows = '';
+                    let subTotal = 0;
+
+                    list.forEach(emp => {
+                        const savedComm = parseFloat(localStorage.getItem(`comm_${emp.id}`)) || 0;
+                        const savedDed = parseFloat(localStorage.getItem(`ded_${emp.id}`)) || 0;
+                        const netVal = emp.baseSalary + savedComm - savedDed;
+                        subTotal += netVal;
+
+                        // العمولات تعمل بكفاءة في قسم المبيعات وباقي الأقسام حسب رغبتك
+                        let commInput = `<input type="number" id="comm_${emp.id}" value="${savedComm}" oninput="calculateNet(${emp.id}, ${emp.baseSalary}, '${dept}')" class="w-24 bg-[#0b0f19] border border-gray-700 text-emerald-400 rounded-lg px-2 py-1 text-sm focus:outline-none">`;
+                        let dedInput = `<input type="number" id="ded_${emp.id}" value="${savedDed}" oninput="calculateNet(${emp.id}, ${emp.baseSalary}, '${dept}')" class="w-24 bg-[#0b0f19] border border-gray-700 text-rose-400 rounded-lg px-2 py-1 text-sm focus:outline-none">`;
+
+                        rows += `
+                            <tr class="hover:bg-gray-800/35 transition">
+                                <td class="p-4">
+                                    <div class="font-bold text-white">${emp.name} ${emp.isManager ? '<span class="bg-amber-500/20 text-amber-400 text-xs px-2 py-0.5 rounded ml-2">المدير</span>' : ''}</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">${emp.bio || emp.role}</div>
+                                </td>
+                                <td class="p-4 text-sm text-blue-400">${emp.role}</td>
+                                <td class="p-4 font-bold text-gray-300">${emp.baseSalary.toLocaleString()} ج.م</td>
+                                <td class="p-4">${commInput}</td>
+                                <td class="p-4">${dedInput}</td>
+                                <td class="p-4 font-black text-blue-400" id="net_${emp.id}">${netVal.toLocaleString()} ج.م</td>
+                            </tr>`;
+                    });
+
+                    grandTotal += subTotal;
+                    let iconClass = departmentIcons[dept] || 'fa-users';
+
+                    container.innerHTML += `
+                        <div class="bg-[#111827]/80 rounded-3xl border border-gray-800 overflow-hidden shadow-xl mb-6">
+                            <div class="bg-[#0f172a] p-4 border-b border-gray-800 font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid ${iconClass} text-blue-400"></i> قسم ${dept}
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-right min-w-[900px]">
+                                    <thead class="bg-[#0f172a]/50 text-gray-400 text-xs border-b border-gray-800">
+                                        <tr>
+                                            <th class="p-4">الموظف والنبذة</th>
+                                            <th class="p-4">الوظيفة</th>
+                                            <th class="p-4">الراتب الأساسي</th>
+                                            <th class="p-4 text-emerald-400">عمولة / مكافأة (+)</th>
+                                            <th class="p-4 text-rose-400">خصم / سلف (-)</th>
+                                            <th class="p-4">الصافي المستحق</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-800/50">${rows}</tbody>
+                                </table>
+                            </div>
+                            <div class="bg-[#0f172a] p-4 border-t border-gray-800 flex justify-between font-bold">
+                                <span>إجمالي رواتب قسم ${dept}:</span>
+                                <span class="text-white text-lg" id="subtotal_${dept}">${subTotal.toLocaleString()} ج.م</span>
+                            </div>
+                        </div>`;
+                }
             });
-            document.getElementById('total-marketing-display').innerHTML = `${total.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+
+            document.getElementById('grand-total-payroll').innerHTML = `${grandTotal.toLocaleString()} <span class="text-lg text-blue-300">ج.م</span>`;
         }
 
-        renderMarketing();
+        renderDepartments();
 
-        function openMarketingModal() { document.getElementById('marketingModal').classList.remove('hidden'); }
-        function closeMarketingModal() { document.getElementById('marketingModal').classList.add('hidden'); }
-        function saveMarketing(e) {
+        function calculateNet(id, baseSalary, dept) {
+            const comm = parseFloat(document.getElementById(`comm_${id}`).value) || 0;
+            const ded = parseFloat(document.getElementById(`ded_${id}`).value) || 0;
+            const net = baseSalary + comm - ded;
+
+            localStorage.setItem(`comm_${id}`, comm);
+            localStorage.setItem(`ded_${id}`, ded);
+
+            document.getElementById(`net_${id}`).innerText = net.toLocaleString() + ' ج.م';
+
+            let deptTotal = 0;
+            const deptEmps = employees.filter(e => e.department === dept);
+            deptEmps.forEach(emp => {
+                const c = parseFloat(document.getElementById(`comm_${emp.id}`).value) || 0;
+                const d = parseFloat(document.getElementById(`ded_${emp.id}`).value) || 0;
+                deptTotal += (emp.baseSalary + c - d);
+            });
+
+            document.getElementById(`subtotal_${dept}`).innerText = deptTotal.toLocaleString() + ' ج.م';
+
+            let grandTotal = 0;
+            departmentsList.forEach(d => {
+                const list = employees.filter(e => e.department === d);
+                list.forEach(emp => {
+                    const c = parseFloat(document.getElementById(`comm_${emp.id}`).value) || 0;
+                    const dVal = parseFloat(document.getElementById(`ded_${emp.id}`).value) || 0;
+                    grandTotal += (emp.baseSalary + c - dVal);
+                });
+            });
+
+            document.getElementById('grand-total-payroll').innerHTML = `${grandTotal.toLocaleString()} <span class="text-lg text-blue-300">ج.م</span>`;
+        }
+
+        function openEmployeeModal() { document.getElementById('newEmployeeModal').classList.remove('hidden'); }
+        function closeEmployeeModal() { document.getElementById('newEmployeeModal').classList.add('hidden'); }
+        function saveNewEmployee(e) {
             e.preventDefault();
-            let desc = document.getElementById('mktDesc').value;
-            let platform = document.getElementById('mktPlatform').value;
-            let amount = parseFloat(document.getElementById('mktAmount').value) || 0;
-            let today = new Date().toLocaleDateString('en-GB');
+            let name = document.getElementById('newEmpName').value;
+            let role = document.getElementById('newEmpRole').value;
+            let bio = document.getElementById('newEmpBio').value;
+            let department = document.getElementById('newEmpDept').value;
+            let baseSalary = parseFloat(document.getElementById('newEmpSalary').value) || 0;
 
-            marketingList.push({ id: Date.now(), date: today, desc, platform, amount });
-            localStorage.setItem('tobim_marketing_v1', JSON.stringify(marketingList));
-            renderMarketing();
-            closeMarketingModal();
+            employees.push({ id: Date.now(), name, role, bio, department, baseSalary, isManager: false });
+            localStorage.setItem('tobim_employees_v10', JSON.stringify(employees));
+            renderDepartments();
+            closeEmployeeModal();
         }
     </script>
 </body>

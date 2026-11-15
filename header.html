@@ -1,12 +1,12 @@
-<!-- الهيدر الموحد لجميع الصفحات -->
+<!-- الهيدر الموحد لجميع صفحات النظام -->
 <header class="bg-[#0f172a]/90 backdrop-blur-md border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50">
     <div class="flex items-center gap-6">
-        <div class="flex items-center gap-3 group cursor-pointer" onclick="location.href='dashboard.html'">
+        <div class="flex items-center gap-3 group cursor-pointer" onclick="location.href='subscriptions.html'">
             <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="w-10 h-10 rounded-xl object-cover border border-gray-700 shadow-lg" alt="Logo">
             <span class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">TO BIM</span>
         </div>
         <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
-            <!-- يظهر فقط للأدمن -->
+            <!-- رابط الماليات يظهر للإدارة فقط -->
             <a href="dashboard.html" id="nav-finance" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">الماليات</a>
             <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">سجل الاشتراكات</a>
             <a href="new-sub.html" class="bg-emerald-600/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 px-4 py-2.5 rounded-xl transition flex items-center gap-2">
@@ -44,24 +44,22 @@
     </div>
 </header>
 
-<!-- نافذة تعديل بيانات الحساب (توضع في نهاية كل صفحة) -->
+<!-- نافذة تعديل بيانات الحساب (توضع في أسفل الصفحة قبل إغلاق body) -->
 <div id="profileModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-    <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
-        <h3 class="text-xl font-black text-white mb-6 flex items-center gap-2">
-            <i class="fa-solid fa-user-pen text-blue-500"></i> تعديل بيانات الحساب
-        </h3>
+    <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
+        <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-user-gear text-blue-500 ml-2"></i> تعديل بيانات الحساب</h3>
         <form onsubmit="saveProfileChanges(event)" class="space-y-4">
             <div>
                 <label class="block text-sm text-gray-400 mb-1">الاسم</label>
                 <input type="text" id="profile-name-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
             </div>
             <div>
-                <label class="block text-sm text-gray-400 mb-1">البريد الإلكتروني (الإيميل)</label>
-                <input type="email" id="profile-email-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                <label class="block text-sm text-gray-400 mb-1">البريد الإلكتروني (غير قابل للتعديل)</label>
+                <input type="email" id="profile-email-display" readonly class="w-full bg-[#0b0f19] border border-gray-800 text-gray-400 rounded-xl px-4 py-2.5 cursor-not-allowed">
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-1">كلمة المرور الجديدة</label>
-                <input type="password" id="profile-pass-input" required placeholder="••••••••" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                <input type="password" id="profile-pass-input" required placeholder="أدخل كلمة المرور الجديدة" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
             </div>
             <div class="flex gap-3 mt-6">
                 <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition">حفظ التغييرات</button>
@@ -72,18 +70,18 @@
 </div>
 
 <script>
-    // تهيئة بيانات البروفايل عند التحميل
+    const headerUserEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
+    const isHeaderAdmin = (headerUserEmail === 'info@ahmedabdelhamed.com');
+
     document.addEventListener('DOMContentLoaded', () => {
-        const savedEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
         const savedName = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
-        
-        document.getElementById('header-useremail').innerText = savedEmail;
-        document.getElementById('dropdown-email').innerText = savedEmail;
+        document.getElementById('header-useremail').innerText = headerUserEmail;
+        document.getElementById('dropdown-email').innerText = headerUserEmail;
         document.getElementById('header-username').innerText = savedName;
         document.getElementById('user-avatar-initial').innerText = savedName.charAt(0);
 
-        // التحقق من صلاحيات الماليات
-        if (savedEmail !== 'info@ahmedabdelhamed.com') {
+        // إخفاء زر الماليات إذا لم يكن الدخول للأدمن
+        if (!isHeaderAdmin) {
             const financeNav = document.getElementById('nav-finance');
             if (financeNav) financeNav.style.display = 'none';
         }
@@ -96,7 +94,7 @@
     function openProfileModal() {
         document.getElementById('profile-dropdown').classList.add('hidden');
         document.getElementById('profile-name-input').value = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
-        document.getElementById('profile-email-input').value = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
+        document.getElementById('profile-email-display').value = headerUserEmail;
         document.getElementById('profile-pass-input').value = localStorage.getItem('tobim_user_pass') || 'tobim@2023';
         document.getElementById('profileModal').classList.remove('hidden');
     }
@@ -108,14 +106,12 @@
     function saveProfileChanges(e) {
         e.preventDefault();
         const newName = document.getElementById('profile-name-input').value;
-        const newEmail = document.getElementById('profile-email-input').value;
         const newPass = document.getElementById('profile-pass-input').value;
 
         localStorage.setItem('tobim_user_name', newName);
-        localStorage.setItem('tobim_user_email', newEmail);
         localStorage.setItem('tobim_user_pass', newPass);
 
-        alert("تم تحديث بيانات الحساب بنجاح!");
+        alert("تم تحديث بيانات الحساب وكلمة المرور بنجاح!");
         location.reload();
     }
 
@@ -125,11 +121,12 @@
         location.href = 'login.html';
     }
 
-    // إغلاق القائمة المنسدلة عند الضغط خارجها
-    window.onclick = function(event) {
+    // إغلاق القائمة المنسدلة عند الضغط في أي مكان خارجها
+    window.addEventListener('click', function(event) {
         if (!event.target.closest('.relative')) {
             const dropdown = document.getElementById('profile-dropdown');
             if(dropdown) dropdown.classList.add('hidden');
         }
-    }
+    });
 </script>
+```[cite: 10, 18]

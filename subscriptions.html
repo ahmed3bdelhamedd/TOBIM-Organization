@@ -63,7 +63,7 @@
         <div class="flex justify-between items-center mb-2 flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white">سجل الاشتراكات والمبيعات</h2>
-                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، ومتابعة الدفعات المستحقة</p>
+                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، ومتابعة الدفعات المستحقة وطباعة الإيصالات</p>
             </div>
             <a href="new-sub.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> اشتراك جديد
@@ -73,12 +73,12 @@
         <!-- فلاتر البحث -->
         <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
-                <label class="block text-sm text-gray-400 mb-2">بحث بالاسم أو الموبايل</label>
-                <input type="text" id="search-input" placeholder="اكتب للبحث..." class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-64">
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-magnifying-glass text-blue-500 ml-1"></i> بحث بالاسم أو الموبايل</label>
+                <input type="text" id="search-input" oninput="renderSubscriptions()" placeholder="اكتب للبحث..." class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-64">
             </div>
             <div>
-                <label class="block text-sm text-gray-400 mb-2">مسؤول المبيعات</label>
-                <select id="filter-sales" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40">
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-filter text-emerald-500 ml-1"></i> مسؤول المبيعات</label>
+                <select id="filter-sales" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
                     <option value="الكل">الجميع</option>
                     <option value="عمر">عمر</option>
                     <option value="محسن">محسن</option>
@@ -95,28 +95,38 @@
                         <tr>
                             <th class="p-4">اسم المشترك</th>
                             <th class="p-4">المبيعات</th>
-                            <th class="p-4">التخصص</th>
+                            <th class="p-4">التخصص والراوند</th>
                             <th class="p-4 text-emerald-400">المدفوع</th>
                             <th class="p-4 text-amber-400">المتبقي</th>
                             <th class="p-4">تاريخ الاستحقاق</th>
-                            <th class="p-4 text-center">إجراءات</th>
+                            <th class="p-4 text-center">إجراءات وطباعة</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody" class="divide-y divide-gray-800/50">
-                        <tr class="hover:bg-gray-800/30 transition">
-                            <td class="p-4 font-bold text-white">محمد إبراهيم علي</td>
-                            <td class="p-4 text-blue-400">عمر</td>
-                            <td class="p-4 text-gray-300">دبلومة الإنشائي (Round 1)</td>
-                            <td class="p-4 font-bold text-emerald-400">5,000 ج.م</td>
-                            <td class="p-4 font-bold text-amber-400">4,800 ج.م</td>
-                            <td class="p-4 text-gray-400">01/12/2026</td>
-                            <td class="p-4 text-center"><button class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-lg text-xs font-bold">التفاصيل</button></td>
-                        </tr>
+                    <tbody id="subscriptions-tbody" class="divide-y divide-gray-800/50">
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
+
+    <!-- نافذة معاينة وطباعة تفاصيل الاشتراك وإيصال الدفع -->
+    <div id="receiptModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-lg shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                <h3 class="text-xl font-black text-white"><i class="fa-solid fa-receipt text-blue-500 ml-2"></i> إيصال وتفاصيل الاشتراك</h3>
+                <button onclick="closeReceiptModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+            </div>
+            <div id="receipt-content" class="space-y-3 text-sm text-gray-300 bg-[#0b0f19] p-4 rounded-2xl border border-gray-800">
+                <!-- تفاصيل العميل والإيصال تظهر هنا -->
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button onclick="window.print()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i> طباعة الإيصال
+                </button>
+                <button onclick="closeReceiptModal()" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إغلاق</button>
+            </div>
+        </div>
+    </div>
 
     <!-- نافذة تعديل الحساب -->
     <div id="profileModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
@@ -148,6 +158,8 @@
                 const financeNav = document.getElementById('nav-finance');
                 if (financeNav) financeNav.style.display = 'none';
             }
+
+            renderSubscriptions();
         });
 
         function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
@@ -166,6 +178,73 @@
             location.reload();
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
+
+        // بيانات الاشتراكات التجريبية
+        let subscriptionsList = JSON.parse(localStorage.getItem('tobim_subscriptions_v1')) || [
+            { id: 1, name: "محمد إبراهيم علي", mobile: "01012345678", sales: "عمر", spec: "دبلومة الإنشائي (Round 1)", paid: 5000, rest: 4800, nextDate: "01/12/2026", source: "إنستاباي CIB" },
+            { id: 2, name: "فاطمة محمود حسن", mobile: "01198765432", sales: "صباح", spec: "كورس 3ds Max", paid: 3000, rest: 0, nextDate: "-", source: "فودافون كاش" }
+        ];
+
+        function renderSubscriptions() {
+            const tbody = document.getElementById('subscriptions-tbody');
+            tbody.innerHTML = '';
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const filterSales = document.getElementById('filter-sales').value;
+
+            let filtered = subscriptionsList.filter(sub => {
+                let matchSearch = sub.name.toLowerCase().includes(search) || sub.mobile.includes(search);
+                let matchSales = filterSales === 'الكل' || sub.sales === filterSales;
+                return matchSearch && matchSales;
+            });
+
+            filtered.forEach(sub => {
+                let adminActions = isAdmin ? `<button onclick="deleteSub(${sub.id})" class="bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-rose-500/30"><i class="fa-solid fa-trash"></i></button>` : '';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-800/30 transition">
+                        <td class="p-4 font-bold text-white">${sub.name}<div class="text-xs text-gray-400 font-normal">${sub.mobile}</div></td>
+                        <td class="p-4 text-blue-400 font-semibold">${sub.sales}</td>
+                        <td class="p-4 text-gray-300">${sub.spec}</td>
+                        <td class="p-4 font-bold text-emerald-400">${sub.paid.toLocaleString()} ج.م</td>
+                        <td class="p-4 font-bold text-amber-400">${sub.rest > 0 ? sub.rest.toLocaleString() + ' ج.م' : 'خالص'}</td>
+                        <td class="p-4 text-gray-400">${sub.nextDate}</td>
+                        <td class="p-4 text-center space-x-2 space-x-reverse">
+                            <button onclick="viewReceipt(${sub.id})" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-600/30"><i class="fa-solid fa-print ml-1"></i> طباعة الإيصال</button>
+                            ${adminActions}
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function viewReceipt(id) {
+            const sub = subscriptionsList.find(s => s.id === id);
+            if(!sub) return;
+
+            document.getElementById('receipt-content').innerHTML = `
+                <div class="text-center pb-3 border-b border-gray-800">
+                    <h4 class="font-black text-white text-base">شركة TO BIM — إيصال سداد</h4>
+                    <p class="text-xs text-gray-400">رقم المعاملة: #${sub.id}</p>
+                </div>
+                <p><strong>اسم المشترك:</strong> ${sub.name}</p>
+                <p><strong>رقم الموبايل:</strong> ${sub.mobile}</p>
+                <p><strong>المنتج / التخصص:</strong> ${sub.spec}</p>
+                <p><strong>المبلغ المدفوع:</strong> <span class="text-emerald-400 font-bold">${sub.paid.toLocaleString()} ج.م</span> عبر (${sub.source})</p>
+                <p><strong>المتبقي (آجل):</strong> <span class="text-amber-400 font-bold">${sub.rest.toLocaleString()} ج.م</span></p>
+                <p><strong>مسؤول المبيعات:</strong> ${sub.sales}</p>
+            `;
+            document.getElementById('receiptModal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() { document.getElementById('receiptModal').classList.add('hidden'); }
+
+        function deleteSub(id) {
+            if(!isAdmin) return;
+            if(confirm("هل أنت متأكد من حذف هذا الاشتراك؟")) {
+                subscriptionsList = subscriptionsList.filter(s => s.id !== id);
+                localStorage.setItem('tobim_subscriptions_v1', JSON.stringify(subscriptionsList));
+                renderSubscriptions();
+            }
+        }
     </script>
 </body>
 </html>

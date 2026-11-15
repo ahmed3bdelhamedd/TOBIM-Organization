@@ -208,8 +208,9 @@
                     </div>
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">تاريخ استحقاق الدفعة القادمة (للمتبقي)</label>
+                        <!-- أضفت خاصية onchange للسماح بالتعديل اليدوي، مع برمجة الحساب التلقائي -->
                         <input type="date" id="sub-next-date" class="w-full bg-[#111827] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500" style="color-scheme: dark;">
-                        <p class="text-[10px] text-gray-500 mt-1">يُترك فارغاً إذا كان المبلغ خالصاً.</p>
+                        <p class="text-[10px] text-gray-500 mt-1">يتحدد تلقائياً بعد شهر من تاريخ التحويل (ويمكنك تعديله يدوياً).</p>
                     </div>
                 </div>
 
@@ -311,6 +312,13 @@
             }
         }
 
+        // متغير لتتبع ما إذا قام المستخدم بتعديل تاريخ الاستحقاق يدوياً
+        let userModifiedNextDate = false;
+
+        document.getElementById('sub-next-date').addEventListener('change', function() {
+            userModifiedNextDate = true;
+        });
+
         function calcRemaining() {
             const total = parseFloat(document.getElementById('sub-total').value) || 0;
             const paid1Input = document.getElementById('sub-paid-1');
@@ -319,14 +327,17 @@
             let paid1 = parseFloat(paid1Input.value) || 0;
             let paid2 = parseFloat(paid2Input.value) || 0;
             
+            // حماية للدفعة الأولى: لا تتخطى الإجمالي
             if(paid1 > total) {
                 paid1 = total;
                 paid1Input.value = total;
             }
 
+            // تحديث الـ placeholder للدفعة الثانية ليوضح المتبقي
             let maxAllowedForPaid2 = total - paid1;
             paid2Input.placeholder = maxAllowedForPaid2 > 0 ? `المتبقي للسداد: ${maxAllowedForPaid2}` : "0";
 
+            // حماية للدفعة الثانية: لا تتخطى المتبقي الفعلي
             if(paid2 > maxAllowedForPaid2) {
                 paid2 = maxAllowedForPaid2;
                 paid2Input.value = maxAllowedForPaid2 > 0 ? maxAllowedForPaid2 : '';
@@ -337,16 +348,17 @@
 
             const nextDateInput = document.getElementById('sub-next-date');
 
-            // إذا كان هناك متبقي، حدد تاريخ الدفعة القادمة تلقائياً بعد شهر من تاريخ الدفعة الأولى
+            // إذا كان هناك متبقي ولم يقم المستخدم بتعديل التاريخ يدوياً، حدد تاريخ الدفعة القادمة تلقائياً بعد شهر
             if (rest > 0) {
-                const date1Val = document.getElementById('sub-date-1').value;
-                if(date1Val) {
-                    let d = new Date(date1Val);
-                    d.setMonth(d.getMonth() + 1); // إضافة شهر
-                    nextDateInput.value = d.toISOString().split('T')[0];
+                if (!userModifiedNextDate) {
+                    const date1Val = document.getElementById('sub-date-1').value;
+                    let baseDate = date1Val ? new Date(date1Val) : new Date();
+                    baseDate.setMonth(baseDate.getMonth() + 1); // إضافة شهر
+                    nextDateInput.value = baseDate.toISOString().split('T')[0];
                 }
             } else {
                 nextDateInput.value = '';
+                userModifiedNextDate = false; // إعادة تعيين
             }
 
             // متطلبات الدفعة الثانية

@@ -161,23 +161,28 @@
 
     <!-- النافذة المنبثقة للتعديل الشاملة -->
     <div id="editModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-all overflow-y-auto">
-        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-2xl shadow-2xl my-8">
+        <form id="editForm" onsubmit="saveEdit(event)" class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-4xl shadow-2xl my-8">
             <h3 class="text-xl font-black text-white mb-6 flex items-center gap-2">
                 <i class="fa-solid fa-pen-to-square text-blue-500"></i> تعديل بيانات الاشتراك (صلاحية الإدارة)
             </h3>
             
             <input type="hidden" id="edit-id">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <!-- Data fields -->
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">اسم المشترك</label>
-                    <input type="text" id="edit-name" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                    <label class="block text-sm text-gray-400 mb-1">اسم المشترك *</label>
+                    <input type="text" id="edit-name" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
                 </div>
                 
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">موبايل المشترك</label>
-                    <input type="text" id="edit-mobile" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                    <label class="block text-sm text-gray-400 mb-1">موبايل المشترك *</label>
+                    <input type="text" id="edit-mobile" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">البريد الإلكتروني (Email) *</label>
+                    <input type="email" id="edit-email" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
                 </div>
 
                 <div>
@@ -194,54 +199,89 @@
                     <label class="block text-sm text-gray-400 mb-1">الراوند</label>
                     <input type="text" id="edit-round" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
                 </div>
-                
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">مصدر الاستقبال</label>
-                    <select id="edit-paysource" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
-                        <option value="إنستاباي CIB">إنستاباي CIB</option>
-                        <option value="بنك التعمير والإسكان">بنك التعمير والإسكان</option>
-                        <option value="الخزينة (كاش)">الخزينة (كاش)</option>
-                        <option value="فودافون كاش">فودافون كاش</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">اسم المحول</label>
-                    <input type="text" id="edit-sender" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
-                </div>
 
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">إجمالي السعر (ج.م)</label>
-                    <input type="number" id="edit-total" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                    <label class="block text-sm text-gray-400 mb-1">محول من راوند (إن وجد)</label>
+                    <input type="text" id="edit-old-round" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
                 </div>
+            </div>
 
+            <!-- الحسابات والدفعات -->
+            <h4 class="font-bold text-amber-500 mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-money-bill-1-wave ml-2"></i> الحسابات وبيانات الدفع</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">تاريخ الدفعة القادمة</label>
+                    <label class="block text-sm text-gray-400 mb-1">إجمالي السعر (ج.م) *</label>
+                    <input type="number" id="edit-total" required oninput="calcEditRemaining()" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">تاريخ الدفعة القادمة للمتبقي</label>
                     <input type="date" id="edit-next-date" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
                 </div>
+            </div>
 
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">المدفوع (ج.م)</label>
-                    <input type="number" id="edit-paid" oninput="calcEditRemaining()" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- الدفعة الأولى -->
+                <div class="border-r-4 border-emerald-500 pr-4">
+                    <h5 class="text-sm font-bold text-emerald-400 mb-3">الدفعة الأولى</h5>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">المدفوع كدفعة أولى (ج.م) *</label>
+                            <input type="number" id="edit-paid-1" required oninput="calcEditRemaining()" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">مصدر الاستقبال *</label>
+                            <select id="edit-source-1" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500">
+                                <option value="إنستاباي CIB">إنستاباي CIB</option>
+                                <option value="بنك التعمير والإسكان">بنك التعمير والإسكان</option>
+                                <option value="الخزينة (كاش)">الخزينة (كاش)</option>
+                                <option value="فودافون كاش">فودافون كاش</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">صورة الإيصال</label>
+                            <input type="file" id="edit-receipt-1" accept="image/*" class="w-full bg-[#0b0f19] border border-gray-700 text-gray-400 rounded-xl px-4 py-1.5 focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
                 </div>
-                
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">المتبقي (ج.م)</label>
-                    <input type="number" id="edit-rest" class="w-full bg-[#0b0f19] border border-gray-700 text-amber-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500">
+
+                <!-- الدفعة الثانية -->
+                <div class="border-r-4 border-blue-500 pr-4">
+                    <h5 class="text-sm font-bold text-blue-400 mb-3">الدفعة الثانية (اختياري)</h5>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">المدفوع كدفعة ثانية (ج.م)</label>
+                            <input type="number" id="edit-paid-2" oninput="calcEditRemaining()" placeholder="0" class="w-full bg-[#0b0f19] border border-gray-700 text-blue-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">مصدر الاستقبال</label>
+                            <select id="edit-source-2" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                                <option value="" selected>اختر (إن وجد)</option>
+                                <option value="إنستاباي CIB">إنستاباي CIB</option>
+                                <option value="بنك التعمير والإسكان">بنك التعمير والإسكان</option>
+                                <option value="الخزينة (كاش)">الخزينة (كاش)</option>
+                                <option value="فودافون كاش">فودافون كاش</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">صورة الإيصال 2</label>
+                            <input type="file" id="edit-receipt-2" accept="image/*" class="w-full bg-[#0b0f19] border border-gray-700 text-gray-400 rounded-xl px-4 py-1.5 focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="col-span-1 md:col-span-2">
-                    <label class="block text-sm text-gray-400 mb-1">صورة الإيصال</label>
-                    <input type="file" id="edit-receipt-img" accept="image/*" class="w-full bg-[#0b0f19] border border-gray-700 text-gray-400 rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
-                </div>
+            </div>
+            
+            <!-- المتبقي الكلي -->
+            <div class="bg-[#0b0f19] p-4 rounded-xl border border-gray-800 flex justify-between items-center mb-6">
+                <span class="text-gray-400 font-bold">المتبقي الكلي (آجل):</span>
+                <input type="number" id="edit-rest" readonly class="w-32 bg-transparent text-left text-amber-400 font-black focus:outline-none cursor-not-allowed">
             </div>
 
             <div class="flex flex-wrap gap-3 mt-8">
-                <button onclick="saveEdit()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition shadow-lg shadow-blue-900/50">حفظ التعديلات</button>
-                <button onclick="printReceipt()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold transition">طباعة الإيصال</button>
-                <button onclick="closeEditModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
+                <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition shadow-lg shadow-blue-900/50">حفظ التعديلات</button>
+                <button type="button" onclick="printReceipt()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold transition">طباعة الإيصال</button>
+                <button type="button" onclick="closeEditModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
             </div>
-        </div>
+        </form>
     </div>
 
     <script>
@@ -285,19 +325,41 @@
                     let paySource = Math.random() > 0.5 ? 'إنستاباي CIB' : 'فودافون كاش';
                     let senderName = firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)];
 
+                    // إضافة بيانات وهمية للإيميل والراوند القديم في بعض الأحيان
+                    let email = 'example' + Math.floor(Math.random()*1000) + '@gmail.com';
+                    let isTransferred = Math.random() > 0.8;
+                    let oldRound = isTransferred ? 'Round ' + (Math.floor(Math.random() * 10) + 10) : '';
+
+                    // الدفعة الثانية
+                    let paid1 = paid;
+                    let paid2 = 0;
+                    let source2 = '';
+                    if (Math.random() > 0.7 && remaining === 0) { 
+                        // افترض أن المتبقي تم سداده في دفعة ثانية
+                        paid2 = paid / 2;
+                        paid1 = paid - paid2;
+                        source2 = 'كاش';
+                    }
+
                     rawSubs.push({
                         fullName: firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)],
                         mobile: "01" + Math.floor(10000000 + Math.random() * 90000000),
+                        email: email,
                         salesRep: salesRep,
                         prodType: prod.type,
                         spec: prod.spec,
                         round: prod.type === 'برنامج' ? 'N/A' : 'Round ' + (Math.floor(Math.random() * 10) + 20),
+                        isTransferred: isTransferred,
+                        oldRound: oldRound,
                         totalPrice: prod.price,
                         paidAmount: paid,
+                        paidAmount1: paid1,
+                        paidAmount2: paid2,
                         remainingAmount: remaining,
                         status: status,
                         nextPaymentDate: nextPayDate,
                         paySource: paySource,
+                        paySource2: source2,
                         senderName: senderName
                     });
                 }
@@ -320,10 +382,10 @@
             return dummySubs;
         }
 
-        let subs = JSON.parse(localStorage.getItem('tobim_subs_v7') || '[]');
+        let subs = JSON.parse(localStorage.getItem('tobim_subs_v8') || '[]');
         if (subs.length === 0) {
             subs = generateDummyData();
-            localStorage.setItem('tobim_subs_v7', JSON.stringify(subs));
+            localStorage.setItem('tobim_subs_v8', JSON.stringify(subs));
         }
 
         // --- 2. دالة الفلترة والرسم ---
@@ -461,28 +523,35 @@
         const editModal = document.getElementById('editModal');
         
         function openEditModal(id) {
-            // كود افتراضي للتحقق من الصلاحية، في النظام الفعلي يتم التأكد من حساب المستخدم
-            // const user = localStorage.getItem('tobim_role');
-            // if(user !== 'admin') {
-            //     alert("عذراً، صلاحية التعديل مخصصة للمدير (الإدارة) فقط.");
-            //     return;
-            // }
-
             const sub = subs.find(s => s.id === id);
             if(!sub) return;
 
             document.getElementById('edit-id').value = sub.id;
             document.getElementById('edit-name').value = sub.fullName;
             document.getElementById('edit-mobile').value = sub.mobile || '';
+            document.getElementById('edit-email').value = sub.email || '';
             document.getElementById('edit-spec').value = sub.spec || 'عام';
             document.getElementById('edit-round').value = sub.round || '';
+            document.getElementById('edit-old-round').value = sub.oldRound || '';
+            
             document.getElementById('edit-paysource').value = sub.paySource || 'الخزينة (كاش)';
             document.getElementById('edit-sender').value = sub.senderName || '';
+            
             document.getElementById('edit-total').value = sub.totalPrice;
-            document.getElementById('edit-paid').value = sub.paidAmount;
+            document.getElementById('edit-paid-1').value = sub.paidAmount1 !== undefined ? sub.paidAmount1 : sub.paidAmount;
+            document.getElementById('edit-source-1').value = sub.paySource || 'إنستاباي CIB';
+            
+            document.getElementById('edit-paid-2').value = sub.paidAmount2 || '';
+            document.getElementById('edit-source-2').value = sub.paySource2 || '';
+            
             document.getElementById('edit-rest').value = sub.remainingAmount;
             document.getElementById('edit-next-date').value = sub.nextPaymentDate || '';
-            document.getElementById('edit-receipt-img').value = ''; // تفريغ حقل الصورة
+            
+            document.getElementById('edit-receipt-img').value = ''; 
+            document.getElementById('edit-receipt-1').value = ''; 
+            document.getElementById('edit-receipt-2').value = ''; 
+            
+            calcEditRemaining(); // لضبط القيود الأولية على حقل الدفعة الثانية
             
             editModal.classList.remove('hidden');
             document.getElementById('notif-dropdown').classList.add('hidden');
@@ -490,38 +559,84 @@
 
         function calcEditRemaining() {
             const total = parseFloat(document.getElementById('edit-total').value) || 0;
-            let paid = parseFloat(document.getElementById('edit-paid').value) || 0;
-            if(paid > total) paid = total;
-            document.getElementById('edit-rest').value = total - paid;
+            const paid1Input = document.getElementById('edit-paid-1');
+            const paid2Input = document.getElementById('edit-paid-2');
+            
+            let paid1 = parseFloat(paid1Input.value) || 0;
+            let paid2 = parseFloat(paid2Input.value) || 0;
+            
+            // حماية للدفعة الأولى: لا تتخطى الإجمالي
+            if(paid1 > total) {
+                paid1 = total;
+                paid1Input.value = total;
+            }
+
+            // تحديث الـ placeholder للدفعة الثانية ليوضح المتبقي
+            let maxAllowedForPaid2 = total - paid1;
+            paid2Input.placeholder = maxAllowedForPaid2 > 0 ? `المتبقي للدفعة 2: ${maxAllowedForPaid2}` : "0";
+
+            // حماية للدفعة الثانية: لا تتخطى المتبقي الفعلي
+            if(paid2 > maxAllowedForPaid2) {
+                paid2 = maxAllowedForPaid2;
+                paid2Input.value = maxAllowedForPaid2 > 0 ? maxAllowedForPaid2 : '';
+            }
+            
+            const rest = total - (paid1 + paid2);
+            document.getElementById('edit-rest').value = rest >= 0 ? rest : 0;
+
+            // إذا تم إدخال رقم في الدفعة الثانية، نجعل حقل مصدر الدفعة الثانية مطلوب
+            const source2Input = document.getElementById('edit-source-2');
+            const receipt2Input = document.getElementById('edit-receipt-2');
+            if (paid2 > 0) {
+                source2Input.required = true;
+                receipt2Input.required = true;
+            } else {
+                source2Input.required = false;
+                receipt2Input.required = false;
+            }
         }
 
         function closeEditModal() {
             editModal.classList.add('hidden');
         }
 
-        function saveEdit() {
-            const id = parseInt(document.getElementById('edit-id').value);
+        function saveEdit(e) {
+            e.preventDefault();
+            calcEditRemaining();
             
+            const id = parseInt(document.getElementById('edit-id').value);
             const index = subs.findIndex(s => s.id === id);
+            
             if(index !== -1) {
                 subs[index].fullName = document.getElementById('edit-name').value;
                 subs[index].mobile = document.getElementById('edit-mobile').value;
+                subs[index].email = document.getElementById('edit-email').value;
                 subs[index].spec = document.getElementById('edit-spec').value;
                 subs[index].round = document.getElementById('edit-round').value;
-                subs[index].paySource = document.getElementById('edit-paysource').value;
+                subs[index].oldRound = document.getElementById('edit-old-round').value;
+                
                 subs[index].senderName = document.getElementById('edit-sender').value;
                 subs[index].totalPrice = parseFloat(document.getElementById('edit-total').value) || 0;
                 
-                const paid = parseFloat(document.getElementById('edit-paid').value) || 0;
+                const paid1 = parseFloat(document.getElementById('edit-paid-1').value) || 0;
+                const paid2 = parseFloat(document.getElementById('edit-paid-2').value) || 0;
+                const totalPaid = paid1 + paid2;
                 const rest = parseFloat(document.getElementById('edit-rest').value) || 0;
-                subs[index].paidAmount = paid;
+                
+                subs[index].paidAmount1 = paid1;
+                subs[index].paidAmount2 = paid2;
+                subs[index].paidAmount = totalPaid; // لتحديث الجدول العام
+                
+                subs[index].paySource = document.getElementById('edit-source-1').value;
+                subs[index].paySource2 = document.getElementById('edit-source-2').value;
+                
                 subs[index].remainingAmount = rest;
                 subs[index].status = rest === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
                 
                 const nextDate = document.getElementById('edit-next-date').value;
                 subs[index].nextPaymentDate = rest === 0 ? '' : nextDate;
 
-                localStorage.setItem('tobim_subs_v7', JSON.stringify(subs));
+                localStorage.setItem('tobim_subs_v8', JSON.stringify(subs));
                 filterTable();
                 checkNotifications();
                 closeEditModal();
@@ -532,7 +647,6 @@
         function printReceipt() {
              const id = document.getElementById('edit-id').value;
              if(id) {
-                 // يتم توجيه المستخدم لصفحة الريسيت الخاصة بهذا المشترك ليتم طباعتها
                  window.location.href = `receipt.html?id=${id}`;
              }
         }

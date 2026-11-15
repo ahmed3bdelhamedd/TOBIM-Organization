@@ -137,11 +137,15 @@
         </div>
     </main>
 
-    <!-- نافذة إضافة مصروف -->
+    <!-- نافذة إضافة مصروف (مع حقل تاريخ العملية) -->
     <div id="expenseModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
             <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-receipt text-blue-500 ml-2"></i> إضافة مصروف جديد</h3>
             <form onsubmit="saveExpense(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">تاريخ العملية *</label>
+                    <input type="date" id="expDate" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
+                </div>
                 <div>
                     <label class="block text-sm text-gray-400 mb-1">البيان / الوصف *</label>
                     <input type="text" id="expDesc" required placeholder="مثال: إيجار المقر، كهرباء" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
@@ -198,6 +202,9 @@
                 const financeNav = document.getElementById('nav-finance');
                 if (financeNav) financeNav.style.display = 'none';
             }
+
+            // ضبط تاريخ اليوم افتراضياً في حقل التاريخ داخل النافذة
+            document.getElementById('expDate').valueAsDate = new Date();
         });
 
         function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
@@ -217,7 +224,7 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        let expensesList = JSON.parse(localStorage.getItem('tobim_expenses_v3')) || [
+        let expensesList = JSON.parse(localStorage.getItem('tobim_expenses_v4')) || [
             { id: 1, date: '01/11/2026', desc: 'إيجار المقر', category: 'إيجار', amount: 12500 },
             { id: 2, date: '05/11/2026', desc: 'فواتير كهرباء ومياه', category: 'فواتير ومرافق', amount: 3500 },
             { id: 3, date: '10/11/2026', desc: 'بوفيه ونظافة', category: 'بوفيه ونظافة', amount: 4000 }
@@ -246,18 +253,27 @@
 
         renderExpenses();
 
-        function openExpenseModal() { if(isAdmin) document.getElementById('expenseModal').classList.remove('hidden'); }
+        function openExpenseModal() { 
+            if(isAdmin) {
+                document.getElementById('expDate').valueAsDate = new Date();
+                document.getElementById('expenseModal').classList.remove('hidden'); 
+            }
+        }
         function closeExpenseModal() { document.getElementById('expenseModal').classList.add('hidden'); }
+        
         function saveExpense(e) {
             e.preventDefault();
             if(!isAdmin) return;
+            
+            let rawDate = document.getElementById('expDate').value; // YYYY-MM-DD
+            let formattedDate = rawDate ? rawDate.split('-').reverse().join('/') : new Date().toLocaleDateString('en-GB');
+            
             let desc = document.getElementById('expDesc').value;
             let category = document.getElementById('expCategory').value;
             let amount = parseFloat(document.getElementById('expAmount').value) || 0;
-            let today = new Date().toLocaleDateString('en-GB');
 
-            expensesList.push({ id: Date.now(), date: today, desc, category, amount });
-            localStorage.setItem('tobim_expenses_v3', JSON.stringify(expensesList));
+            expensesList.push({ id: Date.now(), date: formattedDate, desc, category, amount });
+            localStorage.setItem('tobim_expenses_v4', JSON.stringify(expensesList));
             renderExpenses();
             closeExpenseModal();
         }

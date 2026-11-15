@@ -185,15 +185,16 @@
             subTotals = {};
             let grandTotal = 0;
 
+            // قراءة قيمة الفلتر
             const selectedDept = document.getElementById('filter-dept').value;
 
-            // تحديد الأقسام التي سيتم عرضها
+            // تحديد الأقسام التي سيتم عرضها بناءً على الفلتر
             let deptsToRender = departmentsList;
             if (selectedDept !== 'الكل') {
                 deptsToRender = [selectedDept];
-                grandTotalContainer.classList.add('hidden');
+                grandTotalContainer.classList.add('hidden'); // إخفاء الإجمالي العام عند عرض قسم واحد
             } else {
-                grandTotalContainer.classList.remove('hidden');
+                grandTotalContainer.classList.remove('hidden'); // إظهاره عند عرض كل الأقسام
             }
 
             deptsToRender.forEach(dept => {

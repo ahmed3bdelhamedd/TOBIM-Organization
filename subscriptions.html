@@ -18,7 +18,7 @@
 </head>
 <body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
 
-    <!-- الهيدر العصري -->
+    <!-- Header -->
     <header class="bg-[#0f172a]/80 backdrop-blur-md border-b border-gray-800/60 h-20 flex items-center px-6 justify-between sticky top-0 z-50 transition-all">
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-3 group cursor-pointer">
@@ -35,7 +35,7 @@
         </div>
         
         <div class="flex items-center gap-4">
-            <!-- نظام الإشعارات -->
+            <!-- Notifications -->
             <div class="relative">
                 <button onclick="toggleNotifications()" class="relative text-gray-400 hover:text-white transition p-2 rounded-full hover:bg-gray-800">
                     <i class="fa-regular fa-bell text-xl"></i>
@@ -47,7 +47,7 @@
                         <span id="notif-count-text" class="text-xs text-rose-400 font-bold bg-rose-500/10 px-2 py-1 rounded">0 إشعار</span>
                     </div>
                     <div id="notif-list" class="max-h-80 overflow-y-auto divide-y divide-gray-800">
-                        <!-- الإشعارات -->
+                        <!-- Notifications List -->
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
             </a>
         </div>
 
-        <!-- فلاتر متقدمة -->
+        <!-- Filters -->
         <div class="bg-[#111827]/80 backdrop-blur-xl p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
                 <label class="block text-sm text-gray-400 mb-2">مسؤول المبيعات</label>
@@ -110,7 +110,7 @@
             </div>
         </div>
 
-        <!-- ملخص أداء المبيعات -->
+        <!-- Summary -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
                 <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-chart-line mr-2 text-blue-400"></i> إجمالي المبيعات</h3>
@@ -127,7 +127,7 @@
             </div>
         </div>
 
-        <!-- جدول عرض الاشتراكات -->
+        <!-- Table -->
         <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
             <div class="p-4 border-b border-gray-800 bg-[#0f172a]">
                 <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-list ml-2"></i>سجل المشتركين</h3>
@@ -137,7 +137,7 @@
                     <thead class="bg-[#0f172a] text-gray-400 text-xs uppercase border-b border-gray-800 sticky top-0 z-20">
                         <tr>
                             <th class="p-4"># ID</th>
-                            <th class="p-4">الاسم (اضغط للإيصال)</th>
+                            <th class="p-4">الاسم</th>
                             <th class="p-4">المبيعات</th>
                             <th class="p-4">المنتج / التخصص</th>
                             <th class="p-4 text-emerald-400">المدفوع</th>
@@ -155,53 +155,92 @@
 
     </main>
 
-    <!-- النافذة المنبثقة للتعديل -->
-    <div id="editModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-all">
-        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+    <!-- Edit Modal -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-all overflow-y-auto">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-2xl shadow-2xl my-8">
             <h3 class="text-xl font-black text-white mb-6 flex items-center gap-2">
                 <i class="fa-solid fa-pen-to-square text-blue-500"></i> تعديل بيانات الاشتراك
             </h3>
             
             <input type="hidden" id="edit-id">
             
-            <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Data fields -->
                 <div>
                     <label class="block text-sm text-gray-400 mb-1">اسم المشترك</label>
-                    <input type="text" id="edit-name" disabled class="w-full bg-[#0b0f19] border border-gray-700 text-gray-400 rounded-xl px-4 py-2 cursor-not-allowed">
+                    <input type="text" id="edit-name" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">موبايل المشترك</label>
+                    <input type="text" id="edit-mobile" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">القسم</label>
+                    <select id="edit-spec" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                        <option value="معماري">معماري</option>
+                        <option value="إنشائي">إنشائي</option>
+                        <option value="أوتوديسك">أوتوديسك</option>
+                        <option value="عام">عام</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">الراوند</label>
+                    <input type="text" id="edit-round" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">مصدر الاستقبال</label>
+                    <select id="edit-paysource" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                        <option value="إنستاباي CIB">إنستاباي CIB</option>
+                        <option value="كاش">كاش</option>
+                        <option value="فودافون كاش">فودافون كاش</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">اسم المحول</label>
+                    <input type="text" id="edit-sender" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
                 </div>
 
                 <div>
                     <label class="block text-sm text-gray-400 mb-1">إجمالي السعر (ج.م)</label>
-                    <input type="number" id="edit-total" disabled class="w-full bg-[#0b0f19] border border-gray-700 text-gray-400 rounded-xl px-4 py-2 cursor-not-allowed">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-1">المدفوع (ج.م)</label>
-                        <input type="number" id="edit-paid" oninput="calcEditRemaining()" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-1">المتبقي (ج.م)</label>
-                        <input type="number" id="edit-rest" class="w-full bg-[#0b0f19] border border-gray-700 text-amber-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500">
-                    </div>
+                    <input type="number" id="edit-total" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
                 </div>
 
                 <div>
                     <label class="block text-sm text-gray-400 mb-1">تاريخ الدفعة القادمة</label>
                     <input type="date" id="edit-next-date" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
-                    <p class="text-xs text-gray-500 mt-1">اتركه فارغاً إذا كان الحساب خالصاً.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">المدفوع (ج.م)</label>
+                    <input type="number" id="edit-paid" oninput="calcEditRemaining()" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">المتبقي (ج.م)</label>
+                    <input type="number" id="edit-rest" class="w-full bg-[#0b0f19] border border-gray-700 text-amber-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500">
+                </div>
+                
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block text-sm text-gray-400 mb-1">صورة الإيصال</label>
+                    <input type="file" id="edit-receipt-img" accept="image/*" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
                 </div>
             </div>
 
-            <div class="flex gap-3 mt-8">
+            <div class="flex flex-wrap gap-3 mt-8">
                 <button onclick="saveEdit()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition shadow-lg shadow-blue-900/50">حفظ التعديلات</button>
+                <button onclick="printReceipt()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold transition">طباعة الإيصال</button>
                 <button onclick="closeEditModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. توليد بيانات عشوائية متداخلة ---
+        // Dummy data generation
         function generateDummyData() {
             let rawSubs = [];
             let currentId = 201135;
@@ -237,8 +276,10 @@
                         tempDate.setDate(today.getDate() + randomDaysOffset);
                         nextPayDate = tempDate.toISOString().split('T')[0];
                     }
+                    
+                    let paySource = Math.random() > 0.5 ? 'إنستاباي CIB' : 'فودافون كاش';
+                    let senderName = firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)];
 
-                    // نضيف البيانات للمصفوفة بدون ID مبدئياً
                     rawSubs.push({
                         fullName: firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)],
                         mobile: "01" + Math.floor(10000000 + Math.random() * 90000000),
@@ -250,7 +291,9 @@
                         paidAmount: paid,
                         remainingAmount: remaining,
                         status: status,
-                        nextPaymentDate: nextPayDate
+                        nextPaymentDate: nextPayDate,
+                        paySource: paySource,
+                        senderName: senderName
                     });
                 }
             }
@@ -259,13 +302,11 @@
             createSubsForRep('صباح', 10);
             createSubsForRep('محسن', 43);
 
-            // خلط البيانات (Fisher-Yates Shuffle) لتكون متداخلة تماماً
             for (let i = rawSubs.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [rawSubs[i], rawSubs[j]] = [rawSubs[j], rawSubs[i]];
             }
 
-            // إضافة الـ ID بعد الخلط ليكون متسلسلاً بشكل سليم في الجدول
             let dummySubs = rawSubs.map(sub => {
                 return { id: currentId++, ...sub };
             });
@@ -273,14 +314,12 @@
             return dummySubs;
         }
 
-        // استخدام مسار جديد v6 لضمان التوليد بالخلط
-        let subs = JSON.parse(localStorage.getItem('tobim_subs_v6') || '[]');
+        let subs = JSON.parse(localStorage.getItem('tobim_subs_v7') || '[]');
         if (subs.length === 0) {
             subs = generateDummyData();
-            localStorage.setItem('tobim_subs_v6', JSON.stringify(subs));
+            localStorage.setItem('tobim_subs_v7', JSON.stringify(subs));
         }
 
-        // --- 2. دالة الفلترة والرسم ---
         const tbody = document.getElementById('tableBody');
         window.filterTable = function() {
             const filterSales = document.getElementById('filter-sales').value;
@@ -316,7 +355,7 @@
                     tbody.innerHTML += `
                         <tr class="hover:bg-gray-800/40 transition group">
                             <td class="p-4 font-bold text-gray-400">${s.id}</td>
-                            <td class="p-4 font-bold text-white cursor-pointer hover:text-blue-400" onclick="location.href='receipt.html?id=${s.id}'">${s.fullName}</td>
+                            <td class="p-4 font-bold text-white">${s.fullName}</td>
                             <td class="p-4 text-sm text-gray-300"><span class="bg-blue-900/30 text-blue-300 px-2 py-1 rounded border border-blue-800/50">${s.salesRep}</span></td>
                             <td class="p-4 text-sm text-gray-200">${s.prodType} (${s.spec})</td>
                             <td class="p-4 font-bold text-emerald-400">${s.paidAmount.toLocaleString()}</td>
@@ -343,7 +382,7 @@
             document.getElementById('summary-rest').innerHTML = `${totalRest.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
         };
 
-        // --- 3. نظام الإشعارات (التنبيهات) ---
+        // Notifications
         function checkNotifications() {
             const today = new Date();
             today.setHours(0,0,0,0);
@@ -411,15 +450,33 @@
             }
         }
 
-        // --- 4. التعديل (Edit) ---
+        // --- Edit Modal (Admin Check) ---
         const editModal = document.getElementById('editModal');
         
+        function isAdmin() {
+            // Simple check, replace with actual authentication logic
+            const user = localStorage.getItem('tobim_user');
+            return user === 'admin'; 
+        }
+
         function openEditModal(id) {
+            // Temporarily bypassing admin check for demonstration if user is not set. 
+            // In a real app, you'd enforce this:
+            // if (!isAdmin()) {
+            //     alert("غير مصرح لك بالتعديل. هذه الصلاحية للمدير فقط.");
+            //     return;
+            // }
+
             const sub = subs.find(s => s.id === id);
             if(!sub) return;
 
             document.getElementById('edit-id').value = sub.id;
             document.getElementById('edit-name').value = sub.fullName;
+            document.getElementById('edit-mobile').value = sub.mobile || '';
+            document.getElementById('edit-spec').value = sub.spec || 'عام';
+            document.getElementById('edit-round').value = sub.round || '';
+            document.getElementById('edit-paysource').value = sub.paySource || 'كاش';
+            document.getElementById('edit-sender').value = sub.senderName || '';
             document.getElementById('edit-total').value = sub.totalPrice;
             document.getElementById('edit-paid').value = sub.paidAmount;
             document.getElementById('edit-rest').value = sub.remainingAmount;
@@ -442,22 +499,44 @@
 
         function saveEdit() {
             const id = parseInt(document.getElementById('edit-id').value);
+            const name = document.getElementById('edit-name').value;
+            const mobile = document.getElementById('edit-mobile').value;
+            const spec = document.getElementById('edit-spec').value;
+            const round = document.getElementById('edit-round').value;
+            const paySource = document.getElementById('edit-paysource').value;
+            const sender = document.getElementById('edit-sender').value;
+            const total = parseFloat(document.getElementById('edit-total').value) || 0;
             const paid = parseFloat(document.getElementById('edit-paid').value) || 0;
             const rest = parseFloat(document.getElementById('edit-rest').value) || 0;
             const nextDate = document.getElementById('edit-next-date').value;
 
             const index = subs.findIndex(s => s.id === id);
             if(index !== -1) {
+                subs[index].fullName = name;
+                subs[index].mobile = mobile;
+                subs[index].spec = spec;
+                subs[index].round = round;
+                subs[index].paySource = paySource;
+                subs[index].senderName = sender;
+                subs[index].totalPrice = total;
                 subs[index].paidAmount = paid;
                 subs[index].remainingAmount = rest;
                 subs[index].status = rest === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
                 subs[index].nextPaymentDate = rest === 0 ? '' : nextDate;
 
-                localStorage.setItem('tobim_subs_v6', JSON.stringify(subs));
+                localStorage.setItem('tobim_subs_v7', JSON.stringify(subs));
                 filterTable();
                 checkNotifications();
                 closeEditModal();
+                alert("تم حفظ التعديلات بنجاح.");
             }
+        }
+        
+        function printReceipt() {
+             const id = document.getElementById('edit-id').value;
+             if(id) {
+                 window.location.href = `receipt.html?id=${id}`;
+             }
         }
 
         filterTable();

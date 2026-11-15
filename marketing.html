@@ -73,7 +73,7 @@
         <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white">الحملات الإعلانية والتسويق</h2>
-                <p class="text-sm text-gray-400 mt-1">متابعة ميزانية وتكاليف الحملات على المنصات الرقمية وحالة السداد</p>
+                <p class="text-sm text-gray-400 mt-1">متابعة ميزانية وتكاليف الحملات وحالة السداد (مدفوع ومستحق)</p>
             </div>
             <button id="add-mkt-btn" onclick="openMarketingModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> إضافة حملة جديدة
@@ -109,13 +109,29 @@
             </div>
         </div>
 
-        <!-- ملخص التسويق -->
-        <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
-            <div>
-                <h3 class="text-gray-400 text-sm font-bold">إجمالي تكاليف الحملات</h3>
-                <p id="total-marketing-display" class="text-3xl font-black text-fuchsia-400 mt-1">25,000 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+        <!-- ملخصات التسويق (إجمالي، مدفوع، مستحق) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-400 text-sm font-bold">إجمالي تكاليف الحملات</h3>
+                    <p id="total-marketing-display" class="text-3xl font-black text-fuchsia-400 mt-1">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                </div>
+                <i class="fa-solid fa-bullhorn text-fuchsia-500/20 text-4xl"></i>
             </div>
-            <i class="fa-solid fa-bullhorn text-fuchsia-500/20 text-5xl"></i>
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-400 text-sm font-bold">إجمالي المدفوع</h3>
+                    <p id="total-paid-display" class="text-3xl font-black text-emerald-400 mt-1">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                </div>
+                <i class="fa-solid fa-circle-check text-emerald-500/20 text-4xl"></i>
+            </div>
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-400 text-sm font-bold">إجمالي المستحق</h3>
+                    <p id="total-due-display" class="text-3xl font-black text-amber-400 mt-1">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                </div>
+                <i class="fa-solid fa-clock text-amber-500/20 text-4xl"></i>
+            </div>
         </div>
 
         <!-- جدول الحملات -->
@@ -138,7 +154,7 @@
         </div>
     </main>
 
-    <!-- نافذة إضافة حملة (مع تاريخ العملية وحالة المبلغ) -->
+    <!-- نافذة إضافة حملة جديدة -->
     <div id="marketingModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
             <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-bullhorn text-blue-500 ml-2"></i> إضافة حملة إعلانية جديدة</h3>
@@ -232,7 +248,7 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        let marketingList = JSON.parse(localStorage.getItem('tobim_marketing_v3')) || [
+        let marketingList = JSON.parse(localStorage.getItem('tobim_marketing_v4')) || [
             { id: 1, date: '02/11/2026', desc: 'حملة إعلانية فيسبوك (دبلومة)', platform: 'فيسبوك / إنستجرام', status: 'مدفوع', amount: 15000 },
             { id: 2, date: '12/11/2026', desc: 'حملة إعلانية جوجل (كورسات)', platform: 'جوجل أدز', status: 'مستحق', amount: 10000 }
         ];
@@ -243,10 +259,19 @@
             const filterPlat = document.getElementById('filter-platform').value;
 
             let total = 0;
+            let paidTotal = 0;
+            let dueTotal = 0;
+
             let filteredList = filterPlat === 'الكل' ? marketingList : marketingList.filter(m => m.platform === filterPlat);
 
             filteredList.forEach(mkt => {
                 total += mkt.amount;
+                if (mkt.status === 'مدفوع') {
+                    paidTotal += mkt.amount;
+                } else {
+                    dueTotal += mkt.amount;
+                }
+
                 let statusBadge = mkt.status === 'مدفوع' 
                     ? '<span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-lg font-bold">مدفوع</span>' 
                     : '<span class="bg-amber-500/20 text-amber-400 text-xs px-2.5 py-1 rounded-lg font-bold">مستحق</span>';
@@ -260,7 +285,10 @@
                         <td class="p-4 font-bold text-fuchsia-400">${mkt.amount.toLocaleString()} ج.م</td>
                     </tr>`;
             });
+
             document.getElementById('total-marketing-display').innerHTML = `${total.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+            document.getElementById('total-paid-display').innerHTML = `${paidTotal.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+            document.getElementById('total-due-display').innerHTML = `${dueTotal.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
         }
 
         function openMarketingModal() { 
@@ -284,7 +312,7 @@
             let amount = parseFloat(document.getElementById('mktAmount').value) || 0;
 
             marketingList.push({ id: Date.now(), date: formattedDate, desc, platform, status, amount });
-            localStorage.setItem('tobim_marketing_v3', JSON.stringify(marketingList));
+            localStorage.setItem('tobim_marketing_v4', JSON.stringify(marketingList));
             renderMarketing();
             closeMarketingModal();
         }

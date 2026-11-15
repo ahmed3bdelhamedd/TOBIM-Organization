@@ -37,28 +37,55 @@
             <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
         </div>
 
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black text-white">رواتب الموظفين</h2>
+            <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition">
+                <i class="fa-solid fa-check-double ml-1"></i> اعتماد رواتب الشهر
+            </button>
+        </div>
+
+        <!-- فلاتر التقارير والمدة (جديد) -->
+        <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 mb-6">
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">الشهر</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-32">
+                    <option value="1">يناير</option>
+                    <option value="2">فبراير</option>
+                    <option value="3">مارس</option>
+                    <option value="4">أبريل</option>
+                    <option value="5">مايو</option>
+                    <option value="6">يونيو</option>
+                    <option value="7">يوليو</option>
+                    <option value="8">أغسطس</option>
+                    <option value="9">سبتمبر</option>
+                    <option value="10">أكتوبر</option>
+                    <option value="11" selected>نوفمبر</option>
+                    <option value="12">ديسمبر</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">السنة</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-32">
+                    <option value="2026" selected>2026</option>
+                    <option value="2027">2027</option>
+                </select>
+            </div>
+            <button class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex-1 md:flex-none">
+                <i class="fa-solid fa-file-export ml-1"></i> استخراج كشف الرواتب
+            </button>
+        </div>
+
         <!-- قسم إدارة الرواتب -->
         <div class="bg-[#111827] rounded-3xl border border-gray-800 overflow-hidden">
-            <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-[#0f172a]">
-                <div>
-                    <h2 class="text-xl font-black text-white">رواتب الموظفين</h2>
-                    <p class="text-sm text-gray-400 mt-1">إدارة العمولات والخصومات وصرف الرواتب لشهر نوفمبر 2026</p>
-                </div>
-                <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition">
-                    <i class="fa-solid fa-check-double ml-1"></i> اعتماد الكل
-                </button>
-            </div>
-            
             <div class="overflow-x-auto">
                 <table class="w-full text-right border-collapse min-w-[800px]">
                     <thead>
-                        <tr class="bg-[#111827] text-gray-400 text-sm border-b border-gray-800">
-                            <th class="p-4 font-semibold">الموظف / الدور</th>
+                        <tr class="bg-[#0f172a] text-gray-400 text-sm border-b border-gray-800">
+                            <th class="p-4 font-semibold">الموظف</th>
                             <th class="p-4 font-semibold">الراتب الأساسي</th>
-                            <th class="p-4 font-semibold text-emerald-400">عمولة (+)</th>
-                            <th class="p-4 font-semibold text-rose-400">خصم (-)</th>
+                            <th class="p-4 font-semibold text-emerald-400">عمولة / مكافأة (+)</th>
+                            <th class="p-4 font-semibold text-rose-400">خصم / سلف (-)</th>
                             <th class="p-4 font-semibold">الصافي المستحق</th>
-                            <th class="p-4 font-semibold text-center">إجراء</th>
                         </tr>
                     </thead>
                     <tbody id="employees-tbody" class="divide-y divide-gray-800/50">
@@ -66,13 +93,18 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- ملخص إجمالي الرواتب -->
+            <div class="bg-[#0f172a] p-4 border-t border-gray-800 flex justify-between items-center">
+                <span class="text-gray-400 font-bold">إجمالي الرواتب المستحقة لهذا الشهر:</span>
+                <span id="total-payroll" class="text-2xl font-black text-white">0 ج.م</span>
+            </div>
         </div>
 
     </main>
 
     <!-- سكريبت إدارة الرواتب -->
     <script>
-        // قائمة الموظفين كما طلبت
         const employees = [
             { id: 1, name: "صلاح البدوي", role: "المدير", baseSalary: 40000, isManager: true },
             { id: 2, name: "هشام غيب", role: "موظف", baseSalary: 8000, isManager: false },
@@ -85,6 +117,7 @@
         ];
 
         const tbody = document.getElementById('employees-tbody');
+        const totalPayrollElement = document.getElementById('total-payroll');
 
         function renderEmployees() {
             tbody.innerHTML = '';
@@ -110,35 +143,37 @@
                     </td>
                     <td class="p-4">
                         <div class="relative">
-                            <input type="number" id="comm_${emp.id}" value="0" min="0" oninput="calculateNet(${emp.id}, ${emp.baseSalary})" class="w-24 bg-[#0b0f19] border border-gray-700 text-emerald-400 text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-emerald-500">
+                            <input type="number" id="comm_${emp.id}" value="0" min="0" oninput="calculateNet(${emp.id}, ${emp.baseSalary})" class="w-24 bg-[#0b0f19] border border-gray-700 text-emerald-400 text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-emerald-500 transition">
                         </div>
                     </td>
                     <td class="p-4">
                         <div class="relative">
-                            <input type="number" id="ded_${emp.id}" value="0" min="0" oninput="calculateNet(${emp.id}, ${emp.baseSalary})" class="w-24 bg-[#0b0f19] border border-gray-700 text-rose-400 text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-rose-500">
+                            <input type="number" id="ded_${emp.id}" value="0" min="0" oninput="calculateNet(${emp.id}, ${emp.baseSalary})" class="w-24 bg-[#0b0f19] border border-gray-700 text-rose-400 text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-rose-500 transition">
                         </div>
                     </td>
                     <td class="p-4">
-                        <span id="net_${emp.id}" class="text-lg font-black text-blue-400">
+                        <span id="net_${emp.id}" class="text-lg font-black text-blue-400" data-net="${emp.baseSalary}">
                             ${emp.baseSalary.toLocaleString()} <span class="text-xs text-gray-500 font-normal">ج.م</span>
                         </span>
-                    </td>
-                    <td class="p-4 text-center">
-                        <button class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm transition">حفظ</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+            updateTotalPayroll();
         }
 
+        // دالة حساب الصافي للموظف الواحد
         window.calculateNet = function(id, base) {
             let comm = parseFloat(document.getElementById(`comm_${id}`).value) || 0;
             let ded = parseFloat(document.getElementById(`ded_${id}`).value) || 0;
+            
             let net = base + comm - ded;
             
             const netElement = document.getElementById(`net_${id}`);
             netElement.innerHTML = `${net.toLocaleString()} <span class="text-xs text-gray-500 font-normal">ج.م</span>`;
+            netElement.setAttribute('data-net', net); // لحفظ القيمة وتجميعها لاحقاً
             
+            // تغيير اللون بناءً على الزيادة أو الخصم
             if (net > base) {
                 netElement.className = "text-lg font-black text-emerald-400";
             } else if (net < base) {
@@ -146,8 +181,21 @@
             } else {
                 netElement.className = "text-lg font-black text-blue-400";
             }
+
+            updateTotalPayroll();
         };
 
+        // دالة لحساب الإجمالي الكلي للرواتب في أسفل الجدول
+        function updateTotalPayroll() {
+            let total = 0;
+            employees.forEach(emp => {
+                const netElement = document.getElementById(`net_${emp.id}`);
+                total += parseFloat(netElement.getAttribute('data-net')) || 0;
+            });
+            totalPayrollElement.innerHTML = `${total.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
+        }
+
+        // تشغيل الدالة عند تحميل الصفحة
         renderEmployees();
     </script>
 </body>

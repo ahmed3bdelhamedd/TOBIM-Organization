@@ -156,6 +156,7 @@
     <script>
         const departmentsList = ['الإدارة', 'المبيعات', 'تقنية المعلومات', 'الجرافيك'];
 
+        // بيانات الموظفين بعد تصحيح راتب عامر علي
         const defaultEmployees = [
             { id: 1, name: "صلاح البدوي", role: "المدير", department: "الإدارة", baseSalary: 40000, isManager: true },
             { id: 2, name: "هشام غيب", role: "محاسب مالي", department: "الإدارة", baseSalary: 8000, isManager: false },
@@ -164,20 +165,19 @@
             { id: 6, name: "محسن إسلام", role: "موظف مبيعات", department: "المبيعات", baseSalary: 10000, isManager: false },
             { id: 4, name: "عمر عبد العزيز", role: "موظف مبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
             { id: 3, name: "أحمد عبد الحميد", role: "موظف IT", department: "تقنية المعلومات", baseSalary: 6500, isManager: false },
-            { id: 8, name: "عامر علي", role: "مصمم جرافيك", department: "الجرافيك", baseSalary: 160000, isManager: false }
+            { id: 8, name: "عامر علي", role: "مصمم جرافيك", department: "الجرافيك", baseSalary: 16000, isManager: false }
         ];
 
-        let employees = JSON.parse(localStorage.getItem('tobim_employees_v2'));
+        let employees = JSON.parse(localStorage.getItem('tobim_employees_v3'));
         if (!employees || employees.length === 0) {
             employees = defaultEmployees;
-            localStorage.setItem('tobim_employees_v2', JSON.stringify(employees));
+            localStorage.setItem('tobim_employees_v3', JSON.stringify(employees));
         }
 
         const container = document.getElementById('departments-container');
         const grandTotalContainer = document.getElementById('grand-total-container');
         const grandTotalElement = document.getElementById('grand-total-payroll');
 
-        // كائن لتخزين الإجماليات الفرعية
         let subTotals = {};
 
         function renderDepartments() {
@@ -185,16 +185,14 @@
             subTotals = {};
             let grandTotal = 0;
 
-            // قراءة قيمة الفلتر
             const selectedDept = document.getElementById('filter-dept').value;
 
-            // تحديد الأقسام التي سيتم عرضها بناءً على الفلتر
             let deptsToRender = departmentsList;
             if (selectedDept !== 'الكل') {
                 deptsToRender = [selectedDept];
-                grandTotalContainer.classList.add('hidden'); // إخفاء الإجمالي العام عند عرض قسم واحد
+                grandTotalContainer.classList.add('hidden');
             } else {
-                grandTotalContainer.classList.remove('hidden'); // إظهاره عند عرض كل الأقسام
+                grandTotalContainer.classList.remove('hidden');
             }
 
             deptsToRender.forEach(dept => {
@@ -204,7 +202,6 @@
                     const deptSection = document.createElement('div');
                     deptSection.className = "bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl mb-8";
                     
-                    // هيدر القسم
                     let deptIcon = 'fa-users';
                     if(dept === 'الإدارة') deptIcon = 'fa-briefcase';
                     else if(dept === 'المبيعات') deptIcon = 'fa-handshake';
@@ -218,7 +215,6 @@
                         </div>
                     `;
 
-                    // جدول القسم
                     let tableRows = '';
                     let deptSubTotal = 0;
 
@@ -227,14 +223,12 @@
                         
                         const deptOptions = departmentsList.map(d => `<option value="${d}" ${emp.department === d ? 'selected' : ''}>${d}</option>`).join('');
 
-                        // استرجاع المدخلات المحفوظة إن وجدت
                         const commValue = localStorage.getItem(`comm_${emp.id}`) || 0;
                         const dedValue = localStorage.getItem(`ded_${emp.id}`) || 0;
                         const netValue = parseFloat(emp.baseSalary) + parseFloat(commValue) - parseFloat(dedValue);
                         
                         deptSubTotal += netValue;
 
-                        // تحديد لون الصافي
                         let netColorClass = "text-blue-400";
                         if(netValue > emp.baseSalary) netColorClass = "text-emerald-400";
                         else if(netValue < emp.baseSalary) netColorClass = "text-rose-400";
@@ -302,7 +296,6 @@
                         </div>
                     `;
 
-                    // فوتر الإجمالي للقسم
                     const footerHtml = `
                         <div class="bg-[#0f172a] p-4 border-t border-gray-800 flex justify-between items-center">
                             <span class="text-gray-400 font-bold">إجمالي رواتب قسم ${dept}:</span>
@@ -315,7 +308,6 @@
                 }
             });
 
-            // تحديث الإجمالي العام
             if (selectedDept === 'الكل') {
                 grandTotalElement.innerHTML = `${grandTotal.toLocaleString()} <span class="text-lg font-normal text-blue-300">ج.م</span>`;
             }
@@ -325,7 +317,6 @@
             let comm = parseFloat(document.getElementById(`comm_${id}`).value) || 0;
             let ded = parseFloat(document.getElementById(`ded_${id}`).value) || 0;
             
-            // حفظ المدخلات
             localStorage.setItem(`comm_${id}`, comm);
             localStorage.setItem(`ded_${id}`, ded);
 
@@ -343,7 +334,6 @@
         };
 
         function updateTotals(changedDept) {
-            // تحديث إجمالي القسم الذي حدث فيه التغيير
             let deptTotal = 0;
             const deptEmployees = employees.filter(emp => emp.department === changedDept);
             
@@ -360,7 +350,6 @@
                 subtotalElement.innerHTML = `${deptTotal.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
             }
 
-            // تحديث الإجمالي العام
             const selectedDept = document.getElementById('filter-dept').value;
             if (selectedDept === 'الكل') {
                 let grandTotal = 0;
@@ -375,12 +364,11 @@
             const index = employees.findIndex(e => e.id === id);
             if(index !== -1) {
                 employees[index].department = newDept;
-                localStorage.setItem('tobim_employees_v2', JSON.stringify(employees));
+                localStorage.setItem('tobim_employees_v3', JSON.stringify(employees));
                 renderDepartments(); 
             }
         };
 
-        // --- التحكم بالنافذة المنبثقة لإضافة موظف ---
         const empModal = document.getElementById('newEmployeeModal');
         
         window.openEmployeeModal = function() {
@@ -421,7 +409,7 @@
             };
 
             employees.push(newEmp);
-            localStorage.setItem('tobim_employees_v2', JSON.stringify(employees));
+            localStorage.setItem('tobim_employees_v3', JSON.stringify(employees));
             
             closeEmployeeModal();
             document.getElementById('filter-dept').value = 'الكل';

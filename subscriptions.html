@@ -74,7 +74,7 @@
                     <option value="الكل">الكل</option>
                     <option value="إنشائي">إنشائي</option>
                     <option value="معماري">معماري</option>
-                    <option value="عام">عام</option>
+                    <option value="أوتوديسك">أوتوديسك</option>
                 </select>
             </div>
         </div>
@@ -130,13 +130,13 @@
             const firstNames = ["أحمد", "محمد", "محمود", "سارة", "فاطمة", "علي", "كريم", "منى", "شادي", "خالد", "يوسف", "عمر", "زينب", "مريم", "إسلام", "حسن", "حسين"];
             const lastNames = ["عبد الحميد", "محمود", "سعيد", "مصطفى", "إبراهيم", "عادل", "توفيق", "النجار", "الحداد", "المصري", "سامي", "كمال"];
             
+            // الأسعار المحدثة حسب الطلب
             const productTypes = [
-                { type: 'دبلومة', spec: 'إنشائي', price: 12000 },
-                { type: 'دبلومة', spec: 'معماري', price: 12000 },
-                { type: 'كورس', spec: 'إنشائي', price: 4500 },
-                { type: 'كورس', spec: 'معماري', price: 4000 },
-                { type: 'برنامج', spec: 'عام', price: 1500 },
-                { type: 'برنامج', spec: 'معماري', price: 2000 }
+                { type: 'دبلومة', spec: 'إنشائي', price: 9800 },
+                { type: 'دبلومة', spec: 'معماري', price: 8900 },
+                { type: 'كورس', spec: 'إنشائي', price: 4500 }, // ماكس 5000
+                { type: 'كورس', spec: 'معماري', price: 4900 }, // ماكس 5000
+                { type: 'برنامج', spec: 'أوتوديسك', price: 600 }
             ];
 
             function getRandomName() {
@@ -152,8 +152,9 @@
                     let prod = productTypes[Math.floor(Math.random() * productTypes.length)];
                     let isFullyPaid = Math.random() > 0.5;
                     let paid = isFullyPaid ? prod.price : (Math.floor(Math.random() * (prod.price / 1000)) * 1000);
-                    if(paid === 0) paid = 500;
-                    
+                    if(paid === 0 || paid >= prod.price) paid = prod.price * 0.5; // تسديد النصف في حال الأرقام الصفرية
+                    if(isFullyPaid) paid = prod.price;
+
                     let remaining = prod.price - paid;
                     let status = remaining === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
                     let round = prod.type === 'برنامج' ? 'N/A' : 'Round ' + (Math.floor(Math.random() * 10) + 20);
@@ -181,11 +182,11 @@
             return dummySubs;
         }
 
-        // استخدام key جديد لضمان توليد البيانات المحدثة بالعدد المطلوب
-        let subs = JSON.parse(localStorage.getItem('tobim_subs_v3') || '[]');
+        // استخدام key جديد لضمان توليد البيانات المحدثة بالأسعار الجديدة
+        let subs = JSON.parse(localStorage.getItem('tobim_subs_v4') || '[]');
         if (subs.length === 0) {
             subs = generateDummyData();
-            localStorage.setItem('tobim_subs_v3', JSON.stringify(subs));
+            localStorage.setItem('tobim_subs_v4', JSON.stringify(subs));
         }
 
         const tbody = document.getElementById('tableBody');

@@ -66,6 +66,8 @@
                     <option value="المبيعات">المبيعات</option>
                     <option value="تقنية المعلومات">تقنية المعلومات</option>
                     <option value="الجرافيك">الجرافيك</option>
+                    <option value="المدربين">المدربين</option>
+                    <option value="السوشيال ميديا">السوشيال ميديا</option>
                 </select>
             </div>
             <div>
@@ -129,6 +131,8 @@
                         <option value="المبيعات">المبيعات</option>
                         <option value="تقنية المعلومات">تقنية المعلومات</option>
                         <option value="الجرافيك">الجرافيك</option>
+                        <option value="المدربين">المدربين</option>
+                        <option value="السوشيال ميديا">السوشيال ميديا</option>
                     </select>
                 </div>
 
@@ -154,9 +158,10 @@
 
     <!-- سكريبت إدارة الرواتب -->
     <script>
-        const departmentsList = ['الإدارة', 'المبيعات', 'تقنية المعلومات', 'الجرافيك'];
+        // دمج المعماري والإنشائي تحت قسم "المدربين"
+        const departmentsList = ['الإدارة', 'المبيعات', 'تقنية المعلومات', 'الجرافيك', 'المدربين', 'السوشيال ميديا'];
 
-        // بيانات الموظفين بعد تصحيح راتب عامر علي
+        // تحديث بيانات الموظفين
         const defaultEmployees = [
             { id: 1, name: "صلاح البدوي", role: "المدير", department: "الإدارة", baseSalary: 40000, isManager: true },
             { id: 2, name: "هشام غيب", role: "محاسب مالي", department: "الإدارة", baseSalary: 8000, isManager: false },
@@ -165,13 +170,17 @@
             { id: 6, name: "محسن إسلام", role: "موظف مبيعات", department: "المبيعات", baseSalary: 10000, isManager: false },
             { id: 4, name: "عمر عبد العزيز", role: "موظف مبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
             { id: 3, name: "أحمد عبد الحميد", role: "موظف IT", department: "تقنية المعلومات", baseSalary: 6500, isManager: false },
-            { id: 8, name: "عامر علي", role: "مصمم جرافيك", department: "الجرافيك", baseSalary: 16000, isManager: false }
+            { id: 8, name: "عامر علي", role: "مصمم جرافيك", department: "الجرافيك", baseSalary: 16000, isManager: false },
+            // إضافة المدربين تحت قسم المدربين مع توضيح التخصص في المسمى الوظيفي
+            { id: 9, name: "حسناء يسري", role: "مدرب معماري", department: "المدربين", baseSalary: 5500, isManager: false },
+            { id: 10, name: "مصطفى حنفي", role: "مدرب إنشائي", department: "المدربين", baseSalary: 7000, isManager: false },
+            { id: 11, name: "سحر الوزير", role: "أخصائي سوشيال ميديا", department: "السوشيال ميديا", baseSalary: 7000, isManager: false }
         ];
 
-        let employees = JSON.parse(localStorage.getItem('tobim_employees_v3'));
+        let employees = JSON.parse(localStorage.getItem('tobim_employees_v5'));
         if (!employees || employees.length === 0) {
             employees = defaultEmployees;
-            localStorage.setItem('tobim_employees_v3', JSON.stringify(employees));
+            localStorage.setItem('tobim_employees_v5', JSON.stringify(employees));
         }
 
         const container = document.getElementById('departments-container');
@@ -207,6 +216,8 @@
                     else if(dept === 'المبيعات') deptIcon = 'fa-handshake';
                     else if(dept === 'تقنية المعلومات') deptIcon = 'fa-laptop-code';
                     else if(dept === 'الجرافيك') deptIcon = 'fa-palette';
+                    else if(dept === 'المدربين') deptIcon = 'fa-chalkboard-user';
+                    else if(dept === 'السوشيال ميديا') deptIcon = 'fa-share-nodes';
 
                     const headerHtml = `
                         <div class="bg-[#0f172a] p-4 border-b border-gray-800 flex items-center gap-3">
@@ -364,7 +375,7 @@
             const index = employees.findIndex(e => e.id === id);
             if(index !== -1) {
                 employees[index].department = newDept;
-                localStorage.setItem('tobim_employees_v3', JSON.stringify(employees));
+                localStorage.setItem('tobim_employees_v5', JSON.stringify(employees));
                 renderDepartments(); 
             }
         };
@@ -409,7 +420,7 @@
             };
 
             employees.push(newEmp);
-            localStorage.setItem('tobim_employees_v3', JSON.stringify(employees));
+            localStorage.setItem('tobim_employees_v5', JSON.stringify(employees));
             
             closeEmployeeModal();
             document.getElementById('filter-dept').value = 'الكل';

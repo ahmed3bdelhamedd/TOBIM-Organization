@@ -44,28 +44,32 @@
             </button>
         </div>
 
-        <!-- فلاتر التقارير والمدة (جديد) -->
+        <!-- فلاتر التقارير والمدة والقسم -->
         <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 mb-6">
             <div>
+                <label class="block text-sm text-gray-400 mb-2">القسم</label>
+                <!-- إضافة فلتر القسم -->
+                <select id="filter-dept" onchange="filterEmployees()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
+                    <option value="الكل">جميع الأقسام</option>
+                    <option value="الإدارة">الإدارة</option>
+                    <option value="التسويق">التسويق</option>
+                    <option value="المبيعات">المبيعات</option>
+                    <option value="تقنية المعلومات">تقنية المعلومات</option>
+                    <option value="الموارد البشرية">الموارد البشرية</option>
+                    <option value="الخدمات">الخدمات</option>
+                </select>
+            </div>
+            <div>
                 <label class="block text-sm text-gray-400 mb-2">الشهر</label>
-                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-32">
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
                     <option value="1">يناير</option>
-                    <option value="2">فبراير</option>
-                    <option value="3">مارس</option>
-                    <option value="4">أبريل</option>
-                    <option value="5">مايو</option>
-                    <option value="6">يونيو</option>
-                    <option value="7">يوليو</option>
-                    <option value="8">أغسطس</option>
-                    <option value="9">سبتمبر</option>
-                    <option value="10">أكتوبر</option>
                     <option value="11" selected>نوفمبر</option>
                     <option value="12">ديسمبر</option>
                 </select>
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2">السنة</label>
-                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-32">
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
                     <option value="2026" selected>2026</option>
                     <option value="2027">2027</option>
                 </select>
@@ -78,10 +82,11 @@
         <!-- قسم إدارة الرواتب -->
         <div class="bg-[#111827] rounded-3xl border border-gray-800 overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse min-w-[800px]">
+                <table class="w-full text-right border-collapse min-w-[900px]">
                     <thead>
                         <tr class="bg-[#0f172a] text-gray-400 text-sm border-b border-gray-800">
                             <th class="p-4 font-semibold">الموظف</th>
+                            <th class="p-4 font-semibold">القسم</th>
                             <th class="p-4 font-semibold">الراتب الأساسي</th>
                             <th class="p-4 font-semibold text-emerald-400">عمولة / مكافأة (+)</th>
                             <th class="p-4 font-semibold text-rose-400">خصم / سلف (-)</th>
@@ -96,7 +101,7 @@
             
             <!-- ملخص إجمالي الرواتب -->
             <div class="bg-[#0f172a] p-4 border-t border-gray-800 flex justify-between items-center">
-                <span class="text-gray-400 font-bold">إجمالي الرواتب المستحقة لهذا الشهر:</span>
+                <span class="text-gray-400 font-bold">إجمالي الرواتب المستحقة (للقسم المختار):</span>
                 <span id="total-payroll" class="text-2xl font-black text-white">0 ج.م</span>
             </div>
         </div>
@@ -105,27 +110,37 @@
 
     <!-- سكريبت إدارة الرواتب -->
     <script>
+        // الأقسام المتاحة
+        const departments = ['الإدارة', 'التسويق', 'المبيعات', 'تقنية المعلومات', 'الموارد البشرية', 'الخدمات'];
+
+        // بيانات الموظفين مع الأقسام
         const employees = [
-            { id: 1, name: "صلاح البدوي", role: "المدير", baseSalary: 40000, isManager: true },
-            { id: 2, name: "هشام غيب", role: "موظف", baseSalary: 8000, isManager: false },
-            { id: 3, name: "أحمد عبد الحميد", role: "موظف", baseSalary: 6500, isManager: false },
-            { id: 4, name: "عمر عبد العزيز", role: "موظف", baseSalary: 6500, isManager: false },
-            { id: 5, name: "صباح شعبان", role: "موظف", baseSalary: 6500, isManager: false },
-            { id: 6, name: "محسن إسلام", role: "موظف", baseSalary: 10000, isManager: false },
-            { id: 7, name: "صلاح الدين", role: "موظف", baseSalary: 4500, isManager: false },
-            { id: 8, name: "عامر علي", role: "موظف", baseSalary: 160000, isManager: false }
+            { id: 1, name: "صلاح البدوي", role: "المدير", department: "الإدارة", baseSalary: 40000, isManager: true },
+            { id: 2, name: "هشام غيب", role: "موظف", department: "المبيعات", baseSalary: 8000, isManager: false },
+            { id: 3, name: "أحمد عبد الحميد", role: "موظف", department: "التسويق", baseSalary: 6500, isManager: false },
+            { id: 4, name: "عمر عبد العزيز", role: "موظف", department: "المبيعات", baseSalary: 6500, isManager: false },
+            { id: 5, name: "صباح شعبان", role: "موظف", department: "الموارد البشرية", baseSalary: 6500, isManager: false },
+            { id: 6, name: "محسن إسلام", role: "موظف", department: "تقنية المعلومات", baseSalary: 10000, isManager: false },
+            { id: 7, name: "صلاح الدين", role: "موظف", department: "الخدمات", baseSalary: 4500, isManager: false },
+            { id: 8, name: "عامر علي", role: "موظف", department: "الإدارة", baseSalary: 160000, isManager: false }
         ];
 
         const tbody = document.getElementById('employees-tbody');
         const totalPayrollElement = document.getElementById('total-payroll');
 
+        // رسم الجدول
         function renderEmployees() {
             tbody.innerHTML = '';
             employees.forEach(emp => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-800/30 transition group";
+                tr.id = `row_${emp.id}`;
+                tr.className = "hover:bg-gray-800/30 transition group emp-row";
+                tr.setAttribute('data-dept', emp.department); // لتسهيل الفلترة
                 
                 const managerBadge = emp.isManager ? `<span class="bg-amber-500/20 text-amber-400 text-xs px-2 py-1 rounded-md font-bold mr-2 border border-amber-500/20">المدير</span>` : '';
+                
+                // توليد قائمة الأقسام المنسدلة
+                const deptOptions = departments.map(d => `<option value="${d}" ${emp.department === d ? 'selected' : ''}>${d}</option>`).join('');
 
                 tr.innerHTML = `
                     <td class="p-4">
@@ -137,6 +152,11 @@
                                 <p class="text-white font-bold text-sm">${emp.name} ${managerBadge}</p>
                             </div>
                         </div>
+                    </td>
+                    <td class="p-4">
+                        <select onchange="changeDepartment(${emp.id}, this.value)" class="bg-[#0b0f19] border border-gray-700 text-gray-300 text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-blue-500 transition">
+                            ${deptOptions}
+                        </select>
                     </td>
                     <td class="p-4 font-bold text-gray-300">
                         ${emp.baseSalary.toLocaleString()} <span class="text-xs text-gray-500 font-normal">ج.م</span>
@@ -162,6 +182,32 @@
             updateTotalPayroll();
         }
 
+        // تغيير قسم الموظف
+        window.changeDepartment = function(id, newDept) {
+            const emp = employees.find(e => e.id === id);
+            if(emp) {
+                emp.department = newDept;
+                document.getElementById(`row_${id}`).setAttribute('data-dept', newDept);
+                filterEmployees(); // تحديث العرض بناءً على الفلتر النشط
+            }
+        };
+
+        // تصفية الجدول بناءً على القسم
+        window.filterEmployees = function() {
+            const selectedDept = document.getElementById('filter-dept').value;
+            const rows = document.querySelectorAll('.emp-row');
+            
+            rows.forEach(row => {
+                if (selectedDept === 'الكل' || row.getAttribute('data-dept') === selectedDept) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            updateTotalPayroll(); // تحديث الإجمالي بعد الفلترة
+        };
+
         // دالة حساب الصافي للموظف الواحد
         window.calculateNet = function(id, base) {
             let comm = parseFloat(document.getElementById(`comm_${id}`).value) || 0;
@@ -171,9 +217,8 @@
             
             const netElement = document.getElementById(`net_${id}`);
             netElement.innerHTML = `${net.toLocaleString()} <span class="text-xs text-gray-500 font-normal">ج.م</span>`;
-            netElement.setAttribute('data-net', net); // لحفظ القيمة وتجميعها لاحقاً
+            netElement.setAttribute('data-net', net); 
             
-            // تغيير اللون بناءً على الزيادة أو الخصم
             if (net > base) {
                 netElement.className = "text-lg font-black text-emerald-400";
             } else if (net < base) {
@@ -185,13 +230,22 @@
             updateTotalPayroll();
         };
 
-        // دالة لحساب الإجمالي الكلي للرواتب في أسفل الجدول
+        // دالة لحساب الإجمالي الكلي للموظفين الظاهرين في الجدول
         function updateTotalPayroll() {
             let total = 0;
-            employees.forEach(emp => {
-                const netElement = document.getElementById(`net_${emp.id}`);
-                total += parseFloat(netElement.getAttribute('data-net')) || 0;
+            const rows = document.querySelectorAll('.emp-row');
+            
+            rows.forEach(row => {
+                // نجمع رواتب الموظفين الغير مخفيين بالفلتر فقط
+                if(row.style.display !== 'none') {
+                    const id = row.id.split('_')[1];
+                    const netElement = document.getElementById(`net_${id}`);
+                    if(netElement) {
+                        total += parseFloat(netElement.getAttribute('data-net')) || 0;
+                    }
+                }
             });
+            
             totalPayrollElement.innerHTML = `${total.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
         }
 

@@ -20,8 +20,8 @@
     <!-- حماية الصفحة للأدمن فقط -->
     <script>
         if (localStorage.getItem('tobim_user_email') !== 'info@ahmedabdelhamed.com') {
-            alert("عذراً، هذه الصفحة مخصصة للإدارة فقط.");
-            location.href = 'subscriptions.html';
+            alert("عذراً، هذه الصفحة مخصصة لمدير النظام (الإدارة) فقط.");
+            window.location.href = 'subscriptions.html';
         }
     </script>
 
@@ -88,11 +88,40 @@
             </button>
         </div>
 
+        <!-- فلاتر التقارير والمدة والتصنيف -->
+        <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 mb-6 shadow-lg">
+            <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-filter text-blue-500 ml-1"></i> تصنيف المصروف</label>
+                <select id="filter-category" onchange="renderExpenses()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-48">
+                    <option value="الكل">جميع التصنيفات</option>
+                    <option value="إيجار">إيجار</option>
+                    <option value="فواتير ومرافق">فواتير ومرافق</option>
+                    <option value="بوفيه ونظافة">بوفيه ونظافة</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar-days text-emerald-500 ml-1"></i> الشهر</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
+                    <option value="1">يناير</option>
+                    <option value="11" selected>نوفمبر</option>
+                    <option value="12">ديسمبر</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar text-amber-500 ml-1"></i> السنة</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
+                    <option value="2026" selected>2026</option>
+                    <option value="2027">2027</option>
+                </select>
+            </div>
+        </div>
+
         <!-- ملخص المصروفات -->
         <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
             <div>
                 <h3 class="text-gray-400 text-sm font-bold">إجمالي المصروفات العامة</h3>
-                <p id="total-expenses-display" class="text-3xl font-black text-rose-400 mt-1">20,000 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                <p id="total-expenses-display" class="text-3xl font-black text-rose-400 mt-1">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
             </div>
             <i class="fa-solid fa-receipt text-rose-500/20 text-5xl"></i>
         </div>
@@ -118,16 +147,16 @@
 
     <!-- نافذة إضافة مصروف -->
     <div id="expenseModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
-            <h3 class="text-xl font-black text-white mb-6">إضافة مصروف جديد</h3>
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
+            <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-receipt text-blue-500 ml-2"></i> إضافة مصروف جديد</h3>
             <form onsubmit="saveExpense(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">البيان / الوصف</label>
-                    <input type="text" id="expDesc" required placeholder="مثال: إيجار المقر، كهرباء" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none">
+                    <label class="block text-sm text-gray-400 mb-1">البيان / الوصف *</label>
+                    <input type="text" id="expDesc" required placeholder="مثال: إيجار المقر، كهرباء" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">التصنيف</label>
-                    <select id="expCategory" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none">
+                    <label class="block text-sm text-gray-400 mb-1">التصنيف *</label>
+                    <select id="expCategory" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                         <option value="إيجار">إيجار</option>
                         <option value="فواتير ومرافق">فواتير ومرافق</option>
                         <option value="بوفيه ونظافة">بوفيه ونظافة</option>
@@ -135,12 +164,12 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">القيمة (ج.م)</label>
-                    <input type="number" id="expAmount" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none">
+                    <label class="block text-sm text-gray-400 mb-1">القيمة (ج.م) *</label>
+                    <input type="number" id="expAmount" required placeholder="1000" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                 </div>
                 <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold">حفظ</button>
-                    <button type="button" onclick="closeExpenseModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold">إلغاء</button>
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition">حفظ</button>
+                    <button type="button" onclick="closeExpenseModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
                 </div>
             </form>
         </div>
@@ -188,8 +217,8 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // المصروفات
-        let expensesList = JSON.parse(localStorage.getItem('tobim_expenses_v1')) || [
+        // المصروفات مع الفلترة
+        let expensesList = JSON.parse(localStorage.getItem('tobim_expenses_v2')) || [
             { id: 1, date: '01/11/2026', desc: 'إيجار المقر', category: 'إيجار', amount: 12500 },
             { id: 2, date: '05/11/2026', desc: 'فواتير كهرباء ومياه', category: 'فواتير ومرافق', amount: 3500 },
             { id: 3, date: '10/11/2026', desc: 'بوفيه ونظافة', category: 'بوفيه ونظافة', amount: 4000 }
@@ -198,8 +227,12 @@
         function renderExpenses() {
             const tbody = document.getElementById('expenses-tbody');
             tbody.innerHTML = '';
+            const filterCat = document.getElementById('filter-category').value;
+            
             let total = 0;
-            expensesList.forEach(exp => {
+            let filteredList = filterCat === 'الكل' ? expensesList : expensesList.filter(e => e.category === filterCat);
+
+            filteredList.forEach(exp => {
                 total += exp.amount;
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-800/30 transition">
@@ -224,7 +257,7 @@
             let today = new Date().toLocaleDateString('en-GB');
 
             expensesList.push({ id: Date.now(), date: today, desc, category, amount });
-            localStorage.setItem('tobim_expenses_v1', JSON.stringify(expensesList));
+            localStorage.setItem('tobim_expenses_v2', JSON.stringify(expensesList));
             renderExpenses();
             closeExpenseModal();
         }

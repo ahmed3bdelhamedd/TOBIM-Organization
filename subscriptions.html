@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — سجل الاشتراكات</title>
+    <title>TOBIM — سجل الاشتراكات والمبيعات</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -43,7 +43,6 @@
                 <h2 class="text-2xl font-black text-white">سجل الاشتراكات والمبيعات</h2>
                 <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات حسب الموظف والقسم (للعرض فقط)</p>
             </div>
-            <!-- زر الانتقال لصفحة إضافة اشتراك جديد -->
             <a href="new-sub.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg shadow-emerald-900/50 flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> اشتراك جديد
             </a>
@@ -55,9 +54,9 @@
                 <label class="block text-sm text-gray-400 mb-2">مسؤول المبيعات (Sales)</label>
                 <select id="filter-sales" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
                     <option value="الكل">جميع الموظفين</option>
-                    <option value="عمر">عمر</option>
-                    <option value="محسن">محسن</option>
-                    <option value="صباح">صباح</option>
+                    <option value="عمر">عمر (10)</option>
+                    <option value="محسن">محسن (43)</option>
+                    <option value="صباح">صباح (10)</option>
                 </select>
             </div>
             
@@ -87,6 +86,7 @@
             <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
                 <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-chart-line mr-2 text-blue-400"></i> إجمالي قيمة المبيعات</h3>
                 <p id="summary-total" class="text-3xl font-black text-white mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+                <p class="text-xs text-gray-400 mt-1">للاشتراكات المعروضة: <span id="summary-count" class="font-bold text-white">0</span> اشتراك</p>
             </div>
             <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
                 <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-money-bill-wave mr-2 text-emerald-400"></i> المحصل (المدفوع)</h3>
@@ -103,9 +103,9 @@
             <div class="p-4 border-b border-gray-800 bg-[#0f172a]">
                 <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-list ml-2"></i>اضغط على اسم المشترك لعرض إيصال الدفع (الريسيت)</h3>
             </div>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto h-[600px]">
                 <table class="w-full text-right text-sm min-w-[1000px]">
-                    <thead class="bg-[#0f172a] text-gray-400 text-xs uppercase border-b border-gray-800">
+                    <thead class="bg-[#0f172a] text-gray-400 text-xs uppercase border-b border-gray-800 sticky top-0 z-20">
                         <tr>
                             <th class="p-4"># ID</th>
                             <th class="p-4">الاسم</th>
@@ -128,17 +128,73 @@
     </main>
 
     <script>
-        // بيانات افتراضية موسعة لتجربة الفلاتر
-        let subs = JSON.parse(localStorage.getItem('tobim_subs') || '[]');
-        
-        if(subs.length === 0) {
-            subs = [
-                {id: 201135, fullName: 'شادي مصطفى', mobile: '0111111111', salesRep: 'عمر', prodType: 'دبلومة', spec: 'إنشائي', round: 'Round 27', totalPrice: 12000, paidAmount: 9500, remainingAmount: 2500, status: 'متبقي (Rest)'},
-                {id: 201136, fullName: 'أحمد محمود', mobile: '0122222222', salesRep: 'محسن', prodType: 'كورس', spec: 'معماري', round: 'Round 15', totalPrice: 4000, paidAmount: 4000, remainingAmount: 0, status: 'خالص (Paid)'},
-                {id: 201137, fullName: 'سارة خالد', mobile: '0100000000', salesRep: 'صباح', prodType: 'برنامج', spec: 'عام', round: 'N/A', totalPrice: 1500, paidAmount: 1500, remainingAmount: 0, status: 'خالص (Paid)'},
-                {id: 201138, fullName: 'محمد علي', mobile: '0155555555', salesRep: 'عمر', prodType: 'دبلومة', spec: 'معماري', round: 'Round 28', totalPrice: 12000, paidAmount: 6000, remainingAmount: 6000, status: 'متبقي (Rest)'}
+        // دالة لتوليد بيانات عشوائية
+        function generateDummyData() {
+            let dummySubs = [];
+            let currentId = 201135;
+            
+            const firstNames = ["أحمد", "محمد", "محمود", "سارة", "فاطمة", "علي", "كريم", "منى", "شادي", "خالد", "يوسف", "عمر", "زينب", "مريم", "إسلام", "حسن", "حسين"];
+            const lastNames = ["عبد الحميد", "محمود", "سعيد", "مصطفى", "إبراهيم", "عادل", "توفيق", "النجار", "الحداد", "المصري", "سامي", "كمال"];
+            
+            const productTypes = [
+                { type: 'دبلومة', spec: 'إنشائي', price: 12000 },
+                { type: 'دبلومة', spec: 'معماري', price: 12000 },
+                { type: 'كورس', spec: 'إنشائي', price: 4500 },
+                { type: 'كورس', spec: 'معماري', price: 4000 },
+                { type: 'برنامج', spec: 'عام', price: 1500 },
+                { type: 'برنامج', spec: 'معماري', price: 2000 }
             ];
-            localStorage.setItem('tobim_subs', JSON.stringify(subs));
+
+            function getRandomName() {
+                return firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)];
+            }
+
+            function getRandomMobile() {
+                return "01" + Math.floor(10000000 + Math.random() * 90000000);
+            }
+
+            // دالة إنشاء مجموعة للموظف
+            function createSubsForRep(salesRep, count) {
+                for(let i = 0; i < count; i++) {
+                    let prod = productTypes[Math.floor(Math.random() * productTypes.length)];
+                    // توليد مبلغ مدفوع (إما مدفوع بالكامل أو جزء منه)
+                    let isFullyPaid = Math.random() > 0.5;
+                    let paid = isFullyPaid ? prod.price : (Math.floor(Math.random() * (prod.price / 1000)) * 1000);
+                    if(paid === 0) paid = 500; // عربون مبدئي
+                    
+                    let remaining = prod.price - paid;
+                    let status = remaining === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
+                    let round = prod.type === 'برنامج' ? 'N/A' : 'Round ' + (Math.floor(Math.random() * 10) + 20);
+
+                    dummySubs.push({
+                        id: currentId++,
+                        fullName: getRandomName(),
+                        mobile: getRandomMobile(),
+                        salesRep: salesRep,
+                        prodType: prod.type,
+                        spec: prod.spec,
+                        round: round,
+                        totalPrice: prod.price,
+                        paidAmount: paid,
+                        remainingAmount: remaining,
+                        status: status
+                    });
+                }
+            }
+
+            // إنشاء 10 لعمر، 10 لصباح، 43 لمحسن
+            createSubsForRep('عمر', 10);
+            createSubsForRep('صباح', 10);
+            createSubsForRep('محسن', 43);
+
+            return dummySubs;
+        }
+
+        // جلب البيانات من LocalStorage أو توليدها للمرة الأولى
+        let subs = JSON.parse(localStorage.getItem('tobim_subs_v2') || '[]');
+        if (subs.length === 0) {
+            subs = generateDummyData();
+            localStorage.setItem('tobim_subs_v2', JSON.stringify(subs));
         }
 
         const tbody = document.getElementById('tableBody');
@@ -187,26 +243,4 @@
                             <td class="p-4 text-sm text-gray-200">${typeIcon} ${s.prodType} (${s.spec})</td>
                             <td class="p-4 text-sm text-gray-400">${s.round}</td>
                             <td class="p-4 font-bold text-white">${s.totalPrice.toLocaleString()}</td>
-                            <td class="p-4 font-bold text-emerald-400">${s.paidAmount.toLocaleString()}</td>
-                            <td class="p-4 font-bold text-amber-400">${s.remainingAmount.toLocaleString()}</td>
-                            <td class="p-4">${statusBadge}</td>
-                        </tr>
-                    `;
-                }
-            });
-
-            if(displayedCount === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-8 text-center text-gray-500">لا توجد بيانات مطابقة للفلاتر المحددة</td></tr>`;
-            }
-
-            // تحديث بطاقات الملخص
-            document.getElementById('summary-total').innerHTML = `${totalSales.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
-            document.getElementById('summary-paid').innerHTML = `${totalPaid.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
-            document.getElementById('summary-rest').innerHTML = `${totalRest.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
-        };
-
-        // عرض البيانات فور التحميل
-        filterTable();
-    </script>
-</body>
-</html>
+                            <td class="p-4 font-bold text-emerald-400">${s.paidAmount.toLocaleString

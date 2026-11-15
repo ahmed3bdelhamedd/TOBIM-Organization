@@ -16,56 +16,305 @@
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .clickable-card { transition: all 0.3s ease; }
-        .clickable-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
+        .clickable-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); z-index: 10; }
     </style>
 </head>
-<body class="text-gray-100 min-h-screen flex flex-col">
+<body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
 
     <!-- حماية صفحة الماليات -->
     <script>
-        const userEmailCheck = localStorage.getItem('tobim_user_email');
-        if (userEmailCheck !== 'info@ahmedabdelhamed.com') {
+        if (localStorage.getItem('tobim_user_email') !== 'info@ahmedabdelhamed.com') {
             alert("عذراً، هذه الصفحة مخصصة لمدير النظام (الإدارة) فقط.");
             window.location.href = 'subscriptions.html';
         }
     </script>
 
-    <!-- الهيدر الموحد -->
-    <!-- (يمكنك إدراج كود الهيدر المشترك هنا) -->
+    <!-- الهيدر الموحد مع بروفايل الحساب -->
+    <header class="bg-[#0f172a]/90 backdrop-blur-md border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="location.href='dashboard.html'">
+                <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="w-10 h-10 rounded-xl object-cover border border-gray-700 shadow-lg" alt="Logo">
+                <span class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">TO BIM</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
+                <a href="dashboard.html" id="nav-finance" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">الماليات</a>
+                <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">سجل الاشتراكات</a>
+                <a href="new-sub.html" class="bg-emerald-600/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> اشتراك جديد
+                </a>
+            </nav>
+        </div>
+
+        <div class="relative">
+            <button onclick="toggleProfileDropdown()" class="flex items-center gap-3 bg-[#111827] hover:bg-gray-800 border border-gray-700 px-4 py-2 rounded-2xl transition">
+                <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white shadow-md" id="user-avatar-initial">أ</div>
+                <div class="text-right hidden sm:block">
+                    <p id="header-username" class="text-xs font-bold text-white">أحمد عبد الحميد</p>
+                    <p id="header-useremail" class="text-[10px] text-gray-400">info@ahmedabdelhamed.com</p>
+                </div>
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 mr-1"></i>
+            </button>
+            <div id="profile-dropdown" class="hidden absolute left-0 mt-3 w-64 bg-[#111827] border border-gray-700 rounded-2xl shadow-2xl overflow-hidden z-50">
+                <div class="p-4 border-b border-gray-800 bg-[#0f172a]">
+                    <p class="text-xs text-gray-400">الحساب الحالي</p>
+                    <p id="dropdown-email" class="text-xs font-bold text-white truncate mt-1">info@ahmedabdelhamed.com</p>
+                </div>
+                <div class="p-2 space-y-1">
+                    <button onclick="openProfileModal()" class="w-full text-right px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-blue-400"></i> تعديل بيانات الحساب
+                    </button>
+                    <button onclick="logout()" class="w-full text-right px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-8 relative z-10">
-        <!-- شريط التنقل الفرعي -->
+        
+        <!-- شريط التنقل المتكامل -->
         <div class="flex items-center gap-3 overflow-x-auto pb-4 border-b border-gray-800/50">
-            <a href="dashboard.html" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap shadow-lg"><i class="fa-solid fa-chart-pie ml-2"></i>الداشبورد العام</a>
-            <a href="statements.html" class="bg-[#111827] text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-file-invoice-dollar ml-2"></i>كشف الحسابات</a>
-            <a href="payroll.html" class="bg-[#111827] text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</a>
-            <a href="marketing.html" class="bg-[#111827] text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-bullhorn ml-2"></i>التسويق</a>
-            <a href="expenses.html" class="bg-[#111827] text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><id class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
+            <a href="dashboard.html" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap shadow-lg shadow-blue-900/50"><i class="fa-solid fa-chart-pie ml-2"></i>الداشبورد العام</a>
+            <a href="statements.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-file-invoice-dollar ml-2"></i>كشف الحسابات</a>
+            <a href="payroll.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</a>
+            <a href="marketing.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-bullhorn ml-2"></i>التسويق</a>
+            <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
         </div>
 
-        <!-- بطاقات الملخص المالي -->
+        <!-- بطاقات الملخص المالي الشامل -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <a href="subscriptions.html" class="clickable-card block bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-emerald-500/30">
-                <h3 class="font-bold text-gray-400 mb-2 text-sm">الإيرادات المحصلة</h3>
-                <p class="text-2xl font-black text-emerald-400">223,000 <span class="text-xs text-emerald-500">ج.م</span></p>
+            <a href="subscriptions.html" class="clickable-card block bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-emerald-500/30 hover:border-emerald-400 shadow-xl relative overflow-hidden group">
+                <h3 class="font-bold text-gray-400 mb-2 text-sm flex justify-between items-center group-hover:text-emerald-300">
+                    الإيرادات المحصلة <i class="fa-solid fa-arrow-down-up-across-line text-emerald-400"></i>
+                </h3>
+                <p id="kpi-revenue" class="text-2xl font-black text-emerald-400 mb-1">223,000 <span class="text-xs font-normal text-emerald-500">ج.م</span></p>
+                <p class="text-[10px] text-gray-400 mt-1">إجمالي المبيعات: 355,500 ج.م</p>
             </a>
-            <a href="payroll.html" class="clickable-card block bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-indigo-500/30">
-                <h3 class="font-bold text-gray-400 mb-2 text-sm">إجمالي الرواتب</h3>
-                <p class="text-2xl font-black text-indigo-400">98,000 <span class="text-xs text-indigo-500">ج.م</span></p>
+
+            <a href="payroll.html" class="clickable-card block bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-indigo-500/30 hover:border-indigo-400 shadow-xl relative overflow-hidden group">
+                <h3 class="font-bold text-gray-400 mb-2 text-sm flex justify-between items-center group-hover:text-indigo-300">
+                    إجمالي الرواتب <i class="fa-solid fa-users text-indigo-400"></i>
+                </h3>
+                <p id="kpi-payroll" class="text-2xl font-black text-indigo-400 mb-1">98,000 <span class="text-xs font-normal text-indigo-500">ج.م</span></p>
+                <p class="text-[10px] text-gray-400 mt-1">الرواتب والعمولات المعتمدة</p>
             </a>
-            <a href="marketing.html" class="clickable-card block bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-fuchsia-500/30">
-                <h3 class="font-bold text-gray-400 mb-2 text-sm">الحملات الإعلانية</h3>
-                <p class="text-2xl font-black text-fuchsia-400">25,000 <span class="text-xs text-fuchsia-500">ج.م</span></p>
+
+            <a href="marketing.html" class="clickable-card block bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-fuchsia-500/30 hover:border-fuchsia-400 shadow-xl relative overflow-hidden group">
+                <h3 class="font-bold text-gray-400 mb-2 text-sm flex justify-between items-center group-hover:text-fuchsia-300">
+                    الحملات الإعلانية <i class="fa-solid fa-bullhorn text-fuchsia-400"></i>
+                </h3>
+                <p id="kpi-marketing" class="text-2xl font-black text-fuchsia-400 mb-1">25,000 <span class="text-xs font-normal text-fuchsia-500">ج.م</span></p>
+                <p class="text-[10px] text-gray-400 mt-1">منصات التواصل وجوجل</p>
             </a>
-            <a href="expenses.html" class="clickable-card block bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-rose-500/30">
-                <h3 class="font-bold text-gray-400 mb-2 text-sm">المصروفات العامة</h3>
-                <p class="text-2xl font-black text-rose-400">20,000 <span class="text-xs text-rose-500">ج.م</span></p>
+
+            <a href="expenses.html" class="clickable-card block bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-rose-500/30 hover:border-rose-400 shadow-xl relative overflow-hidden group">
+                <h3 class="font-bold text-gray-400 mb-2 text-sm flex justify-between items-center group-hover:text-rose-300">
+                    المصروفات العامة <i class="fa-solid fa-receipt text-rose-400"></i>
+                </h3>
+                <p id="kpi-expenses" class="text-2xl font-black text-rose-400 mb-1">20,000 <span class="text-xs font-normal text-rose-500">ج.م</span></p>
+                <p class="text-[10px] text-gray-400 mt-1">إيجارات، فواتير، ونثريات</p>
             </a>
-            <a href="statements.html" class="clickable-card block bg-gradient-to-br from-blue-900/40 to-[#111827] p-5 rounded-3xl border border-blue-500/50">
-                <h3 class="font-bold text-blue-200 mb-2 text-sm">صافي الربح</h3>
-                <p class="text-2xl font-black text-white">80,000 <span class="text-xs text-blue-300">ج.م</span></p>
+
+            <a href="statements.html" class="clickable-card block bg-gradient-to-br from-blue-900/40 to-[#111827] p-5 rounded-3xl border border-blue-500/50 hover:border-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.15)] relative overflow-hidden group">
+                <h3 class="font-bold text-blue-200 mb-2 text-sm flex justify-between items-center group-hover:text-blue-100">
+                    صافي الربح <i class="fa-solid fa-sack-dollar text-blue-400 text-xl"></i>
+                </h3>
+                <p id="kpi-net" class="text-2xl font-black text-white mb-1">80,000 <span class="text-xs font-normal text-blue-300">ج.م</span></p>
+                <p class="text-[10px] text-blue-300 mt-1">بعد خصم كافة الالتزامات</p>
             </a>
         </div>
+
+        <!-- قسم الرسوم البيانية -->
+        <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl mb-6">
+            <h3 class="font-black text-xl text-white mb-6 text-center">ملخص التدفق النقدي</h3>
+            <div class="relative h-48 w-full">
+                <canvas id="cashFlowChart"></canvas>
+            </div>
+        </div>
+
+        <!-- قسم الدوائر البيانية الثلاث -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- 1. تحليل المصروفات -->
+            <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl flex flex-col lg:flex-row items-center justify-between">
+                <div class="flex-1 w-full relative min-h-[250px]">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+                        <h3 class="font-black text-white text-lg text-center">تحليل تكاليف التشغيل</h3>
+                        <p class="text-[10px] text-gray-400 text-center">أين تذهب أموال الشركة؟</p>
+                    </div>
+                    <canvas id="expenseChart"></canvas>
+                </div>
+                <div class="w-full lg:w-48 mt-6 lg:mt-0 lg:pr-6 space-y-4">
+                    <div>
+                        <span class="flex items-center text-sm font-bold text-gray-300"><span class="w-3 h-3 rounded-full bg-[#6366f1] ml-2"></span>الرواتب</span>
+                        <div class="flex justify-between items-center mt-1 pr-5">
+                            <span class="font-black text-[#6366f1] text-lg">69%</span>
+                            <p class="text-xs text-gray-500">98,000 ج.م</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="flex items-center text-sm font-bold text-gray-300"><span class="w-3 h-3 rounded-full bg-[#d946ef] ml-2"></span>التسويق</span>
+                        <div class="flex justify-between items-center mt-1 pr-5">
+                            <span class="font-black text-[#d946ef] text-lg">17%</span>
+                            <p class="text-xs text-gray-500">25,000 ج.م</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="flex items-center text-sm font-bold text-gray-300"><span class="w-3 h-3 rounded-full bg-[#f43f5e] ml-2"></span>المصروفات</span>
+                        <div class="flex justify-between items-center mt-1 pr-5">
+                            <span class="font-black text-[#f43f5e] text-lg">14%</span>
+                            <p class="text-xs text-gray-500">20,000 ج.م</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. توزيع الإيرادات -->
+            <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl flex flex-col lg:flex-row items-center justify-between">
+                <div class="flex-1 w-full relative min-h-[250px]">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+                        <h3 class="font-black text-white text-lg text-center">مصادر الإيرادات</h3>
+                        <p class="text-[10px] text-gray-400 text-center">توزيع الدخل على المجالات</p>
+                    </div>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="w-full lg:w-48 mt-6 lg:mt-0 lg:pr-6 space-y-4">
+                    <div>
+                        <span class="flex items-center text-sm font-bold text-gray-300"><span class="w-3 h-3 rounded-full bg-[#3b82f6] ml-2"></span>المعماري</span>
+                        <div class="flex justify-between items-center mt-1 pr-5">
+                            <span class="font-black text-[#3b82f6] text-lg">36%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="flex items-center text-sm font-bold text-gray-300"><span class="w-3 h-3 rounded-full bg-[#10b981] ml-2"></span>الإنشائي</span>
+                        <div class="flex justify-between items-center mt-1 pr-5">
+                            <span class="font-black text-[#10b981] text-lg">27%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="flex items-center text-sm font-bold text-gray-300"><span class="w-3 h-3 rounded-full bg-[#f59e0b] ml-2"></span>الكورسات</span>
+                        <div class="flex justify-between items-center mt-1 pr-5">
+                            <span class="font-black text-[#f59e0b] text-lg">37%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. تحليل مبيعات الفريق -->
+            <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl flex flex-col lg:flex-row items-center justify-between">
+                <div class="flex-1 w-full relative min-h-[250px]">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+                        <h3 class="font-black text-white text-lg text-center">تحليل مبيعات الفريق</h3>
+                        <p class="text-[10px] text-gray-400 text-center">أداء موظفي المبيعات</p>
+                    </div>
+                    <canvas id="salesRepChart"></canvas>
+                </div>
+                <div class="w-full lg:w-48 mt-6 lg:mt-0 lg:pr-6 space-y-4">
+                    <div>
+                        <span class="flex items-center text-sm font-bold text-gray-300"><span class="w-3 h-3 rounded-full bg-[#14b8a6] ml-2"></span>عمر</span>
+                        <div class="flex justify-between items-center mt-1 pr-5">
+                            <span class="font-black text-[#14b8a6] text-lg">35%</span>
+                            <p class="text-xs text-gray-500">125,000 ج.م</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="flex items-center text-sm font-bold text-gray-300"><span class="w-3 h-3 rounded-full bg-[#f97316] ml-2"></span>صباح</span>
+                        <div class="flex justify-between items-center mt-1 pr-5">
+                            <span class="font-black text-[#f97316] text-lg">32%</span>
+                            <p class="text-xs text-gray-500">115,500 ج.م</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="flex items-center text-sm font-bold text-gray-300"><span class="w-3 h-3 rounded-full bg-[#8b5cf6] ml-2"></span>محسن</span>
+                        <div class="flex justify-between items-center mt-1 pr-5">
+                            <span class="font-black text-[#8b5cf6] text-lg">33%</span>
+                            <p class="text-xs text-gray-500">115,000 ج.م</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </main>
+
+    <!-- نافذة تعديل الحساب -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-black text-white mb-6">تعديل بيانات الحساب</h3>
+            <form onsubmit="saveProfileChanges(event)" class="space-y-4">
+                <input type="text" id="profile-name-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <input type="email" id="profile-email-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">حفظ</button>
+                    <button type="button" onclick="closeProfileModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2 rounded-xl font-bold">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
+            const savedName = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
+            document.getElementById('header-useremail').innerText = savedEmail;
+            document.getElementById('dropdown-email').innerText = savedEmail;
+            document.getElementById('header-username').innerText = savedName;
+            document.getElementById('user-avatar-initial').innerText = savedName.charAt(0);
+        });
+
+        function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
+        function openProfileModal() {
+            document.getElementById('profile-dropdown').classList.add('hidden');
+            document.getElementById('profile-name-input').value = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
+            document.getElementById('profile-email-input').value = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+        function saveProfileChanges(e) {
+            e.preventDefault();
+            localStorage.setItem('tobim_user_name', document.getElementById('profile-name-input').value);
+            localStorage.setItem('tobim_user_email', document.getElementById('profile-email-input').value);
+            alert("تم التحديث بنجاح!");
+            location.reload();
+        }
+        function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
+
+        // تهيئة الرسوم البيانية
+        const ctxFlow = document.getElementById('cashFlowChart').getContext('2d');
+        new Chart(ctxFlow, {
+            type: 'bar',
+            data: {
+                labels: ['ملخص التدفق النقدي'], 
+                datasets: [
+                    { label: 'إجمالي المحصل', data: [223000], backgroundColor: '#10b981', borderRadius: 8, barPercentage: 0.3 },
+                    { label: 'إجمالي التكاليف', data: [143000], backgroundColor: '#f43f5e', borderRadius: 8, barPercentage: 0.3 }
+                ]
+            },
+            options: {
+                indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { grid: { color: 'rgba(30, 41, 59, 0.5)' }, beginAtZero: true }, y: { grid: { display: false } } }
+            }
+        });
+
+        new Chart(document.getElementById('expenseChart'), {
+            type: 'doughnut',
+            data: { labels: ['الرواتب', 'التسويق', 'مصروفات'], datasets: [{ data: [98000, 25000, 20000], backgroundColor: ['#6366f1', '#d946ef', '#f43f5e'], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false } } }
+        });
+
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'doughnut',
+            data: { labels: ['معماري', 'إنشائي', 'كورسات'], datasets: [{ data: [80000, 60000, 83000], backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false } } }
+        });
+
+        new Chart(document.getElementById('salesRepChart'), {
+            type: 'doughnut',
+            data: { labels: ['عمر', 'صباح', 'محسن'], datasets: [{ data: [125000, 115500, 115000], backgroundColor: ['#14b8a6', '#f97316', '#8b5cf6'], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false } } }
+        });
+    </script>
 </body>
 </html>

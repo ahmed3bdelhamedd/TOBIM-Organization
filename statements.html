@@ -5,66 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOBIM — كشف الحسابات</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة SheetJS لقراءة ملفات الإكسيل -->
+    <!-- SheetJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style> body { font-family: 'Cairo', sans-serif; }</style>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Cairo', sans-serif; background-color: #0b0f19; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
 </head>
-<body class="bg-[#0b0f19] text-gray-100 min-h-screen flex flex-col">
+<body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
 
-    <!-- الهيدر الرئيسي -->
-    <header class="bg-[#0f172a] border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-40">
+    <!-- الهيدر العصري -->
+    <header class="bg-[#0f172a]/80 backdrop-blur-md border-b border-gray-800/60 h-20 flex items-center px-6 justify-between sticky top-0 z-50 transition-all">
         <div class="flex items-center gap-6">
-            <div class="flex items-center gap-3">
-                <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="w-10 h-10 rounded-xl object-cover border border-gray-700" alt="Logo">
-                <span class="text-xl font-black text-white">TO BIM</span>
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-blue-500 blur-md opacity-0 group-hover:opacity-40 transition duration-500"></div>
+                    <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="relative w-10 h-10 rounded-xl object-cover border border-gray-700 shadow-lg" alt="Logo">
+                </div>
+                <span class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">TO BIM</span>
             </div>
             <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
-                <a href="dashboard.html" class="bg-blue-600 text-white px-4 py-2 rounded-xl transition shadow-lg shadow-blue-600/20">الماليات</a>
-                <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">الاشتراكات</a>
+                <a href="dashboard.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition transform hover:scale-105">الماليات</a>
+                <a href="subscriptions.html" class="text-gray-400 hover:text-white hover:bg-gray-800/50 px-5 py-2.5 rounded-xl transition">الاشتراكات</a>
             </nav>
         </div>
-        <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-500/20 transition">خروج</button>
+        <div class="flex items-center gap-4">
+            <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 px-4 py-2 rounded-xl text-sm font-bold transition">خروج</button>
+        </div>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6">
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6 relative z-10">
         
-        <!-- شريط التنقل (Sub-header) المحدث -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-gray-800 mb-6">
-            <a href="dashboard.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-chart-pie ml-2"></i>الداشبورد العام</a>
-            <a href="statements.html" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap"><i class="fa-solid fa-file-invoice-dollar ml-2"></i>كشف الحسابات</a>
-            <a href="payroll.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</a>
-            <a href="marketing.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-bullhorn ml-2"></i>التسويق</a>
-            <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
+        <!-- شريط التنقل المتكامل -->
+        <div class="flex items-center gap-3 overflow-x-auto pb-4 border-b border-gray-800/50">
+            <a href="dashboard.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-chart-pie ml-2"></i>الداشبورد العام</a>
+            <a href="statements.html" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap shadow-lg shadow-blue-900/50"><i class="fa-solid fa-file-invoice-dollar ml-2"></i>كشف الحسابات</a>
+            <a href="payroll.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</a>
+            <a href="marketing.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-bullhorn ml-2"></i>التسويق</a>
+            <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
         </div>
 
         <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
             <div>
-                <h2 class="text-2xl font-black text-white">كشف حساب البنوك والخزينة</h2>
-                <p class="text-sm text-gray-400 mt-1">مراجعة الحركات المالية ورفع الكشوفات البنكية</p>
+                <h2 class="text-2xl font-black text-white">إدارة الحسابات المالية</h2>
+                <p class="text-sm text-gray-400 mt-1">مراجعة الحركات، إضافة حسابات، ورفع الكشوفات البنكية</p>
             </div>
             
-            <!-- زر رفع الإكسيل -->
-            <div class="relative">
-                <input type="file" id="excelUpload" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
-                <button onclick="document.getElementById('excelUpload').click()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2">
-                    <i class="fa-solid fa-file-arrow-up"></i> رفع كشف إكسيل
+            <div class="flex gap-3">
+                <!-- زر إضافة حساب جديد -->
+                <button onclick="openAccountModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg shadow-blue-900/50 flex items-center gap-2">
+                    <i class="fa-solid fa-building-columns"></i> إضافة حساب
                 </button>
+
+                <!-- زر رفع الإكسيل -->
+                <div class="relative">
+                    <input type="file" id="excelUpload" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
+                    <button onclick="document.getElementById('excelUpload').click()" class="bg-emerald-600/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-arrow-up"></i> رفع كشف إكسيل
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- فلاتر كشف الحساب -->
-        <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 mb-6">
+        <div class="bg-[#111827]/80 backdrop-blur-xl p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
-                <label class="block text-sm text-gray-400 mb-2">الحساب</label>
+                <label class="block text-sm text-gray-400 mb-2">اختر الحساب</label>
+                <!-- يتم توليد الخيارات برمجياً -->
                 <select id="account-filter" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-48">
-                    <option value="الكل">جميع الحسابات</option>
-                    <option value="CIB">البنك التجاري الدولي (CIB)</option>
-                    <option value="HDB">بنك التعمير والإسكان</option>
-                    <option value="Vodafone">فودافون كاش</option>
-                    <option value="Cash" selected>الخزينة (كاش)</option>
+                    <!-- خيارات الحسابات ستظهر هنا -->
                 </select>
             </div>
             <div>
@@ -75,40 +93,30 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm text-gray-400 mb-2">السنة</label>
-                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
-                    <option value="2026" selected>2026</option>
-                </select>
-            </div>
-            <div>
                 <label class="block text-sm text-gray-400 mb-2">من تاريخ</label>
                 <input type="date" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40" style="color-scheme: dark;">
             </div>
-            <div>
-                <label class="block text-sm text-gray-400 mb-2">إلى تاريخ</label>
-                <input type="date" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40" style="color-scheme: dark;">
-            </div>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex-1 md:flex-none">عرض</button>
+            <button class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex-1 md:flex-none">عرض التقرير</button>
         </div>
 
         <!-- ملخص الحساب المختار -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800">
-                <h3 class="text-gray-400 text-sm font-bold mb-1">إجمالي الوارد (المدة المحددة)</h3>
-                <p id="total-in" class="text-2xl font-black text-emerald-400">45,000 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+            <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
+                <h3 class="text-gray-400 text-sm font-bold mb-1 flex items-center"><i class="fa-solid fa-arrow-down mr-2 text-emerald-400"></i> إجمالي الوارد (المدة المحددة)</h3>
+                <p id="total-in" class="text-3xl font-black text-emerald-400 mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
             </div>
-            <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800">
-                <h3 class="text-gray-400 text-sm font-bold mb-1">إجمالي المنصرف (المدة المحددة)</h3>
-                <p id="total-out" class="text-2xl font-black text-rose-400">12,500 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+            <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
+                <h3 class="text-gray-400 text-sm font-bold mb-1 flex items-center"><i class="fa-solid fa-arrow-up mr-2 text-rose-400"></i> إجمالي المنصرف (المدة المحددة)</h3>
+                <p id="total-out" class="text-3xl font-black text-rose-400 mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
             </div>
-            <div class="bg-[#111827] p-5 rounded-3xl border border-blue-500/30">
-                <h3 class="text-blue-300 text-sm font-bold mb-1">رصيد الإغلاق (الرصيد الفعلي)</h3>
-                <p id="closing-balance" class="text-2xl font-black text-white">32,500 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
+            <div class="bg-gradient-to-br from-blue-900/30 to-[#111827] p-5 rounded-3xl border border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+                <h3 class="text-blue-300 text-sm font-bold mb-1 flex items-center"><i class="fa-solid fa-wallet mr-2 text-blue-400"></i> رصيد الإغلاق الحالي</h3>
+                <p id="closing-balance" class="text-3xl font-black text-white mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
             </div>
         </div>
 
         <!-- جدول كشف الحساب -->
-        <div class="bg-[#111827] rounded-3xl border border-gray-800 overflow-hidden">
+        <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
             <div class="overflow-x-auto">
                 <table class="w-full text-right border-collapse min-w-[900px]" id="statement-table">
                     <thead>
@@ -116,46 +124,117 @@
                             <th class="p-4 font-semibold w-24">التاريخ</th>
                             <th class="p-4 font-semibold w-32">الحساب</th>
                             <th class="p-4 font-semibold">البيان / الوصف</th>
-                            <th class="p-4 font-semibold text-emerald-400 w-32">وارد (دائن)</th>
-                            <th class="p-4 font-semibold text-rose-400 w-32">منصرف (مدين)</th>
+                            <th class="p-4 font-semibold text-emerald-400 w-32">وارد (+)</th>
+                            <th class="p-4 font-semibold text-rose-400 w-32">منصرف (-)</th>
                             <th class="p-4 font-semibold text-blue-400 w-32">الرصيد</th>
                         </tr>
                     </thead>
                     <tbody id="statement-tbody" class="divide-y divide-gray-800/50">
-                        <!-- بيانات افتراضية توضيحية -->
-                        <tr class="hover:bg-gray-800/30 transition">
-                            <td class="p-4 text-sm text-gray-400">01/11/2026</td>
-                            <td class="p-4 text-sm font-bold text-white"><span class="bg-gray-800 px-2 py-1 rounded text-xs">كاش</span></td>
-                            <td class="p-4 text-sm text-white">رصيد افتتاحي</td>
-                            <td class="p-4 font-bold text-emerald-400">0</td>
-                            <td class="p-4 font-bold text-rose-400">0</td>
-                            <td class="p-4 font-black text-blue-400">10,000</td>
-                        </tr>
-                        <tr class="hover:bg-gray-800/30 transition">
-                            <td class="p-4 text-sm text-gray-400">05/11/2026</td>
-                            <td class="p-4 text-sm font-bold text-white"><span class="bg-gray-800 px-2 py-1 rounded text-xs">كاش</span></td>
-                            <td class="p-4 text-sm text-white">تحصيل اشتراكات نقدية</td>
-                            <td class="p-4 font-bold text-emerald-400">45,000</td>
-                            <td class="p-4 font-bold text-rose-400">0</td>
-                            <td class="p-4 font-black text-blue-400">55,000</td>
-                        </tr>
-                        <tr class="hover:bg-gray-800/30 transition">
-                            <td class="p-4 text-sm text-gray-400">10/11/2026</td>
-                            <td class="p-4 text-sm font-bold text-white"><span class="bg-gray-800 px-2 py-1 rounded text-xs">كاش</span></td>
-                            <td class="p-4 text-sm text-white">سداد إيجار المقر نقداً</td>
-                            <td class="p-4 font-bold text-emerald-400">0</td>
-                            <td class="p-4 font-bold text-rose-400">12,500</td>
-                            <td class="p-4 font-black text-blue-400">32,500</td>
-                        </tr>
+                        <tr><td colspan="6" class="p-8 text-center text-gray-500">اختر حساباً وارفع كشف إكسيل لعرض البيانات هنا</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </main>
 
-    <!-- سكريبت قراءة ملف الإكسيل -->
+    <!-- النافذة المنبثقة لإضافة حساب جديد -->
+    <div id="newAccountModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-all">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-black text-white mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-building-columns text-blue-500"></i> إضافة حساب جديد
+            </h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">اسم الحساب (مثال: بنك مصر، انستا باي)</label>
+                    <input type="text" id="newAccName" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">نوع الحساب</label>
+                    <select id="newAccType" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                        <option value="بنك">حساب بنكي</option>
+                        <option value="محفظة">محفظة إلكترونية (كاش)</option>
+                        <option value="خزينة">خزينة / نقدية</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">الرصيد الافتتاحي (ج.م)</label>
+                    <input type="number" id="newAccBalance" value="0" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-8">
+                <button onclick="saveNewAccount()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition shadow-lg shadow-blue-900/50">حفظ الحساب</button>
+                <button onclick="closeAccountModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // --- إدارة الحسابات المتاحة ---
+        // القائمة الافتراضية
+        let availableAccounts = [
+            { id: "الكل", name: "جميع الحسابات", type: "عام" },
+            { id: "CIB", name: "البنك التجاري الدولي (CIB)", type: "بنك" },
+            { id: "HDB", name: "بنك التعمير والإسكان", type: "بنك" },
+            { id: "Vodafone", name: "فودافون كاش", type: "محفظة" },
+            { id: "Cash", name: "الخزينة (كاش)", type: "خزينة" }
+        ];
+
+        // دالة تحديث قائمة الفلتر (Dropdown)
+        function renderAccountDropdown() {
+            const filterSelect = document.getElementById('account-filter');
+            filterSelect.innerHTML = ''; // تفريغ القائمة
+            
+            availableAccounts.forEach(acc => {
+                const option = document.createElement('option');
+                option.value = acc.id;
+                option.textContent = acc.name;
+                filterSelect.appendChild(option);
+            });
+        }
+
+        // تشغيل الدالة عند تحميل الصفحة
+        renderAccountDropdown();
+
+        // --- التحكم في النافذة المنبثقة ---
+        const modal = document.getElementById('newAccountModal');
+        function openAccountModal() { modal.classList.remove('hidden'); }
+        function closeAccountModal() { 
+            modal.classList.add('hidden'); 
+            document.getElementById('newAccName').value = '';
+            document.getElementById('newAccBalance').value = '0';
+        }
+
+        // دالة حفظ حساب جديد
+        function saveNewAccount() {
+            const name = document.getElementById('newAccName').value.trim();
+            const type = document.getElementById('newAccType').value;
+            const balance = document.getElementById('newAccBalance').value;
+
+            if (!name) {
+                alert("يرجى إدخال اسم الحساب!");
+                return;
+            }
+
+            // إنشاء ID فريد للحساب
+            const newId = "ACC_" + Math.random().toString(36).substr(2, 5).toUpperCase();
+            
+            // إضافة الحساب للمصفوفة
+            availableAccounts.push({ id: newId, name: name, type: type, initialBalance: balance });
+            
+            // إعادة رسم القائمة واختيار الحساب الجديد
+            renderAccountDropdown();
+            document.getElementById('account-filter').value = newId;
+
+            // إغلاق النافذة
+            closeAccountModal();
+            alert(`تم إضافة الحساب "${name}" بنجاح! يمكنك الآن رفع كشف الإكسيل الخاص به.`);
+        }
+
+        // --- معالجة ملفات الإكسيل (SheetJS) ---
         function handleExcelUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -165,14 +244,10 @@
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
                 
-                // قراءة الشيت الأول
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
-                
-                // تحويل البيانات إلى مصفوفة (JSON)
                 const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                 
-                // التأكد من وجود بيانات
                 if (jsonData.length > 1) {
                     populateTableFromExcel(jsonData);
                 } else {
@@ -184,28 +259,24 @@
 
         function populateTableFromExcel(data) {
             const tbody = document.getElementById('statement-tbody');
-            tbody.innerHTML = ''; // تفريغ الجدول الحالي
+            tbody.innerHTML = ''; 
             
-            const accountSelected = document.getElementById('account-filter').value;
-            let currentAccountName = "مستورد";
-            if(accountSelected === "CIB") currentAccountName = "CIB";
-            else if(accountSelected === "HDB") currentAccountName = "التعمير والإسكان";
-            else if(accountSelected === "Vodafone") currentAccountName = "فودافون كاش";
+            // جلب اسم الحساب المختار حالياً
+            const accountSelectedId = document.getElementById('account-filter').value;
+            const selectedAccount = availableAccounts.find(acc => acc.id === accountSelectedId);
+            const currentAccountName = selectedAccount ? selectedAccount.name : "غير محدد";
 
             let totalIn = 0;
             let totalOut = 0;
             let currentBalance = 0;
 
-            // نفترض أن هيكل الإكسيل كالتالي (التاريخ، الوصف، مدين، دائن، الرصيد)
-            // نتخطى الصف الأول (العناوين)
             for (let i = 1; i < data.length; i++) {
                 const row = data[i];
                 if (row.length === 0) continue;
 
-                // قراءة الحقول (يجب أن يتم تعديل الفهارس بناءً على شكل شيت البنك الفعلي)
+                // قراءة الحقول من الإكسيل (يرجى مطابقتها مع هيكل كشوفات بنك CIB والتعمير)
                 const date = row[0] || '';
                 const desc = row[1] || '';
-                // بعض البنوك تضع المسحوبات (منصرف) أولاً ثم الإيداعات (وارد)
                 const outAmount = parseFloat(row[2]) || 0; 
                 const inAmount = parseFloat(row[3]) || 0;
                 let balance = parseFloat(row[4]) || 0;
@@ -215,24 +286,22 @@
                 currentBalance = balance !== 0 ? balance : currentBalance + inAmount - outAmount;
 
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-800/30 transition";
+                tr.className = "hover:bg-gray-800/30 transition group";
                 tr.innerHTML = `
                     <td class="p-4 text-sm text-gray-400">${date}</td>
-                    <td class="p-4 text-sm font-bold text-white"><span class="bg-blue-900/50 text-blue-300 px-2 py-1 rounded text-xs">${currentAccountName}</span></td>
-                    <td class="p-4 text-sm text-white">${desc}</td>
-                    <td class="p-4 font-bold text-emerald-400">${inAmount > 0 ? inAmount.toLocaleString() : '0'}</td>
-                    <td class="p-4 font-bold text-rose-400">${outAmount > 0 ? outAmount.toLocaleString() : '0'}</td>
+                    <td class="p-4 text-sm font-bold text-white whitespace-nowrap"><span class="bg-blue-900/30 text-blue-300 border border-blue-800/50 px-2 py-1 rounded-lg text-xs">${currentAccountName}</span></td>
+                    <td class="p-4 text-sm text-gray-300">${desc}</td>
+                    <td class="p-4 font-bold text-emerald-400">${inAmount > 0 ? inAmount.toLocaleString() : '-'}</td>
+                    <td class="p-4 font-bold text-rose-400">${outAmount > 0 ? outAmount.toLocaleString() : '-'}</td>
                     <td class="p-4 font-black text-blue-400">${currentBalance.toLocaleString()}</td>
                 `;
                 tbody.appendChild(tr);
             }
 
-            // تحديث الملخص
             document.getElementById('total-in').innerHTML = `${totalIn.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
             document.getElementById('total-out').innerHTML = `${totalOut.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
             document.getElementById('closing-balance').innerHTML = `${currentBalance.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
             
-            // إعادة تهيئة حقل الإدخال ليسمح برفع نفس الملف مرة أخرى إذا لزم الأمر
             document.getElementById('excelUpload').value = '';
         }
     </script>

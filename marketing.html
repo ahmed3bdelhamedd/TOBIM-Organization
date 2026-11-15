@@ -3,246 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — قسم التسويق والحملات</title>
+    <title>TOBIM — الحملات الإعلانية والتسويق</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style> body { font-family: 'Cairo', sans-serif; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Cairo', sans-serif; background-color: #0b0f19; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
 </head>
-<body class="bg-[#0b0f19] text-gray-100 min-h-screen relative">
-    
-    <!-- الهيدر الرئيسي -->
-    <header class="bg-[#0f172a] border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-40">
+<body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
+
+    <!-- حماية الصفحة للأدمن فقط -->
+    <script>
+        if (localStorage.getItem('tobim_user_email') !== 'info@ahmedabdelhamed.com') {
+            alert("عذراً، هذه الصفحة مخصصة للإدارة فقط.");
+            location.href = 'subscriptions.html';
+        }
+    </script>
+
+    <!-- الهيدر الموحد مع بروفايل الحساب -->
+    <header class="bg-[#0f172a]/90 backdrop-blur-md border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50">
         <div class="flex items-center gap-6">
-            <div class="flex items-center gap-3">
-                <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="w-10 h-10 rounded-xl object-cover border border-gray-700" alt="Logo">
-                <span class="text-xl font-black text-white">TO BIM</span>
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="location.href='dashboard.html'">
+                <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="w-10 h-10 rounded-xl object-cover border border-gray-700 shadow-lg" alt="Logo">
+                <span class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">TO BIM</span>
             </div>
             <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
-                <a href="dashboard.html" class="bg-blue-600 text-white px-4 py-2 rounded-xl transition shadow-lg shadow-blue-600/20">الماليات</a>
-                <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">الاشتراكات</a>
+                <a href="dashboard.html" id="nav-finance" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">الماليات</a>
+                <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">سجل الاشتراكات</a>
+                <a href="new-sub.html" class="bg-emerald-600/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> اشتراك جديد
+                </a>
             </nav>
         </div>
-        <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-500/20 transition">خروج</button>
+
+        <div class="relative">
+            <button onclick="toggleProfileDropdown()" class="flex items-center gap-3 bg-[#111827] hover:bg-gray-800 border border-gray-700 px-4 py-2 rounded-2xl transition">
+                <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white shadow-md" id="user-avatar-initial">أ</div>
+                <div class="text-right hidden sm:block">
+                    <p id="header-username" class="text-xs font-bold text-white">أحمد عبد الحميد</p>
+                    <p id="header-useremail" class="text-[10px] text-gray-400">info@ahmedabdelhamed.com</p>
+                </div>
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 mr-1"></i>
+            </button>
+            <div id="profile-dropdown" class="hidden absolute left-0 mt-3 w-64 bg-[#111827] border border-gray-700 rounded-2xl shadow-2xl overflow-hidden z-50">
+                <div class="p-4 border-b border-gray-800 bg-[#0f172a]">
+                    <p class="text-xs text-gray-400">الحساب الحالي</p>
+                    <p id="dropdown-email" class="text-xs font-bold text-white truncate mt-1">info@ahmedabdelhamed.com</p>
+                </div>
+                <div class="p-2 space-y-1">
+                    <button onclick="openProfileModal()" class="w-full text-right px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-blue-400"></i> تعديل بيانات الحساب
+                    </button>
+                    <button onclick="logout()" class="w-full text-right px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+        </div>
     </header>
-    
-    <main class="max-w-7xl mx-auto p-4 md:p-8">
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6 relative z-10">
         
-        <!-- شريط التنقل -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-gray-800 mb-6">
-            <a href="dashboard.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold transition">الداشبورد العام</a>
-            <a href="payroll.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold transition">إدارة الرواتب</a>
-            <a href="marketing.html" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold">التسويق</a>
-            <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold transition">المصروفات العامة</a>
+        <!-- شريط التنقل المتكامل -->
+        <div class="flex items-center gap-3 overflow-x-auto pb-4 border-b border-gray-800/50">
+            <a href="dashboard.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-chart-pie ml-2"></i>الداشبورد العام</a>
+            <a href="statements.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-file-invoice-dollar ml-2"></i>كشف الحسابات</a>
+            <a href="payroll.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</a>
+            <a href="marketing.html" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap shadow-lg"><i class="fa-solid fa-bullhorn ml-2"></i>التسويق</a>
+            <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
         </div>
 
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black text-white">إدارة الحملات الإعلانية</h2>
-            <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
-                <i class="fa-solid fa-plus ml-1"></i> إضافة حملة / مصروف
+        <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+            <div>
+                <h2 class="text-2xl font-black text-white">الحملات الإعلانية والتسويق</h2>
+                <p class="text-sm text-gray-400 mt-1">متابعة ميزانية وتكاليف الحملات على المنصات الرقمية</p>
+            </div>
+            <button onclick="openMarketingModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> إضافة حملة جديدة
             </button>
         </div>
 
-        <!-- فلاتر التقارير والمدة -->
-        <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 mb-6">
+        <!-- ملخص التسويق -->
+        <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
             <div>
-                <label class="block text-sm text-gray-400 mb-2">من تاريخ</label>
-                <input type="date" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40" style="color-scheme: dark;">
+                <h3 class="text-gray-400 text-sm font-bold">إجمالي تكاليف الحملات</h3>
+                <p id="total-marketing-display" class="text-3xl font-black text-fuchsia-400 mt-1">25,000 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
             </div>
-            <div>
-                <label class="block text-sm text-gray-400 mb-2">إلى تاريخ</label>
-                <input type="date" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40" style="color-scheme: dark;">
-            </div>
-            <div>
-                <label class="block text-sm text-gray-400 mb-2">المنصة</label>
-                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none w-40">
-                    <option value="الكل">جميع المنصات</option>
-                    <option value="فيسبوك">فيسبوك</option>
-                    <option value="إنستجرام">إنستجرام</option>
-                    <option value="تيك توك">تيك توك</option>
-                    <option value="يوتيوب">يوتيوب</option>
-                    <option value="لينكد إن">لينكد إن</option>
-                </select>
-            </div>
-            <button class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex-1 md:flex-none">
-                <i class="fa-solid fa-filter ml-1"></i> تصفية
-            </button>
+            <i class="fa-solid fa-bullhorn text-fuchsia-500/20 text-5xl"></i>
         </div>
 
-        <!-- ملخص الميزانية -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800">
-                <h3 class="text-gray-400 text-sm font-bold mb-2">إجمالي المصروفات الإعلانية (للفترة المحددة)</h3>
-                <p class="text-3xl font-black text-blue-500">18,500 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
-                <p class="text-xs text-gray-400 mt-2">موزعة على 4 منصات</p>
+        <!-- جدول الحملات -->
+        <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse min-w-[700px]">
+                    <thead>
+                        <tr class="bg-[#0f172a] text-gray-400 text-sm border-b border-gray-800">
+                            <th class="p-4 font-semibold">التاريخ</th>
+                            <th class="p-4 font-semibold">اسم الحملة / الوصف</th>
+                            <th class="p-4 font-semibold">المنصة</th>
+                            <th class="p-4 font-semibold text-fuchsia-400">التكلفة (ج.م)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="marketing-tbody" class="divide-y divide-gray-800/50">
+                    </tbody>
+                </table>
             </div>
-            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800">
-                <h3 class="text-gray-400 text-sm font-bold mb-2">العملاء المحتملين (Leads)</h3>
-                <p class="text-3xl font-black text-emerald-400">450 <span class="text-sm font-normal text-gray-500">عميل</span></p>
-                <p class="text-sm text-emerald-400 mt-2"><i class="fa-solid fa-arrow-trend-up"></i> متوسط التكلفة: 41 ج.م</p>
-            </div>
-        </div>
-
-        <!-- جدول الحملات الإعلانية -->
-        <div class="bg-[#111827] rounded-3xl border border-gray-800 overflow-hidden">
-            <table class="w-full text-right min-w-[900px]">
-                <thead class="bg-[#0f172a] text-gray-400 text-sm">
-                    <tr>
-                        <th class="p-4">اسم الحملة</th>
-                        <th class="p-4">المنصة</th>
-                        <th class="p-4">تاريخ البداية</th>
-                        <th class="p-4">تاريخ النهاية (المدة)</th>
-                        <th class="p-4">الميزانية</th>
-                        <th class="p-4">الحالة</th>
-                    </tr>
-                </thead>
-                <tbody id="campaigns-table-body" class="divide-y divide-gray-800">
-                    <tr class="hover:bg-gray-800/30">
-                        <td class="p-4 font-bold text-white">حملة اشتراكات الباقات السنوية</td>
-                        <td class="p-4"><i class="fa-brands fa-facebook text-blue-600 text-xl ml-2"></i>فيسبوك</td>
-                        <td class="p-4 text-sm text-gray-400">01 نوفمبر 2026</td>
-                        <td class="p-4 text-sm text-gray-400">30 نوفمبر 2026</td>
-                        <td class="p-4 font-bold text-white">5,000 ج.م</td>
-                        <td class="p-4"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">نشطة</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-800/30">
-                        <td class="p-4 font-bold text-white">إعلان توظيف مصممين</td>
-                        <td class="p-4"><i class="fa-brands fa-linkedin text-blue-400 text-xl ml-2"></i>لينكد إن</td>
-                        <td class="p-4 text-sm text-gray-400">10 نوفمبر 2026</td>
-                        <td class="p-4 text-sm text-gray-400">15 نوفمبر 2026</td>
-                        <td class="p-4 font-bold text-white">2,500 ج.م</td>
-                        <td class="p-4"><span class="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-bold">منتهية</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-800/30">
-                        <td class="p-4 font-bold text-white">فيديو ترويجي للمنصة</td>
-                        <td class="p-4"><i class="fa-brands fa-tiktok text-white text-xl ml-2"></i>تيك توك</td>
-                        <td class="p-4 text-sm text-gray-400">12 نوفمبر 2026</td>
-                        <td class="p-4 text-sm text-gray-400">20 نوفمبر 2026</td>
-                        <td class="p-4 font-bold text-white">6,000 ج.م</td>
-                        <td class="p-4"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">نشطة</span></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </main>
 
-    <!-- النافذة المنبثقة (Modal) لإضافة حملة إعلانية -->
-    <div id="campaignModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <h3 class="text-xl font-bold text-white mb-6">إضافة مصروف / حملة إعلانية</h3>
-            
-            <div class="space-y-4">
+    <!-- نافذة إضافة حملة -->
+    <div id="marketingModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-black text-white mb-6">إضافة حملة إعلانية جديدة</h3>
+            <form onsubmit="saveMarketing(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">اسم الحملة / الهدف</label>
-                    <input type="text" id="campName" placeholder="مثال: حملة زيادة المبيعات" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                    <label class="block text-sm text-gray-400 mb-1">اسم الحملة / الوصف</label>
+                    <input type="text" id="mktDesc" required placeholder="مثال: إعلان دبلومة البيم نوفمبر" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none">
                 </div>
-                
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">المنصة الإعلانية</label>
-                    <select id="campPlatform" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
-                        <option value="فيسبوك">فيسبوك</option>
-                        <option value="إنستجرام">إنستجرام</option>
+                    <label class="block text-sm text-gray-400 mb-1">المنصة</label>
+                    <select id="mktPlatform" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none">
+                        <option value="فيسبوك / إنستجرام">فيسبوك / إنستجرام</option>
+                        <option value="جوجل أدز">جوجل أدز</option>
                         <option value="تيك توك">تيك توك</option>
-                        <option value="يوتيوب">يوتيوب</option>
-                        <option value="لينكد إن">لينكد إن</option>
+                        <option value="أخرى">أخرى</option>
                     </select>
                 </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-1">تاريخ البداية</label>
-                        <input type="date" id="campStart" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-1">تاريخ النهاية</label>
-                        <input type="date" id="campEnd" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
-                    </div>
-                </div>
-
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">الميزانية (المصروف ج.م)</label>
-                    <input type="number" id="campBudget" placeholder="0" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                    <label class="block text-sm text-gray-400 mb-1">التكلفة (ج.م)</label>
+                    <input type="number" id="mktAmount" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none">
                 </div>
-
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">الحالة</label>
-                    <select id="campStatus" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
-                        <option value="نشطة">نشطة (جارية)</option>
-                        <option value="مجدولة">مجدولة</option>
-                        <option value="منتهية">منتهية</option>
-                    </select>
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold">حفظ</button>
+                    <button type="button" onclick="closeMarketingModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold">إلغاء</button>
                 </div>
-            </div>
-
-            <div class="flex gap-3 mt-6">
-                <button onclick="addCampaign()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إضافة الحملة</button>
-                <button onclick="closeModal()" class="flex-1 bg-[#0b0f19] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
-            </div>
+            </form>
         </div>
     </div>
 
-    <!-- سكريبت تشغيل النافذة وإضافة البيانات -->
+    <!-- نافذة تعديل الحساب -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-black text-white mb-6">تعديل بيانات الحساب</h3>
+            <form onsubmit="saveProfileChanges(event)" class="space-y-4">
+                <input type="text" id="profile-name-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <input type="email" id="profile-email-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">حفظ</button>
+                    <button type="button" onclick="closeProfileModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2 rounded-xl font-bold">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        const modal = document.getElementById('campaignModal');
-        const tableBody = document.getElementById('campaigns-table-body');
-        
-        document.getElementById('campStart').valueAsDate = new Date();
-        document.getElementById('campEnd').valueAsDate = new Date();
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
+            const savedName = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
+            document.getElementById('header-useremail').innerText = savedEmail;
+            document.getElementById('dropdown-email').innerText = savedEmail;
+            document.getElementById('header-username').innerText = savedName;
+            document.getElementById('user-avatar-initial').innerText = savedName.charAt(0);
+        });
 
-        function openModal() { modal.classList.remove('hidden'); }
-        function closeModal() {
-            modal.classList.add('hidden');
-            document.getElementById('campName').value = '';
-            document.getElementById('campBudget').value = '';
+        function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
+        function openProfileModal() {
+            document.getElementById('profile-dropdown').classList.add('hidden');
+            document.getElementById('profile-name-input').value = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
+            document.getElementById('profile-email-input').value = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+        function saveProfileChanges(e) {
+            e.preventDefault();
+            localStorage.setItem('tobim_user_name', document.getElementById('profile-name-input').value);
+            localStorage.setItem('tobim_user_email', document.getElementById('profile-email-input').value);
+            alert("تم التحديث بنجاح!");
+            location.reload();
+        }
+        function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
+
+        // التسويق
+        let marketingList = JSON.parse(localStorage.getItem('tobim_marketing_v1')) || [
+            { id: 1, date: '02/11/2026', desc: 'حملة إعلانية فيسبوك (دبلومة)', platform: 'فيسبوك / إنستجرام', amount: 15000 },
+            { id: 2, date: '12/11/2026', desc: 'حملة إعلانية جوجل (كورسات)', platform: 'جوجل أدز', amount: 10000 }
+        ];
+
+        function renderMarketing() {
+            const tbody = document.getElementById('marketing-tbody');
+            tbody.innerHTML = '';
+            let total = 0;
+            marketingList.forEach(mkt => {
+                total += mkt.amount;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-800/30 transition">
+                        <td class="p-4 text-sm text-gray-400">${mkt.date}</td>
+                        <td class="p-4 text-sm font-bold text-white">${mkt.desc}</td>
+                        <td class="p-4 text-sm text-gray-300"><span class="bg-gray-800 px-2.5 py-1 rounded-lg text-xs">${mkt.platform}</span></td>
+                        <td class="p-4 font-bold text-fuchsia-400">${mkt.amount.toLocaleString()} ج.م</td>
+                    </tr>`;
+            });
+            document.getElementById('total-marketing-display').innerHTML = `${total.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
         }
 
-        // دالة مساعدة لتحديد أيقونة المنصة
-        function getPlatformIcon(platform) {
-            switch(platform) {
-                case 'فيسبوك': return '<i class="fa-brands fa-facebook text-blue-600 text-xl ml-2"></i>';
-                case 'إنستجرام': return '<i class="fa-brands fa-instagram text-pink-500 text-xl ml-2"></i>';
-                case 'تيك توك': return '<i class="fa-brands fa-tiktok text-white text-xl ml-2"></i>';
-                case 'يوتيوب': return '<i class="fa-brands fa-youtube text-red-500 text-xl ml-2"></i>';
-                case 'لينكد إن': return '<i class="fa-brands fa-linkedin text-blue-400 text-xl ml-2"></i>';
-                default: return '';
-            }
-        }
+        renderMarketing();
 
-        function addCampaign() {
-            const name = document.getElementById('campName').value;
-            const platform = document.getElementById('campPlatform').value;
-            const startRaw = document.getElementById('campStart').value;
-            const endRaw = document.getElementById('campEnd').value;
-            const budget = document.getElementById('campBudget').value;
-            const status = document.getElementById('campStatus').value;
+        function openMarketingModal() { document.getElementById('marketingModal').classList.remove('hidden'); }
+        function closeMarketingModal() { document.getElementById('marketingModal').classList.add('hidden'); }
+        function saveMarketing(e) {
+            e.preventDefault();
+            let desc = document.getElementById('mktDesc').value;
+            let platform = document.getElementById('mktPlatform').value;
+            let amount = parseFloat(document.getElementById('mktAmount').value) || 0;
+            let today = new Date().toLocaleDateString('en-GB');
 
-            if (!name || !budget) return alert("يرجى إدخال اسم الحملة والميزانية!");
-
-            const dateOptions = { day: '2-digit', month: 'long', year: 'numeric' };
-            const startFmt = new Date(startRaw).toLocaleDateString('ar-EG', dateOptions);
-            const endFmt = new Date(endRaw).toLocaleDateString('ar-EG', dateOptions);
-
-            let statusBadge = '';
-            if(status === 'نشطة') statusBadge = `<span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">نشطة</span>`;
-            else if(status === 'مجدولة') statusBadge = `<span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs font-bold">مجدولة</span>`;
-            else statusBadge = `<span class="bg-gray-500/20 text-gray-400 px-2 py-1 rounded text-xs font-bold">منتهية</span>`;
-
-            const iconHTML = getPlatformIcon(platform);
-
-            const newRow = document.createElement('tr');
-            newRow.className = "hover:bg-gray-800/30";
-            newRow.innerHTML = `
-                <td class="p-4 font-bold text-white">${name}</td>
-                <td class="p-4">${iconHTML}${platform}</td>
-                <td class="p-4 text-sm text-gray-400">${startFmt}</td>
-                <td class="p-4 text-sm text-gray-400">${endFmt}</td>
-                <td class="p-4 font-bold text-white">${parseFloat(budget).toLocaleString()} ج.م</td>
-                <td class="p-4">${statusBadge}</td>
-            `;
-            
-            tableBody.insertBefore(newRow, tableBody.firstChild);
-            closeModal();
+            marketingList.push({ id: Date.now(), date: today, desc, platform, amount });
+            localStorage.setItem('tobim_marketing_v1', JSON.stringify(marketingList));
+            renderMarketing();
+            closeMarketingModal();
         }
     </script>
 </body>

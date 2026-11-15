@@ -47,7 +47,7 @@
                 <h2 class="text-2xl font-black text-white">تسجيل اشتراك جديد</h2>
                 <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعات بدقة (صورة الإيصال إجبارية)</p>
             </div>
-            <button onclick="window.history.back()" class="bg-[#111827] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
+            <button type="button" onclick="window.history.back()" class="bg-[#111827] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
                 <i class="fa-solid fa-arrow-left ml-2"></i> رجوع
             </button>
         </div>
@@ -112,8 +112,8 @@
                     </div>
                 </div>
 
-                <!-- خيار محول من راوند -->
-                <div class="bg-[#0b0f19] p-4 rounded-xl border border-gray-800">
+                <!-- خيار محول من راوند (مخفي افتراضياً حتى يتم اختيار دبلومة) -->
+                <div id="transfer-wrapper" class="hidden bg-[#0b0f19] p-4 rounded-xl border border-gray-800">
                     <label class="flex items-center gap-3 cursor-pointer mb-3">
                         <input type="checkbox" id="is-transferred" onchange="toggleTransferSection()" class="w-5 h-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500 focus:ring-2">
                         <span class="text-white font-bold text-sm">هذا المشترك محول من راوند سابق؟</span>
@@ -177,7 +177,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div>
                             <label class="block text-sm text-gray-400 mb-2 text-blue-400">المدفوع كدفعة ثانية (ج.م)</label>
-                            <input type="number" id="sub-paid-2" oninput="calcRemaining()" placeholder="المبلغ" class="w-full bg-[#0b0f19] border border-gray-700 text-blue-400 font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                            <input type="number" id="sub-paid-2" oninput="calcRemaining()" placeholder="المتبقي" class="w-full bg-[#0b0f19] border border-gray-700 text-blue-400 font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-sm text-gray-400 mb-2">مصدر الاستقبال (إن وُجد)</label>
@@ -233,6 +233,7 @@
             const specSelect = document.getElementById('sub-spec');
             const roundSelect = document.getElementById('sub-round');
             const oldRoundSelect = document.getElementById('sub-old-round');
+            const transferWrapper = document.getElementById('transfer-wrapper');
             const typeValue = typeSelect.value;
 
             specSelect.innerHTML = '<option value="" disabled selected>اختر التخصص/الكورس</option>';
@@ -245,14 +246,24 @@
             if (typeValue === 'دبلومة') {
                 specSelect.innerHTML += '<option value="إنشائي">القسم الإنشائي</option>';
                 specSelect.innerHTML += '<option value="معماري">القسم المعماري</option>';
+                // إظهار خيار التحويل من راوند للدبلومات فقط
+                transferWrapper.classList.remove('hidden'); 
             } 
             else if (typeValue === 'كورس') {
                 specSelect.innerHTML += '<option value="3ds Max">3ds Max</option>';
                 specSelect.innerHTML += '<option value="Revit Structure">Revit Structure</option>';
                 specSelect.innerHTML += '<option value="Revit Architecture">Revit Architecture</option>';
+                // إخفاء خيار التحويل
+                transferWrapper.classList.add('hidden');
+                document.getElementById('is-transferred').checked = false;
+                toggleTransferSection();
             } 
             else if (typeValue === 'برنامج') {
                 specSelect.innerHTML += '<option value="أوتوديسك">أوتوديسك</option>';
+                // إخفاء خيار التحويل
+                transferWrapper.classList.add('hidden');
+                document.getElementById('is-transferred').checked = false;
+                toggleTransferSection();
             }
         }
 
@@ -318,12 +329,12 @@
 
             // تحديث الـ placeholder للدفعة الثانية ليوضح المتبقي
             let maxAllowedForPaid2 = total - paid1;
-            paid2Input.placeholder = maxAllowedForPaid2 > 0 ? `المتبقي: ${maxAllowedForPaid2}` : "0";
+            paid2Input.placeholder = maxAllowedForPaid2 > 0 ? `المتبقي للسداد: ${maxAllowedForPaid2}` : "0";
 
             // حماية للدفعة الثانية: لا تتخطى المتبقي الفعلي
             if(paid2 > maxAllowedForPaid2) {
                 paid2 = maxAllowedForPaid2;
-                paid2Input.value = maxAllowedForPaid2;
+                paid2Input.value = maxAllowedForPaid2 > 0 ? maxAllowedForPaid2 : '';
             }
             
             const rest = total - (paid1 + paid2);
@@ -349,9 +360,14 @@
         function saveSubscription(e) {
             e.preventDefault(); 
             
+            // تحقق أخير للتأكد من المبالغ
             calcRemaining();
             const rest = parseFloat(document.getElementById('sub-rest').value) || 0;
-            
+            if (rest < 0) {
+                alert("خطأ: إجمالي الدفعات أكبر من سعر البيع. لا يمكن الحفظ.");
+                return;
+            }
+
             const name = document.getElementById('sub-name').value;
             const mobile = document.getElementById('sub-mobile').value;
             const email = document.getElementById('sub-email').value;
@@ -361,6 +377,7 @@
             const spec = document.getElementById('sub-spec').value;
             const round = document.getElementById('sub-round').value;
             
+            // بيانات التحويل من راوند
             const isTransferred = document.getElementById('is-transferred').checked;
             const oldRound = document.getElementById('sub-old-round').value;
 
@@ -374,8 +391,10 @@
             const status = rest === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
             
             const source1 = document.getElementById('sub-source-1').value;
+            const source2 = document.getElementById('sub-source-2').value;
             const sender = document.getElementById('sub-sender').value;
 
+            // جلب البيانات القديمة لتوليد ID
             let subs = JSON.parse(localStorage.getItem('tobim_subs_v7') || '[]');
             let maxId = 201134; 
             if (subs.length > 0) {
@@ -395,10 +414,13 @@
                 isTransferred: isTransferred,
                 oldRound: oldRound,
                 totalPrice: total,
-                paidAmount: totalPaid, 
+                paidAmount: totalPaid,
+                paidAmount1: paid1,
+                paidAmount2: paid2,
                 remainingAmount: rest,
                 status: status,
                 paySource: source1,
+                paySource2: source2,
                 senderName: sender,
                 nextPaymentDate: rest === 0 ? '' : nextDate 
             };

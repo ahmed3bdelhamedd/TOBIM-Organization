@@ -125,29 +125,45 @@
                 <i class="fa-solid fa-sack-dollar text-blue-400 text-3xl"></i>
                 <span class="text-xl font-bold text-blue-200">الإجمالي العام للرواتب المعتمدة</span>
             </div>
-            <span id="grand-total-payroll" class="text-4xl font-black text-white">98,000 <span class="text-lg font-normal text-blue-300">ج.م</span></span>
+            <span id="grand-total-payroll" class="text-4xl font-black text-white">0 <span class="text-lg font-normal text-blue-300">ج.م</span></span>
         </div>
     </main>
 
     <!-- نافذة إضافة موظف جديد -->
     <div id="newEmployeeModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
-            <h3 class="text-xl font-black text-white mb-6">تسجيل موظف جديد</h3>
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
+            <h3 class="text-xl font-black text-white mb-4">تسجيل موظف جديد</h3>
             <form onsubmit="saveNewEmployee(event)" class="space-y-4">
-                <input type="text" id="newEmpName" required placeholder="اسم الموظف" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
-                <input type="text" id="newEmpRole" required placeholder="المسمى الوظيفي" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
-                <select id="newEmpDept" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
-                    <option value="الإدارة">الإدارة</option>
-                    <option value="المبيعات">المبيعات</option>
-                    <option value="تقنية المعلومات">تقنية المعلومات</option>
-                    <option value="الجرافيك">الجرافيك</option>
-                    <option value="المدربين">المدربين</option>
-                    <option value="السوشيال ميديا">السوشيال ميديا</option>
-                </select>
-                <input type="number" id="newEmpSalary" required placeholder="الراتب الأساسي" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">اسم الموظف *</label>
+                    <input type="text" id="newEmpName" required placeholder="مثال: أحمد محمد" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">المسمى الوظيفي *</label>
+                    <input type="text" id="newEmpRole" required placeholder="مثال: محاسب، مصمم" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">نبذة عنه (السطر تحت الاسم)</label>
+                    <input type="text" id="newEmpBio" placeholder="مثال: خبرة 3 سنوات" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">القسم *</label>
+                    <select id="newEmpDept" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                        <option value="الإدارة">الإدارة</option>
+                        <option value="المبيعات">المبيعات</option>
+                        <option value="تقنية المعلومات">تقنية المعلومات</option>
+                        <option value="الجرافيك">الجرافيك</option>
+                        <option value="المدربين">المدربين</option>
+                        <option value="السوشيال ميديا">السوشيال ميديا</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">الراتب الأساسي (ج.م) *</label>
+                    <input type="number" id="newEmpSalary" required placeholder="5000" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
                 <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold">حفظ</button>
-                    <button type="button" onclick="closeEmployeeModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold">إلغاء</button>
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition">حفظ</button>
+                    <button type="button" onclick="closeEmployeeModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
                 </div>
             </form>
         </div>
@@ -195,23 +211,23 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // الرواتب والأقسام والجداول المفصلة
+        // قائمة الأقسام والموظفين
         const departmentsList = ['الإدارة', 'المبيعات', 'تقنية المعلومات', 'الجرافيك', 'المدربين', 'السوشيال ميديا'];
         const defaultEmployees = [
-            { id: 1, name: "صلاح البدوي", role: "المدير", department: "الإدارة", baseSalary: 40000, isManager: true },
-            { id: 2, name: "هشام غيب", role: "محاسب مالي", department: "الإدارة", baseSalary: 8000, isManager: false },
-            { id: 7, name: "صلاح الدين", role: "عامل نظافة", department: "الإدارة", baseSalary: 4500, isManager: false },
-            { id: 5, name: "صباح شعبان", role: "موظف مبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
-            { id: 6, name: "محسن إسلام", role: "موظف مبيعات", department: "المبيعات", baseSalary: 10000, isManager: false },
-            { id: 4, name: "عمر عبد العزيز", role: "موظف مبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
-            { id: 3, name: "أحمد عبد الحميد", role: "موظف IT", department: "تقنية المعلومات", baseSalary: 6500, isManager: false },
-            { id: 8, name: "عامر علي", role: "مصمم جرافيك", department: "الجرافيك", baseSalary: 16000, isManager: false },
-            { id: 9, name: "حسناء يسري", role: "مدرب معماري", department: "المدربين", baseSalary: 5500, isManager: false },
-            { id: 10, name: "مصطفى حنفي", role: "مدرب إنشائي", department: "المدربين", baseSalary: 7000, isManager: false },
-            { id: 11, name: "سحر الوزير", role: "أخصائي سوشيال ميديا", department: "السوشيال ميديا", baseSalary: 7000, isManager: false }
+            { id: 1, name: "صلاح البدوي", role: "المدير", bio: "الإدارة العليا", department: "الإدارة", baseSalary: 40000, isManager: true },
+            { id: 2, name: "هشام غيب", role: "محاسب مالي", bio: "الحسابات والمراجعة", department: "الإدارة", baseSalary: 8000, isManager: false },
+            { id: 7, name: "صلاح الدين", role: "عامل نظافة", bio: "خدمات المقر", department: "الإدارة", baseSalary: 4500, isManager: false },
+            { id: 5, name: "صباح شعبان", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
+            { id: 6, name: "محسن إسلام", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 10000, isManager: false },
+            { id: 4, name: "عمر عبد العزيز", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
+            { id: 3, name: "أحمد عبد الحميد", role: "موظف IT", bio: "تطوير وأنظمة", department: "تقنية المعلومات", baseSalary: 6500, isManager: false },
+            { id: 8, name: "عامر علي", role: "مصمم جرافيك", bio: "التصميم والهوية البصرية", department: "الجرافيك", baseSalary: 16000, isManager: false },
+            { id: 9, name: "حسناء يسري", role: "مدرب معماري", bio: "تدريب هندسي معماري", department: "المدربين", baseSalary: 5500, isManager: false },
+            { id: 10, name: "مصطفى حنفي", role: "مدرب إنشائي", bio: "تدريب هندسي إنشائي", department: "المدربين", baseSalary: 7000, isManager: false },
+            { id: 11, name: "سحر الوزير", role: "أخصائي سوشيال ميديا", bio: "إدارة منصات التواصل", department: "السوشيال ميديا", baseSalary: 7000, isManager: false }
         ];
 
-        let employees = JSON.parse(localStorage.getItem('tobim_employees_v7')) || defaultEmployees;
+        let employees = JSON.parse(localStorage.getItem('tobim_employees_v9')) || defaultEmployees;
 
         function renderDepartments() {
             const container = document.getElementById('departments-container');
@@ -233,18 +249,31 @@
                 if(list.length > 0) {
                     let rows = '';
                     let subTotal = 0;
+
                     list.forEach(emp => {
-                        subTotal += emp.baseSalary;
+                        const savedComm = parseFloat(localStorage.getItem(`comm_${emp.id}`)) || 0;
+                        const savedDed = parseFloat(localStorage.getItem(`ded_${emp.id}`)) || 0;
+                        const netVal = emp.baseSalary + savedComm - savedDed;
+                        subTotal += netVal;
+
+                        // إذا كان القسم هو "المبيعات" نظهر خانات العمولات والخصومات، وإلا نظهر الراتب الصافي أو الخصومات حسب الرغبة (هنا جعلناها متاحة بمرونة)
+                        let commInput = `<input type="number" id="comm_${emp.id}" value="${savedComm}" oninput="calculateNet(${emp.id}, ${emp.baseSalary}, '${dept}')" class="w-24 bg-[#0b0f19] border border-gray-700 text-emerald-400 rounded-lg px-2 py-1 text-sm focus:outline-none">`;
+                        let dedInput = `<input type="number" id="ded_${emp.id}" value="${savedDed}" oninput="calculateNet(${emp.id}, ${emp.baseSalary}, '${dept}')" class="w-24 bg-[#0b0f19] border border-gray-700 text-rose-400 rounded-lg px-2 py-1 text-sm focus:outline-none">`;
+
                         rows += `
-                            <tr class="hover:bg-gray-800/35 transition">
-                                <td class="p-4 font-bold text-white">${emp.name} ${emp.isManager ? '<span class="bg-amber-500/20 text-amber-400 text-xs px-2 py-0.5 rounded ml-2">المدير</span>' : ''}</td>
+                            <tr class="hover:bg-gray-800/35 transition" data-dept="${dept}">
+                                <td class="p-4">
+                                    <div class="font-bold text-white">${emp.name} ${emp.isManager ? '<span class="bg-amber-500/20 text-amber-400 text-xs px-2 py-0.5 rounded ml-2">المدير</span>' : ''}</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">${emp.bio || emp.role}</div>
+                                </td>
                                 <td class="p-4 text-sm text-blue-400">${emp.role}</td>
-                                <td class="p-4 font-bold text-gray-300">${emp.baseSalary.toLocaleString()} ج.م</td>
-                                <td class="p-4"><input type="number" value="0" class="w-24 bg-[#0b0f19] border border-gray-700 text-emerald-400 rounded-lg px-2 py-1 text-sm focus:outline-none"></td>
-                                <td class="p-4"><input type="number" value="0" class="w-24 bg-[#0b0f19] border border-gray-700 text-rose-400 rounded-lg px-2 py-1 text-sm focus:outline-none"></td>
-                                <td class="p-4 font-black text-blue-400">${emp.baseSalary.toLocaleString()} ج.م</td>
+                                <td class="p-4 font-bold text-gray-300" id="base_${emp.id}">${emp.baseSalary.toLocaleString()} ج.م</td>
+                                <td class="p-4">${commInput}</td>
+                                <td class="p-4">${dedInput}</td>
+                                <td class="p-4 font-black text-blue-400" id="net_${emp.id}">${netVal.toLocaleString()} ج.م</td>
                             </tr>`;
                     });
+
                     grandTotal += subTotal;
 
                     container.innerHTML += `
@@ -256,7 +285,7 @@
                                 <table class="w-full text-right min-w-[900px]">
                                     <thead class="bg-[#0f172a]/50 text-gray-400 text-xs border-b border-gray-800">
                                         <tr>
-                                            <th class="p-4">الموظف</th>
+                                            <th class="p-4">الموظف والنبذة</th>
                                             <th class="p-4">الوظيفة</th>
                                             <th class="p-4">الراتب الأساسي</th>
                                             <th class="p-4 text-emerald-400">عمولة / مكافأة (+)</th>
@@ -269,15 +298,52 @@
                             </div>
                             <div class="bg-[#0f172a] p-4 border-t border-gray-800 flex justify-between font-bold">
                                 <span>إجمالي رواتب قسم ${dept}:</span>
-                                <span class="text-white text-lg">${subTotal.toLocaleString()} ج.م</span>
+                                <span class="text-white text-lg" id="subtotal_${dept}">${subTotal.toLocaleString()} ج.م</span>
                             </div>
                         </div>`;
                 }
             });
+
             document.getElementById('grand-total-payroll').innerHTML = `${grandTotal.toLocaleString()} <span class="text-lg text-blue-300">ج.م</span>`;
         }
 
         renderDepartments();
+
+        // دالة حساب الصافي لحظياً وتحديث الإجماليات
+        function calculateNet(id, baseSalary, dept) {
+            const comm = parseFloat(document.getElementById(`comm_${id}`).value) || 0;
+            const ded = parseFloat(document.getElementById(`ded_${id}`).value) || 0;
+            const net = baseSalary + comm - ded;
+
+            localStorage.setItem(`comm_${id}`, comm);
+            localStorage.setItem(`ded_${id}`, ded);
+
+            document.getElementById(`net_${id}`).innerText = net.toLocaleString() + ' ج.م';
+
+            // إعادة حساب إجمالي القسم
+            let deptTotal = 0;
+            const deptEmps = employees.filter(e => e.department === dept);
+            deptEmps.forEach(emp => {
+                const c = parseFloat(document.getElementById(`comm_${emp.id}`).value) || 0;
+                const d = parseFloat(document.getElementById(`ded_${emp.id}`).value) || 0;
+                deptTotal += (emp.baseSalary + c - d);
+            });
+
+            document.getElementById(`subtotal_${dept}`).innerText = deptTotal.toLocaleString() + ' ج.م';
+
+            // إعادة حساب الإجمالي العام
+            let grandTotal = 0;
+            departmentsList.forEach(d => {
+                const list = employees.filter(e => e.department === d);
+                list.forEach(emp => {
+                    const c = parseFloat(document.getElementById(`comm_${emp.id}`).value) || 0;
+                    const dVal = parseFloat(document.getElementById(`ded_${emp.id}`).value) || 0;
+                    grandTotal += (emp.baseSalary + c - dVal);
+                });
+            });
+
+            document.getElementById('grand-total-payroll').innerHTML = `${grandTotal.toLocaleString()} <span class="text-lg text-blue-300">ج.م</span>`;
+        }
 
         function openEmployeeModal() { document.getElementById('newEmployeeModal').classList.remove('hidden'); }
         function closeEmployeeModal() { document.getElementById('newEmployeeModal').classList.add('hidden'); }
@@ -285,11 +351,12 @@
             e.preventDefault();
             let name = document.getElementById('newEmpName').value;
             let role = document.getElementById('newEmpRole').value;
+            let bio = document.getElementById('newEmpBio').value;
             let department = document.getElementById('newEmpDept').value;
             let baseSalary = parseFloat(document.getElementById('newEmpSalary').value) || 0;
 
-            employees.push({ id: Date.now(), name, role, department, baseSalary, isManager: false });
-            localStorage.setItem('tobim_employees_v7', JSON.stringify(employees));
+            employees.push({ id: Date.now(), name, role, bio, department, baseSalary, isManager: false });
+            localStorage.setItem('tobim_employees_v9', JSON.stringify(employees));
             renderDepartments();
             closeEmployeeModal();
         }

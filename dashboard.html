@@ -3,23 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — لوحة التحكم المالية</title>
+    <title>TOBIM — إدارة الأقسام والرواتب</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style> body { font-family: 'Cairo', sans-serif; }</style>
 </head>
 <body class="bg-[#0b0f19] text-gray-100 min-h-screen flex flex-col">
     <script>
         if(!localStorage.getItem('tobim_logged')) {
-            // Uncomment in production
             // window.location.href = 'login.html'; 
         }
     </script>
 
-    <!-- Header -->
+    <!-- Header (نفس الهيدر الأصلي بدون تعديل) -->
     <header class="bg-[#0f172a] border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-40">
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-3">
@@ -38,194 +36,129 @@
     <!-- Main Content -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6">
         
-        <!-- Welcome Section -->
-        <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 flex justify-between items-center">
-            <div>
-                <h2 class="text-2xl font-black text-white mb-1">لوحة التحكم المالية (الداشبورد)</h2>
-                <p class="text-gray-400 text-sm">نظرة عامة على الحسابات البنكية، الخزينة، والمصروفات.</p>
-            </div>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2">
-                <i class="fa-solid fa-file-invoice-dollar"></i> فاتورة جديدة
-            </button>
+        <!-- هيدر الأقسام الداخلي (Sub-header) -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-gray-800 mb-6">
+            <button class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</button>
+            <button class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-bullhorn ml-2"></i>التسويق</button>
+            <button class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-chart-line ml-2"></i>الإيرادات والمبيعات</button>
+            <button class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</button>
         </div>
 
-        <!-- Odoo-Style Journals (اليوميات) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Bank Account -->
-            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 relative overflow-hidden group hover:border-gray-600 transition">
-                <div class="absolute top-0 right-0 w-1 h-full bg-blue-500"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="font-bold text-lg text-white">البنك (CIB)</h3>
-                    <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+        <!-- قسم إدارة الرواتب -->
+        <div class="bg-[#111827] rounded-3xl border border-gray-800 overflow-hidden">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-[#0f172a]">
+                <div>
+                    <h2 class="text-xl font-black text-white">رواتب الموظفين</h2>
+                    <p class="text-sm text-gray-400 mt-1">إدارة العمولات والخصومات وصرف الرواتب لشهر نوفمبر 2026</p>
                 </div>
-                <p class="text-3xl font-black text-white mb-2">124,500 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
-                <p class="text-sm text-gray-400 mb-6">الرصيد في دفتر الأستاذ</p>
-                <div class="flex gap-2">
-                    <button class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">تحويل جديد</button>
-                    <button class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">مراجعة (3)</button>
-                </div>
+                <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition">
+                    <i class="fa-solid fa-check-double ml-1"></i> اعتماد الكل
+                </button>
             </div>
-
-            <!-- Cash -->
-            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 relative overflow-hidden group hover:border-gray-600 transition">
-                <div class="absolute top-0 right-0 w-1 h-full bg-emerald-500"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="font-bold text-lg text-white">الخزينة الرئيسية</h3>
-                    <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                </div>
-                <p class="text-3xl font-black text-white mb-2">15,200 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
-                <p class="text-sm text-gray-400 mb-6">الرصيد الحالي</p>
-                <div class="flex gap-2">
-                    <button class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">سند قبض</button>
-                    <button class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">سند صرف</button>
-                </div>
-            </div>
-
-            <!-- Vendor Bills / Expenses -->
-            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 relative overflow-hidden group hover:border-gray-600 transition">
-                <div class="absolute top-0 right-0 w-1 h-full bg-rose-500"></div>
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="font-bold text-lg text-white">فواتير الموردين</h3>
-                    <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                </div>
-                <p class="text-3xl font-black text-white mb-2">8,450 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
-                <p class="text-sm text-rose-400 mb-6">فواتير مستحقة الدفع</p>
-                <div class="flex gap-2">
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">تسجيل فاتورة</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts and Tables Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Cashflow Chart -->
-            <div class="lg:col-span-2 bg-[#111827] p-6 rounded-3xl border border-gray-800">
-                <h3 class="font-bold text-lg text-white mb-6">تحليل التدفقات النقدية (الإيرادات vs المصروفات)</h3>
-                <div class="relative h-72 w-full">
-                    <canvas id="cashflowChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Recent Expenses Table -->
-            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 flex flex-col">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold text-lg text-white">أحدث المصروفات</h3>
-                    <a href="#" class="text-sm text-blue-500 hover:text-blue-400">عرض الكل</a>
-                </div>
-                
-                <div class="space-y-4 flex-1">
-                    <!-- Expense Item -->
-                    <div class="flex justify-between items-center p-3 hover:bg-gray-800/50 rounded-xl transition">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center">
-                                <i class="fa-solid fa-laptop-code"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-white">استضافة سيرفر</p>
-                                <p class="text-xs text-gray-400">12 نوفمبر 2026</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-bold text-rose-400">- 1,200 ج.م</span>
-                    </div>
-
-                    <!-- Expense Item -->
-                    <div class="flex justify-between items-center p-3 hover:bg-gray-800/50 rounded-xl transition">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center">
-                                <i class="fa-solid fa-bolt"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-white">فواتير كهرباء</p>
-                                <p class="text-xs text-gray-400">10 نوفمبر 2026</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-bold text-rose-400">- 450 ج.م</span>
-                    </div>
-
-                    <!-- Expense Item -->
-                    <div class="flex justify-between items-center p-3 hover:bg-gray-800/50 rounded-xl transition">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center">
-                                <i class="fa-solid fa-bullhorn"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-white">حملة تسويقية</p>
-                                <p class="text-xs text-gray-400">05 نوفمبر 2026</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-bold text-rose-400">- 3,000 ج.م</span>
-                    </div>
-                </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="bg-[#111827] text-gray-400 text-sm border-b border-gray-800">
+                            <th class="p-4 font-semibold">الموظف / الدور</th>
+                            <th class="p-4 font-semibold">الراتب الأساسي</th>
+                            <th class="p-4 font-semibold text-emerald-400">عمولة / مكافأة (+)</th>
+                            <th class="p-4 font-semibold text-rose-400">خصم / سلف (-)</th>
+                            <th class="p-4 font-semibold">الصافي المستحق</th>
+                            <th class="p-4 font-semibold text-center">إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employees-tbody" class="divide-y divide-gray-800/50">
+                        <!-- سيتم توليد الموظفين بواسطة جافاسكريبت أدناه -->
+                    </tbody>
+                </table>
             </div>
         </div>
 
     </main>
 
-    <!-- Chart Configuration Script -->
+    <!-- سكريبت إدارة الرواتب -->
     <script>
-        const ctx = document.getElementById('cashflowChart').getContext('2d');
-        
-        // Gradient for Income
-        const incomeGradient = ctx.createLinearGradient(0, 0, 0, 400);
-        incomeGradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)'); // Blue
-        incomeGradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+        const employees = [
+            { id: 1, name: "صلاح البدوي", role: "المدير", baseSalary: 40000, isManager: true },
+            { id: 2, name: "هشام غيب", role: "موظف", baseSalary: 8000, isManager: false },
+            { id: 3, name: "أحمد عبد الحميد", role: "موظف", baseSalary: 6500, isManager: false },
+            { id: 4, name: "عمر عبد العزيز", role: "موظف", baseSalary: 6500, isManager: false },
+            { id: 5, name: "صباح شعبان", role: "موظف", baseSalary: 6500, isManager: false },
+            { id: 6, name: "محسن إسلام", role: "موظف", baseSalary: 10000, isManager: false },
+            { id: 7, name: "صلاح الدين", role: "موظف", baseSalary: 4500, isManager: false },
+            { id: 8, name: "عامر علي", role: "موظف", baseSalary: 160000, isManager: false }
+        ];
 
-        // Gradient for Expenses
-        const expenseGradient = ctx.createLinearGradient(0, 0, 0, 400);
-        expenseGradient.addColorStop(0, 'rgba(244, 63, 94, 0.5)'); // Rose
-        expenseGradient.addColorStop(1, 'rgba(244, 63, 94, 0)');
+        const tbody = document.getElementById('employees-tbody');
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر'],
-                datasets: [
-                    {
-                        label: 'الإيرادات',
-                        data: [12000, 19000, 15000, 22000, 18000, 25000],
-                        borderColor: '#3b82f6',
-                        backgroundColor: incomeGradient,
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'المصروفات',
-                        data: [8000, 12000, 10000, 14000, 11000, 13000],
-                        borderColor: '#f43f5e',
-                        backgroundColor: expenseGradient,
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { color: '#9ca3af', font: { family: 'Cairo' } }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: { color: '#1f2937', drawBorder: false },
-                        ticks: { color: '#9ca3af', font: { family: 'Cairo' } }
-                    },
-                    y: {
-                        grid: { color: '#1f2937', drawBorder: false },
-                        ticks: { color: '#9ca3af', font: { family: 'Cairo' } }
-                    }
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'index',
-                },
+        function renderEmployees() {
+            tbody.innerHTML = '';
+            employees.forEach(emp => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-800/30 transition group";
+                
+                const managerBadge = emp.isManager ? `<span class="bg-amber-500/20 text-amber-400 text-xs px-2 py-1 rounded-md font-bold mr-2 border border-amber-500/20">المدير</span>` : '';
+
+                tr.innerHTML = `
+                    <td class="p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 font-bold border border-gray-700">
+                                ${emp.name.charAt(0)}
+                            </div>
+                            <div>
+                                <p class="text-white font-bold text-sm">${emp.name} ${managerBadge}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-4 font-bold text-gray-300">
+                        ${emp.baseSalary.toLocaleString()} <span class="text-xs text-gray-500 font-normal">ج.م</span>
+                    </td>
+                    <td class="p-4">
+                        <div class="relative">
+                            <input type="number" id="comm_${emp.id}" value="0" min="0" oninput="calculateNet(${emp.id}, ${emp.baseSalary})" class="w-24 bg-[#0b0f19] border border-gray-700 text-emerald-400 text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <div class="relative">
+                            <input type="number" id="ded_${emp.id}" value="0" min="0" oninput="calculateNet(${emp.id}, ${emp.baseSalary})" class="w-24 bg-[#0b0f19] border border-gray-700 text-rose-400 text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-rose-500">
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <span id="net_${emp.id}" class="text-lg font-black text-blue-400">
+                            ${emp.baseSalary.toLocaleString()} <span class="text-xs text-gray-500 font-normal">ج.م</span>
+                        </span>
+                    </td>
+                    <td class="p-4 text-center">
+                        <button class="bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg text-sm transition">حفظ</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // دالة حساب الصافي عند تغيير المدخلات
+        window.calculateNet = function(id, base) {
+            let comm = parseFloat(document.getElementById(`comm_${id}`).value) || 0;
+            let ded = parseFloat(document.getElementById(`ded_${id}`).value) || 0;
+            
+            let net = base + comm - ded;
+            
+            const netElement = document.getElementById(`net_${id}`);
+            netElement.innerHTML = `${net.toLocaleString()} <span class="text-xs text-gray-500 font-normal">ج.م</span>`;
+            
+            // تغيير اللون بناءً على الزيادة أو الخصم
+            if (net > base) {
+                netElement.className = "text-lg font-black text-emerald-400";
+            } else if (net < base) {
+                netElement.className = "text-lg font-black text-rose-400";
+            } else {
+                netElement.className = "text-lg font-black text-blue-400";
             }
-        });
+        };
+
+        // تشغيل الدالة عند تحميل الصفحة
+        renderEmployees();
     </script>
 </body>
 </html>

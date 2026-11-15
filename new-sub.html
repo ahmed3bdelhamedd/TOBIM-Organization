@@ -54,7 +54,7 @@
 
         <form id="newSubForm" onsubmit="saveSubscription(event)" class="space-y-6">
             
-            <!-- القسم الأول: بيانات المشترك الأساسية -->
+            <!-- القسم الأول: بيانات المشترك -->
             <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl">
                 <h3 class="text-lg font-bold text-white mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-user ml-2 text-blue-500"></i> بيانات المشترك</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -82,7 +82,7 @@
                 </div>
             </div>
 
-            <!-- القسم الثاني: تفاصيل المنتج والديناميكية -->
+            <!-- القسم الثاني: تفاصيل المنتج -->
             <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl">
                 <h3 class="text-lg font-bold text-white mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-graduation-cap ml-2 text-emerald-500"></i> تفاصيل المنتج والراوند</h3>
                 
@@ -121,94 +121,98 @@
                     <div id="transfer-section" class="hidden">
                         <label class="block text-sm text-gray-400 mb-2 mt-2">الراوند السابق (المحول منه) *</label>
                         <select id="sub-old-round" class="w-full md:w-1/3 bg-[#111827] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
-                            <!-- سيتم تعبئتها ديناميكياً بنفس أرقام الراوندات -->
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- القسم الثالث: الحسابات والدفعة الأولى -->
+            <!-- القسم الثالث: بيانات الدفعات المالية -->
             <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-money-bill-1-wave ml-2 text-amber-500"></i> بيانات الدفعة الأولى</h3>
+                <h3 class="text-lg font-bold text-white mb-6 border-b border-gray-800 pb-2"><i class="fa-solid fa-money-bill-1-wave ml-2 text-amber-500"></i> الحسابات وبيانات الدفع</h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <!-- ملخص السعر والمتبقي -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-[#0b0f19] p-5 rounded-2xl border border-gray-800">
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">سعر البيع الإجمالي (ج.م) *</label>
-                        <input type="number" id="sub-total" required oninput="calcRemaining()" placeholder="مثال: 9800" class="w-full bg-[#0b0f19] border border-gray-700 text-white font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
+                        <input type="number" id="sub-total" required oninput="calcRemaining()" placeholder="مثال: 9800" class="w-full bg-[#111827] border border-gray-700 text-white font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2 text-emerald-400">المدفوع كدفعة أولى (ج.م) *</label>
-                        <input type="number" id="sub-paid-1" required oninput="calcRemaining()" placeholder="مثال: 5000" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-2 text-amber-400">المتبقي (آجل)</label>
-                        <input type="number" id="sub-rest" readonly class="w-full bg-[#0b0f19] border border-gray-700 text-amber-400 font-bold rounded-xl px-4 py-2.5 cursor-not-allowed">
+                        <label class="block text-sm text-gray-400 mb-2 text-amber-400">المتبقي الإجمالي (آجل)</label>
+                        <input type="number" id="sub-rest" readonly class="w-full bg-[#111827] border border-gray-700 text-amber-400 font-black rounded-xl px-4 py-2.5 cursor-not-allowed">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-2">مصدر الاستقبال *</label>
-                        <select id="sub-source-1" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
-                            <option value="" disabled selected>اختر البنك/المحفظة</option>
-                            <option value="إنستاباي CIB">إنستاباي CIB</option>
-                            <option value="بنك التعمير والإسكان">بنك التعمير والإسكان</option>
-                            <option value="فودافون كاش">فودافون كاش</option>
-                            <option value="الخزينة (كاش)">الخزينة (كاش)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-2">تاريخ التحويل *</label>
-                        <input type="date" id="sub-date-1" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500" style="color-scheme: dark;">
-                    </div>
-                    <div class="lg:col-span-2">
-                        <label class="block text-sm text-gray-400 mb-2">صورة الإيصال (إجباري) *</label>
-                        <!-- جعلنا الصورة إجبارية required -->
-                        <input type="file" id="sub-receipt-1" accept="image/*" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500">
+                <!-- الدفعة الأولى -->
+                <div class="mb-8 border-r-4 border-emerald-500 pr-4">
+                    <h4 class="font-bold text-emerald-400 mb-4 flex items-center"><i class="fa-solid fa-1 ml-2"></i> بيانات الدفعة الأولى (إجباري)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2 text-emerald-400">المدفوع كدفعة أولى (ج.م) *</label>
+                            <input type="number" id="sub-paid-1" required oninput="calcRemaining()" placeholder="مثال: 5000" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">مصدر الاستقبال *</label>
+                            <select id="sub-source-1" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                                <option value="" disabled selected>اختر البنك/المحفظة</option>
+                                <option value="إنستاباي CIB">إنستاباي CIB</option>
+                                <option value="بنك التعمير والإسكان">بنك التعمير والإسكان</option>
+                                <option value="فودافون كاش">فودافون كاش</option>
+                                <option value="الخزينة (كاش)">الخزينة (كاش)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">تاريخ التحويل *</label>
+                            <input type="date" id="sub-date-1" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500" style="color-scheme: dark;">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">صورة الإيصال *</label>
+                            <input type="file" id="sub-receipt-1" accept="image/*" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-1.5 focus:outline-none focus:border-emerald-500">
+                        </div>
                     </div>
                 </div>
-                
-                <div class="mt-4">
-                    <label class="block text-sm text-gray-400 mb-2">تاريخ استحقاق الدفعة القادمة</label>
-                    <input type="date" id="sub-next-date" class="w-full md:w-1/3 bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500" style="color-scheme: dark;">
-                </div>
-            </div>
 
-            <!-- القسم الرابع: بيانات الدفعة الثانية (اختياري) -->
-            <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl">
-                <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-2">
-                    <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-money-check-dollar ml-2 text-blue-400"></i> بيانات الدفعة الثانية (اختياري)</h3>
-                    <label class="flex items-center gap-3 cursor-pointer">
-                        <input type="checkbox" id="has-second-payment" onchange="toggleSecondPayment()" class="w-5 h-5 text-blue-500 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
-                        <span class="text-white text-sm">تم تسديد دفعة ثانية؟</span>
-                    </label>
+                <!-- الدفعة الثانية (بدون شيك بوكس) -->
+                <div class="border-r-4 border-blue-500 pr-4">
+                    <h4 class="font-bold text-blue-400 mb-4 flex items-center"><i class="fa-solid fa-2 ml-2"></i> بيانات الدفعة الثانية (اختياري)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2 text-blue-400">المدفوع كدفعة ثانية (ج.م)</label>
+                            <input type="number" id="sub-paid-2" oninput="calcRemaining()" placeholder="المبلغ" class="w-full bg-[#0b0f19] border border-gray-700 text-blue-400 font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">مصدر الاستقبال (إن وُجد)</label>
+                            <select id="sub-source-2" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                                <option value="" selected>اختر (اختياري)</option>
+                                <option value="إنستاباي CIB">إنستاباي CIB</option>
+                                <option value="بنك التعمير والإسكان">بنك التعمير والإسكان</option>
+                                <option value="فودافون كاش">فودافون كاش</option>
+                                <option value="الخزينة (كاش)">الخزينة (كاش)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">تاريخ التحويل (إن وُجد)</label>
+                            <input type="date" id="sub-date-2" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">صورة الإيصال 2 (إن وُجد)</label>
+                            <input type="file" id="sub-receipt-2" accept="image/*" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-1.5 focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
                 </div>
                 
-                <div id="second-payment-section" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- تفاصيل إضافية -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#0b0f19] p-5 rounded-2xl border border-gray-800">
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2 text-emerald-400">المدفوع كدفعة ثانية (ج.م) *</label>
-                        <input type="number" id="sub-paid-2" oninput="calcRemaining()" placeholder="مثال: 4800" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                        <label class="block text-sm text-gray-400 mb-2">اسم المحول (إن وُجد)</label>
+                        <input type="text" id="sub-sender" placeholder="اسم صاحب الحساب المحول" class="w-full bg-[#111827] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-gray-500">
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2">مصدر الاستقبال *</label>
-                        <select id="sub-source-2" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
-                            <option value="" disabled selected>اختر البنك/المحفظة</option>
-                            <option value="إنستاباي CIB">إنستاباي CIB</option>
-                            <option value="بنك التعمير والإسكان">بنك التعمير والإسكان</option>
-                            <option value="فودافون كاش">فودافون كاش</option>
-                            <option value="الخزينة (كاش)">الخزينة (كاش)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-2">تاريخ التحويل *</label>
-                        <input type="date" id="sub-date-2" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-2">صورة الإيصال للدفعة 2 (إجباري) *</label>
-                        <!-- الصورة إجبارية فقط في حال تفعيل الدفعة الثانية، سيتم التحكم بها عبر JS -->
-                        <input type="file" id="sub-receipt-2" accept="image/*" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                        <label class="block text-sm text-gray-400 mb-2">تاريخ استحقاق الدفعة القادمة (للمتبقي)</label>
+                        <input type="date" id="sub-next-date" class="w-full bg-[#111827] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500" style="color-scheme: dark;">
+                        <p class="text-[10px] text-gray-500 mt-1">يُترك فارغاً إذا كان المبلغ خالصاً.</p>
                     </div>
                 </div>
+
             </div>
 
             <!-- زر الحفظ -->
@@ -218,14 +222,12 @@
                 </button>
             </div>
         </form>
+
     </main>
 
     <script>
-        // تعيين تاريخ اليوم كقيمة افتراضية لتواريخ التحويل
         document.getElementById('sub-date-1').valueAsDate = new Date();
-        document.getElementById('sub-date-2').valueAsDate = new Date();
 
-        // 1. القوائم المنسدلة الديناميكية للنوع والتخصص
         function updateSpecializations() {
             const typeSelect = document.getElementById('sub-type');
             const specSelect = document.getElementById('sub-spec');
@@ -254,7 +256,6 @@
             }
         }
 
-        // 2. توليد الراوندات ديناميكياً بناءً على التخصص (1-20 لمعماري، 1-30 لإنشائي)
         function updateRounds() {
             const specValue = document.getElementById('sub-spec').value;
             const typeValue = document.getElementById('sub-type').value;
@@ -264,7 +265,6 @@
             roundSelect.innerHTML = '<option value="" disabled selected>اختر الراوند</option>';
             oldRoundSelect.innerHTML = '<option value="" disabled selected>اختر الراوند السابق</option>';
 
-            // البرامج والكورسات المنفصلة قد لا يكون لها راوندات مرقمة بنفس الطريقة، لكن سنطبق شرط الدبلومة
             if (typeValue === 'برنامج') {
                 roundSelect.innerHTML += '<option value="N/A">لا يوجد راوند (N/A)</option>';
                 roundSelect.value = 'N/A';
@@ -287,33 +287,6 @@
             }
         }
 
-        // 3. التحكم في ظهور قسم الدفعة الثانية
-        function toggleSecondPayment() {
-            const isChecked = document.getElementById('has-second-payment').checked;
-            const section = document.getElementById('second-payment-section');
-            const paid2Input = document.getElementById('sub-paid-2');
-            const source2Input = document.getElementById('sub-source-2');
-            const receipt2Input = document.getElementById('sub-receipt-2');
-
-            if (isChecked) {
-                section.classList.remove('hidden');
-                paid2Input.required = true;
-                source2Input.required = true;
-                receipt2Input.required = true; // الصورة إجبارية للدفعة الثانية
-            } else {
-                section.classList.add('hidden');
-                paid2Input.required = false;
-                source2Input.required = false;
-                receipt2Input.required = false;
-                
-                paid2Input.value = '';
-                source2Input.value = '';
-                receipt2Input.value = '';
-                calcRemaining(); // إعادة الحساب بدون الدفعة الثانية
-            }
-        }
-
-        // 4. التحكم في ظهور حقل التحويل من راوند
         function toggleTransferSection() {
             const isTransferred = document.getElementById('is-transferred').checked;
             const transferSection = document.getElementById('transfer-section');
@@ -329,38 +302,56 @@
             }
         }
 
-        // 5. حساب المتبقي الكلي (طرح الدفعة الأولى والثانية)
         function calcRemaining() {
             const total = parseFloat(document.getElementById('sub-total').value) || 0;
-            let paid1 = parseFloat(document.getElementById('sub-paid-1').value) || 0;
-            let paid2 = 0;
+            const paid1Input = document.getElementById('sub-paid-1');
+            const paid2Input = document.getElementById('sub-paid-2');
             
-            if(document.getElementById('has-second-payment').checked) {
-                paid2 = parseFloat(document.getElementById('sub-paid-2').value) || 0;
+            let paid1 = parseFloat(paid1Input.value) || 0;
+            let paid2 = parseFloat(paid2Input.value) || 0;
+            
+            // حماية للدفعة الأولى: لا تتخطى الإجمالي
+            if(paid1 > total) {
+                paid1 = total;
+                paid1Input.value = total;
             }
 
-            let totalPaid = paid1 + paid2;
+            // تحديث الـ placeholder للدفعة الثانية ليوضح المتبقي
+            let maxAllowedForPaid2 = total - paid1;
+            paid2Input.placeholder = maxAllowedForPaid2 > 0 ? `المتبقي: ${maxAllowedForPaid2}` : "0";
 
-            if(totalPaid > total) {
-                alert("تنبيه: إجمالي المدفوع يتخطى سعر البيع. يرجى مراجعة الأرقام.");
+            // حماية للدفعة الثانية: لا تتخطى المتبقي الفعلي
+            if(paid2 > maxAllowedForPaid2) {
+                paid2 = maxAllowedForPaid2;
+                paid2Input.value = maxAllowedForPaid2;
             }
             
-            const rest = total - totalPaid;
+            const rest = total - (paid1 + paid2);
             document.getElementById('sub-rest').value = rest >= 0 ? rest : 0;
+
+            // إذا كان هناك مبلغ في الدفعة 2، اجعل حقل المصدر وتاريخ الدفعة 2 والصورة مطلوبة
+            const source2Input = document.getElementById('sub-source-2');
+            const date2Input = document.getElementById('sub-date-2');
+            const receipt2Input = document.getElementById('sub-receipt-2');
+            
+            if(paid2 > 0) {
+                source2Input.required = true;
+                date2Input.required = true;
+                receipt2Input.required = true;
+                if(!date2Input.value) date2Input.valueAsDate = new Date();
+            } else {
+                source2Input.required = false;
+                date2Input.required = false;
+                receipt2Input.required = false;
+            }
         }
 
-        // 6. دالة الحفظ
         function saveSubscription(e) {
             e.preventDefault(); 
             
-            // تحقق أخير للتأكد من المبالغ
             calcRemaining();
             const rest = parseFloat(document.getElementById('sub-rest').value) || 0;
-            if (rest < 0) {
-                alert("خطأ: إجمالي الدفعات أكبر من سعر البيع. لا يمكن الحفظ.");
-                return;
-            }
-
+            
             const name = document.getElementById('sub-name').value;
             const mobile = document.getElementById('sub-mobile').value;
             const email = document.getElementById('sub-email').value;
@@ -370,22 +361,21 @@
             const spec = document.getElementById('sub-spec').value;
             const round = document.getElementById('sub-round').value;
             
-            // بيانات التحويل من راوند
             const isTransferred = document.getElementById('is-transferred').checked;
             const oldRound = document.getElementById('sub-old-round').value;
 
             const total = parseFloat(document.getElementById('sub-total').value) || 0;
             const paid1 = parseFloat(document.getElementById('sub-paid-1').value) || 0;
+            const paid2 = parseFloat(document.getElementById('sub-paid-2').value) || 0;
             
-            let totalPaid = paid1;
-            if(document.getElementById('has-second-payment').checked) {
-                totalPaid += parseFloat(document.getElementById('sub-paid-2').value) || 0;
-            }
+            const totalPaid = paid1 + paid2;
             
             const nextDate = document.getElementById('sub-next-date').value;
             const status = rest === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
+            
+            const source1 = document.getElementById('sub-source-1').value;
+            const sender = document.getElementById('sub-sender').value;
 
-            // جلب البيانات القديمة لتوليد ID
             let subs = JSON.parse(localStorage.getItem('tobim_subs_v7') || '[]');
             let maxId = 201134; 
             if (subs.length > 0) {
@@ -397,7 +387,7 @@
                 id: newId,
                 fullName: name,
                 mobile: mobile,
-                email: email, // تمت إضافة الإيميل
+                email: email, 
                 salesRep: sales,
                 prodType: type,
                 spec: spec,
@@ -405,16 +395,18 @@
                 isTransferred: isTransferred,
                 oldRound: oldRound,
                 totalPrice: total,
-                paidAmount: totalPaid, // إجمالي المدفوع 1 و 2
+                paidAmount: totalPaid, 
                 remainingAmount: rest,
                 status: status,
-                nextPaymentDate: rest === 0 ? '' : nextDate
+                paySource: source1,
+                senderName: sender,
+                nextPaymentDate: rest === 0 ? '' : nextDate 
             };
 
             subs.unshift(newSubscription);
             localStorage.setItem('tobim_subs_v7', JSON.stringify(subs));
 
-            alert(`تم تسجيل الاشتراك بنجاح!\nالاسم: ${name}\nرقم الاشتراك (ID): ${newId}\n(تم رفع صور الإيصالات بنجاح)`);
+            alert(`تم تسجيل الاشتراك بنجاح!\nالاسم: ${name}\nرقم الاشتراك (ID): ${newId}\n(تم رفع الإيصالات بنجاح)`);
             window.location.href = 'subscriptions.html';
         }
     </script>

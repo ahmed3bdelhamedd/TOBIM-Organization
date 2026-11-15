@@ -40,12 +40,12 @@
         </div>
     </header>
 
-    <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-8 space-y-6 relative z-10">
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8 space-y-6 relative z-10">
         
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-black text-white">تسجيل اشتراك جديد</h2>
-                <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعة الأولى بدقة</p>
+                <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعات بدقة (صورة الإيصال إجبارية)</p>
             </div>
             <button onclick="window.history.back()" class="bg-[#111827] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
                 <i class="fa-solid fa-arrow-left ml-2"></i> رجوع
@@ -67,8 +67,13 @@
                         <input type="tel" id="sub-mobile" required placeholder="01xxxxxxxxx" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
+                        <label class="block text-sm text-gray-400 mb-2">البريد الإلكتروني (Email) *</label>
+                        <input type="email" id="sub-email" required placeholder="example@gmail.com" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
                         <label class="block text-sm text-gray-400 mb-2">مسؤول المبيعات (Sales) *</label>
                         <select id="sub-sales" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                            <option value="" disabled selected>اختر مسؤول المبيعات</option>
                             <option value="عمر">عمر</option>
                             <option value="محسن">محسن</option>
                             <option value="صباح">صباح</option>
@@ -77,46 +82,63 @@
                 </div>
             </div>
 
-            <!-- القسم الثاني: تفاصيل الكورس/البرنامج -->
+            <!-- القسم الثاني: تفاصيل المنتج والديناميكية -->
             <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-graduation-cap ml-2 text-emerald-500"></i> تفاصيل المنتج</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <h3 class="text-lg font-bold text-white mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-graduation-cap ml-2 text-emerald-500"></i> تفاصيل المنتج والراوند</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">نوع المنتج *</label>
-                        <select id="sub-type" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                        <select id="sub-type" required onchange="updateSpecializations()" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                            <option value="" disabled selected>اختر النوع</option>
                             <option value="دبلومة">دبلومة</option>
                             <option value="كورس">كورس</option>
                             <option value="برنامج">برنامج</option>
                         </select>
                     </div>
+                    
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2">القسم / التخصص *</label>
-                        <select id="sub-spec" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
-                            <option value="معماري">معماري</option>
-                            <option value="إنشائي">إنشائي</option>
-                            <option value="أوتوديسك">أوتوديسك</option>
-                            <option value="عام">عام</option>
+                        <label class="block text-sm text-gray-400 mb-2">التخصص / الكورس *</label>
+                        <select id="sub-spec" required onchange="updateRounds()" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500 disabled:opacity-50" disabled>
+                            <option value="" disabled selected>اختر النوع أولاً</option>
                         </select>
                     </div>
+
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2">الراوند</label>
-                        <input type="text" id="sub-round" placeholder="مثال: Round 27" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                        <label class="block text-sm text-gray-400 mb-2">الراوند الحالي *</label>
+                        <select id="sub-round" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500 disabled:opacity-50" disabled>
+                            <option value="" disabled selected>اختر التخصص أولاً</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- خيار محول من راوند -->
+                <div class="bg-[#0b0f19] p-4 rounded-xl border border-gray-800">
+                    <label class="flex items-center gap-3 cursor-pointer mb-3">
+                        <input type="checkbox" id="is-transferred" onchange="toggleTransferSection()" class="w-5 h-5 text-emerald-500 bg-gray-800 border-gray-600 rounded focus:ring-emerald-500 focus:ring-2">
+                        <span class="text-white font-bold text-sm">هذا المشترك محول من راوند سابق؟</span>
+                    </label>
+                    <div id="transfer-section" class="hidden">
+                        <label class="block text-sm text-gray-400 mb-2 mt-2">الراوند السابق (المحول منه) *</label>
+                        <select id="sub-old-round" class="w-full md:w-1/3 bg-[#111827] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                            <!-- سيتم تعبئتها ديناميكياً بنفس أرقام الراوندات -->
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <!-- القسم الثالث: بيانات الدفعة الأولى -->
+            <!-- القسم الثالث: الحسابات والدفعة الأولى -->
             <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-money-bill-wave ml-2 text-amber-500"></i> الحسابات وبيانات الدفع</h3>
+                <h3 class="text-lg font-bold text-white mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-money-bill-1-wave ml-2 text-amber-500"></i> بيانات الدفعة الأولى</h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">سعر البيع الإجمالي (ج.م) *</label>
-                        <input type="number" id="sub-total" required oninput="calcRemaining()" placeholder="مثال: 12000" class="w-full bg-[#0b0f19] border border-gray-700 text-white font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
+                        <input type="number" id="sub-total" required oninput="calcRemaining()" placeholder="مثال: 9800" class="w-full bg-[#0b0f19] border border-gray-700 text-white font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2 text-emerald-400">المبلغ المدفوع (ج.م) *</label>
-                        <input type="number" id="sub-paid" required oninput="calcRemaining()" placeholder="مثال: 9500" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
+                        <label class="block text-sm text-gray-400 mb-2 text-emerald-400">المدفوع كدفعة أولى (ج.م) *</label>
+                        <input type="number" id="sub-paid-1" required oninput="calcRemaining()" placeholder="مثال: 5000" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
                     </div>
                     <div>
                         <label class="block text-sm text-gray-400 mb-2 text-amber-400">المتبقي (آجل)</label>
@@ -124,10 +146,11 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">مصدر الاستقبال *</label>
-                        <select id="sub-source" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
+                        <select id="sub-source-1" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
+                            <option value="" disabled selected>اختر البنك/المحفظة</option>
                             <option value="إنستاباي CIB">إنستاباي CIB</option>
                             <option value="بنك التعمير والإسكان">بنك التعمير والإسكان</option>
                             <option value="فودافون كاش">فودافون كاش</option>
@@ -135,77 +158,236 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2">اسم المحول</label>
-                        <input type="text" id="sub-sender" placeholder="اسم صاحب الحساب المحول" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
+                        <label class="block text-sm text-gray-400 mb-2">تاريخ التحويل *</label>
+                        <input type="date" id="sub-date-1" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500" style="color-scheme: dark;">
                     </div>
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-2">تاريخ الدفعة القادمة</label>
-                        <input type="date" id="sub-next-date" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500" style="color-scheme: dark;">
-                        <p class="text-[10px] text-gray-500 mt-1">يُترك فارغاً إذا كان المبلغ خالصاً.</p>
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm text-gray-400 mb-2">صورة الإيصال (إجباري) *</label>
+                        <!-- جعلنا الصورة إجبارية required -->
+                        <input type="file" id="sub-receipt-1" accept="image/*" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500">
                     </div>
                 </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm text-gray-400 mb-2">تاريخ استحقاق الدفعة القادمة</label>
+                    <input type="date" id="sub-next-date" class="w-full md:w-1/3 bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500" style="color-scheme: dark;">
+                </div>
+            </div>
 
-                <div class="mt-6">
-                    <label class="block text-sm text-gray-400 mb-2">صورة الإيصال المرفقة (اختياري)</label>
-                    <input type="file" id="sub-receipt-img" accept="image/*" class="w-full bg-[#0b0f19] border border-gray-700 text-gray-400 rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
+            <!-- القسم الرابع: بيانات الدفعة الثانية (اختياري) -->
+            <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-2">
+                    <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-money-check-dollar ml-2 text-blue-400"></i> بيانات الدفعة الثانية (اختياري)</h3>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="has-second-payment" onchange="toggleSecondPayment()" class="w-5 h-5 text-blue-500 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
+                        <span class="text-white text-sm">تم تسديد دفعة ثانية؟</span>
+                    </label>
+                </div>
+                
+                <div id="second-payment-section" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2 text-emerald-400">المدفوع كدفعة ثانية (ج.م) *</label>
+                        <input type="number" id="sub-paid-2" oninput="calcRemaining()" placeholder="مثال: 4800" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">مصدر الاستقبال *</label>
+                        <select id="sub-source-2" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                            <option value="" disabled selected>اختر البنك/المحفظة</option>
+                            <option value="إنستاباي CIB">إنستاباي CIB</option>
+                            <option value="بنك التعمير والإسكان">بنك التعمير والإسكان</option>
+                            <option value="فودافون كاش">فودافون كاش</option>
+                            <option value="الخزينة (كاش)">الخزينة (كاش)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">تاريخ التحويل *</label>
+                        <input type="date" id="sub-date-2" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">صورة الإيصال للدفعة 2 (إجباري) *</label>
+                        <!-- الصورة إجبارية فقط في حال تفعيل الدفعة الثانية، سيتم التحكم بها عبر JS -->
+                        <input type="file" id="sub-receipt-2" accept="image/*" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500">
+                    </div>
                 </div>
             </div>
 
             <!-- زر الحفظ -->
-            <div class="flex justify-end mt-8">
-                <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-10 py-3 rounded-xl text-lg font-black transition-all shadow-[0_0_20px_rgba(59,130,246,0.4)] transform hover:scale-105">
-                    حفظ الاشتراك
+            <div class="flex justify-end mt-8 pb-10">
+                <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-10 py-3 rounded-xl text-lg font-black transition-all shadow-[0_0_20px_rgba(59,130,246,0.4)] transform hover:scale-105 flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i> تسجيل الاشتراك
                 </button>
             </div>
         </form>
-
     </main>
 
     <script>
-        // دالة حساب المتبقي تلقائياً
-        function calcRemaining() {
-            const total = parseFloat(document.getElementById('sub-total').value) || 0;
-            let paid = parseFloat(document.getElementById('sub-paid').value) || 0;
+        // تعيين تاريخ اليوم كقيمة افتراضية لتواريخ التحويل
+        document.getElementById('sub-date-1').valueAsDate = new Date();
+        document.getElementById('sub-date-2').valueAsDate = new Date();
+
+        // 1. القوائم المنسدلة الديناميكية للنوع والتخصص
+        function updateSpecializations() {
+            const typeSelect = document.getElementById('sub-type');
+            const specSelect = document.getElementById('sub-spec');
+            const roundSelect = document.getElementById('sub-round');
+            const oldRoundSelect = document.getElementById('sub-old-round');
+            const typeValue = typeSelect.value;
+
+            specSelect.innerHTML = '<option value="" disabled selected>اختر التخصص/الكورس</option>';
+            specSelect.disabled = false;
             
-            // منع إدخال مدفوع أكبر من السعر الكلي
-            if(paid > total) {
-                paid = total;
-                document.getElementById('sub-paid').value = total;
+            roundSelect.innerHTML = '<option value="" disabled selected>اختر التخصص أولاً</option>';
+            roundSelect.disabled = true;
+            oldRoundSelect.innerHTML = '';
+
+            if (typeValue === 'دبلومة') {
+                specSelect.innerHTML += '<option value="إنشائي">القسم الإنشائي</option>';
+                specSelect.innerHTML += '<option value="معماري">القسم المعماري</option>';
+            } 
+            else if (typeValue === 'كورس') {
+                specSelect.innerHTML += '<option value="3ds Max">3ds Max</option>';
+                specSelect.innerHTML += '<option value="Revit Structure">Revit Structure</option>';
+                specSelect.innerHTML += '<option value="Revit Architecture">Revit Architecture</option>';
+            } 
+            else if (typeValue === 'برنامج') {
+                specSelect.innerHTML += '<option value="أوتوديسك">أوتوديسك</option>';
             }
-            
-            const rest = total - paid;
-            document.getElementById('sub-rest').value = rest;
         }
 
-        // دالة الحفظ
-        function saveSubscription(e) {
-            e.preventDefault(); // منع تحديث الصفحة الافتراضي للـ Form
+        // 2. توليد الراوندات ديناميكياً بناءً على التخصص (1-20 لمعماري، 1-30 لإنشائي)
+        function updateRounds() {
+            const specValue = document.getElementById('sub-spec').value;
+            const typeValue = document.getElementById('sub-type').value;
+            const roundSelect = document.getElementById('sub-round');
+            const oldRoundSelect = document.getElementById('sub-old-round');
 
-            // جلب القيم من الفورم
+            roundSelect.innerHTML = '<option value="" disabled selected>اختر الراوند</option>';
+            oldRoundSelect.innerHTML = '<option value="" disabled selected>اختر الراوند السابق</option>';
+
+            // البرامج والكورسات المنفصلة قد لا يكون لها راوندات مرقمة بنفس الطريقة، لكن سنطبق شرط الدبلومة
+            if (typeValue === 'برنامج') {
+                roundSelect.innerHTML += '<option value="N/A">لا يوجد راوند (N/A)</option>';
+                roundSelect.value = 'N/A';
+                roundSelect.disabled = true;
+            } else {
+                roundSelect.disabled = false;
+                let maxRound = 0;
+                
+                if (specValue === 'معماري' || specValue === 'Revit Architecture' || specValue === '3ds Max') {
+                    maxRound = 20;
+                } else if (specValue === 'إنشائي' || specValue === 'Revit Structure') {
+                    maxRound = 30;
+                }
+
+                for (let i = 1; i <= maxRound; i++) {
+                    const optionHtml = `<option value="Round ${i}">Round ${i}</option>`;
+                    roundSelect.innerHTML += optionHtml;
+                    oldRoundSelect.innerHTML += optionHtml;
+                }
+            }
+        }
+
+        // 3. التحكم في ظهور قسم الدفعة الثانية
+        function toggleSecondPayment() {
+            const isChecked = document.getElementById('has-second-payment').checked;
+            const section = document.getElementById('second-payment-section');
+            const paid2Input = document.getElementById('sub-paid-2');
+            const source2Input = document.getElementById('sub-source-2');
+            const receipt2Input = document.getElementById('sub-receipt-2');
+
+            if (isChecked) {
+                section.classList.remove('hidden');
+                paid2Input.required = true;
+                source2Input.required = true;
+                receipt2Input.required = true; // الصورة إجبارية للدفعة الثانية
+            } else {
+                section.classList.add('hidden');
+                paid2Input.required = false;
+                source2Input.required = false;
+                receipt2Input.required = false;
+                
+                paid2Input.value = '';
+                source2Input.value = '';
+                receipt2Input.value = '';
+                calcRemaining(); // إعادة الحساب بدون الدفعة الثانية
+            }
+        }
+
+        // 4. التحكم في ظهور حقل التحويل من راوند
+        function toggleTransferSection() {
+            const isTransferred = document.getElementById('is-transferred').checked;
+            const transferSection = document.getElementById('transfer-section');
+            const oldRound = document.getElementById('sub-old-round');
+            
+            if (isTransferred) {
+                transferSection.classList.remove('hidden');
+                oldRound.required = true;
+            } else {
+                transferSection.classList.add('hidden');
+                oldRound.required = false;
+                oldRound.value = '';
+            }
+        }
+
+        // 5. حساب المتبقي الكلي (طرح الدفعة الأولى والثانية)
+        function calcRemaining() {
+            const total = parseFloat(document.getElementById('sub-total').value) || 0;
+            let paid1 = parseFloat(document.getElementById('sub-paid-1').value) || 0;
+            let paid2 = 0;
+            
+            if(document.getElementById('has-second-payment').checked) {
+                paid2 = parseFloat(document.getElementById('sub-paid-2').value) || 0;
+            }
+
+            let totalPaid = paid1 + paid2;
+
+            if(totalPaid > total) {
+                alert("تنبيه: إجمالي المدفوع يتخطى سعر البيع. يرجى مراجعة الأرقام.");
+            }
+            
+            const rest = total - totalPaid;
+            document.getElementById('sub-rest').value = rest >= 0 ? rest : 0;
+        }
+
+        // 6. دالة الحفظ
+        function saveSubscription(e) {
+            e.preventDefault(); 
+            
+            // تحقق أخير للتأكد من المبالغ
+            calcRemaining();
+            const rest = parseFloat(document.getElementById('sub-rest').value) || 0;
+            if (rest < 0) {
+                alert("خطأ: إجمالي الدفعات أكبر من سعر البيع. لا يمكن الحفظ.");
+                return;
+            }
+
             const name = document.getElementById('sub-name').value;
             const mobile = document.getElementById('sub-mobile').value;
+            const email = document.getElementById('sub-email').value;
             const sales = document.getElementById('sub-sales').value;
             
             const type = document.getElementById('sub-type').value;
             const spec = document.getElementById('sub-spec').value;
-            const round = document.getElementById('sub-round').value || 'N/A';
+            const round = document.getElementById('sub-round').value;
             
-            const total = parseFloat(document.getElementById('sub-total').value) || 0;
-            const paid = parseFloat(document.getElementById('sub-paid').value) || 0;
-            const rest = parseFloat(document.getElementById('sub-rest').value) || 0;
-            
-            const source = document.getElementById('sub-source').value;
-            const sender = document.getElementById('sub-sender').value;
-            const nextDate = document.getElementById('sub-next-date').value;
+            // بيانات التحويل من راوند
+            const isTransferred = document.getElementById('is-transferred').checked;
+            const oldRound = document.getElementById('sub-old-round').value;
 
-            // تحديد الحالة
+            const total = parseFloat(document.getElementById('sub-total').value) || 0;
+            const paid1 = parseFloat(document.getElementById('sub-paid-1').value) || 0;
+            
+            let totalPaid = paid1;
+            if(document.getElementById('has-second-payment').checked) {
+                totalPaid += parseFloat(document.getElementById('sub-paid-2').value) || 0;
+            }
+            
+            const nextDate = document.getElementById('sub-next-date').value;
             const status = rest === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
 
-            // جلب الاشتراكات الحالية لإنشاء ID متسلسل وإضافة الجديد
+            // جلب البيانات القديمة لتوليد ID
             let subs = JSON.parse(localStorage.getItem('tobim_subs_v7') || '[]');
-            
-            // توليد ID جديد أعلى من آخر ID موجود
-            let maxId = 201134; // بداية افتراضية
+            let maxId = 201134; 
             if (subs.length > 0) {
                 maxId = Math.max(...subs.map(s => s.id));
             }
@@ -215,28 +397,24 @@
                 id: newId,
                 fullName: name,
                 mobile: mobile,
+                email: email, // تمت إضافة الإيميل
                 salesRep: sales,
                 prodType: type,
                 spec: spec,
                 round: round,
+                isTransferred: isTransferred,
+                oldRound: oldRound,
                 totalPrice: total,
-                paidAmount: paid,
+                paidAmount: totalPaid, // إجمالي المدفوع 1 و 2
                 remainingAmount: rest,
                 status: status,
-                paySource: source,
-                senderName: sender,
-                nextPaymentDate: rest === 0 ? '' : nextDate // تفريغ التاريخ لو خالص
+                nextPaymentDate: rest === 0 ? '' : nextDate
             };
 
-            // إدراج في أول القائمة
             subs.unshift(newSubscription);
-            
-            // حفظ في الـ LocalStorage
             localStorage.setItem('tobim_subs_v7', JSON.stringify(subs));
 
-            alert(`تم تسجيل اشتراك ${name} بنجاح! رقم الـ ID الخاص به هو: ${newId}`);
-            
-            // تحويل المستخدم لصفحة سجل الاشتراكات
+            alert(`تم تسجيل الاشتراك بنجاح!\nالاسم: ${name}\nرقم الاشتراك (ID): ${newId}\n(تم رفع صور الإيصالات بنجاح)`);
             window.location.href = 'subscriptions.html';
         }
     </script>

@@ -18,6 +18,7 @@
 </head>
 <body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
 
+    <!-- الهيدر العصري -->
     <header class="bg-[#0f172a]/80 backdrop-blur-md border-b border-gray-800/60 h-20 flex items-center px-6 justify-between sticky top-0 z-50 transition-all">
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-3 group cursor-pointer">
@@ -32,7 +33,28 @@
                 <a href="subscriptions.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition transform hover:scale-105">الاشتراكات والمبيعات</a>
             </nav>
         </div>
-        <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 px-4 py-2 rounded-xl text-sm font-bold transition">خروج</button>
+        
+        <div class="flex items-center gap-4">
+            <!-- نظام الإشعارات -->
+            <div class="relative">
+                <button onclick="toggleNotifications()" class="relative text-gray-400 hover:text-white transition p-2 rounded-full hover:bg-gray-800">
+                    <i class="fa-regular fa-bell text-xl"></i>
+                    <span id="notif-badge" class="hidden absolute top-0 right-0 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-[#0f172a]">0</span>
+                </button>
+                <!-- قائمة الإشعارات المنسدلة -->
+                <div id="notif-dropdown" class="hidden absolute left-0 mt-3 w-80 bg-[#111827] border border-gray-700 rounded-2xl shadow-2xl overflow-hidden z-50">
+                    <div class="p-4 border-b border-gray-800 bg-[#0f172a] flex justify-between items-center">
+                        <h4 class="font-bold text-white text-sm">إشعارات الدفعات المستحقة</h4>
+                        <span id="notif-count-text" class="text-xs text-rose-400 font-bold bg-rose-500/10 px-2 py-1 rounded">0 إشعار</span>
+                    </div>
+                    <div id="notif-list" class="max-h-80 overflow-y-auto divide-y divide-gray-800">
+                        <!-- سيتم إدراج الإشعارات هنا -->
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 px-4 py-2 rounded-xl text-sm font-bold transition">خروج</button>
+        </div>
     </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6 relative z-10">
@@ -40,18 +62,19 @@
         <div class="flex justify-between items-center mb-2">
             <div>
                 <h2 class="text-2xl font-black text-white">سجل الاشتراكات والمبيعات</h2>
-                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات حسب الموظف والقسم (للعرض فقط)</p>
+                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، ومتابعة الدفعات المستحقة</p>
             </div>
             <a href="new-sub.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg shadow-emerald-900/50 flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> اشتراك جديد
             </a>
         </div>
 
+        <!-- فلاتر متقدمة -->
         <div class="bg-[#111827]/80 backdrop-blur-xl p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
-                <label class="block text-sm text-gray-400 mb-2">مسؤول المبيعات (Sales)</label>
-                <select id="filter-sales" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
-                    <option value="الكل">جميع الموظفين</option>
+                <label class="block text-sm text-gray-400 mb-2">مسؤول المبيعات</label>
+                <select id="filter-sales" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-36">
+                    <option value="الكل">الكل</option>
                     <option value="عمر">عمر</option>
                     <option value="محسن">محسن</option>
                     <option value="صباح">صباح</option>
@@ -60,58 +83,70 @@
             
             <div>
                 <label class="block text-sm text-gray-400 mb-2">نوع المنتج</label>
-                <select id="filter-type" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
+                <select id="filter-type" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-36">
                     <option value="الكل">الكل</option>
                     <option value="دبلومة">دبلومات</option>
                     <option value="كورس">كورسات</option>
-                    <option value="برنامج">برامج (Software)</option>
+                    <option value="برنامج">برامج</option>
                 </select>
             </div>
 
             <div>
                 <label class="block text-sm text-gray-400 mb-2">التخصص</label>
-                <select id="filter-spec" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
+                <select id="filter-spec" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
                     <option value="الكل">الكل</option>
                     <option value="إنشائي">إنشائي</option>
                     <option value="معماري">معماري</option>
                     <option value="أوتوديسك">أوتوديسك</option>
                 </select>
             </div>
+
+            <!-- الفلتر الجديد للحالة -->
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">حالة الدفع</label>
+                <select id="filter-status" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
+                    <option value="الكل">الكل</option>
+                    <option value="خالص (Paid)">خالص (Paid)</option>
+                    <option value="متبقي (Rest)">متبقي (Rest)</option>
+                </select>
+            </div>
         </div>
 
+        <!-- ملخص أداء المبيعات -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
-                <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-chart-line mr-2 text-blue-400"></i> إجمالي قيمة المبيعات</h3>
+                <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-chart-line mr-2 text-blue-400"></i> إجمالي المبيعات</h3>
                 <p id="summary-total" class="text-3xl font-black text-white mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
-                <p class="text-xs text-gray-400 mt-1">للاشتراكات المعروضة: <span id="summary-count" class="font-bold text-white">0</span> اشتراك</p>
+                <p class="text-xs text-gray-400 mt-1">العدد المعروض: <span id="summary-count" class="font-bold text-white">0</span></p>
             </div>
             <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
-                <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-money-bill-wave mr-2 text-emerald-400"></i> المحصل (المدفوع)</h3>
+                <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-money-bill-wave mr-2 text-emerald-400"></i> المدفوع</h3>
                 <p id="summary-paid" class="text-3xl font-black text-emerald-400 mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
             </div>
             <div class="bg-gradient-to-br from-[#111827] to-[#0f172a] p-5 rounded-3xl border border-gray-800">
-                <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-clock mr-2 text-amber-400"></i> المتبقي (الآجل)</h3>
+                <h3 class="text-gray-400 text-sm font-bold mb-1"><i class="fa-solid fa-clock mr-2 text-amber-400"></i> المتبقي</h3>
                 <p id="summary-rest" class="text-3xl font-black text-amber-400 mt-2">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
             </div>
         </div>
 
+        <!-- جدول عرض الاشتراكات -->
         <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
             <div class="p-4 border-b border-gray-800 bg-[#0f172a]">
-                <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-list ml-2"></i>اضغط على اسم المشترك لعرض إيصال الدفع (الريسيت)</h3>
+                <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-list ml-2"></i>سجل المشتركين</h3>
             </div>
             <div class="overflow-x-auto h-[600px]">
-                <table class="w-full text-right text-sm min-w-[1000px]">
+                <table class="w-full text-right text-sm min-w-[1100px]">
                     <thead class="bg-[#0f172a] text-gray-400 text-xs uppercase border-b border-gray-800 sticky top-0 z-20">
                         <tr>
                             <th class="p-4"># ID</th>
-                            <th class="p-4">الاسم</th>
-                            <th class="p-4">مسؤول المبيعات</th>
+                            <th class="p-4">الاسم (اضغط للإيصال)</th>
+                            <th class="p-4">المبيعات</th>
                             <th class="p-4">المنتج / التخصص</th>
-                            <th class="p-4">الراوند</th>
-                            <th class="p-4">سعر البيع</th>
                             <th class="p-4 text-emerald-400">المدفوع</th>
                             <th class="p-4 text-amber-400">المتبقي</th>
+                            <th class="p-4">ميعاد الدفعة القادمة</th>
                             <th class="p-4">الحالة</th>
+                            <th class="p-4 text-center">إجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-gray-800/50">
@@ -122,55 +157,104 @@
 
     </main>
 
+    <!-- النافذة المنبثقة للتعديل -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-all">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-black text-white mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-blue-500"></i> تعديل بيانات الاشتراك
+            </h3>
+            
+            <input type="hidden" id="edit-id">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">اسم المشترك</label>
+                    <input type="text" id="edit-name" disabled class="w-full bg-[#0b0f19] border border-gray-700 text-gray-400 rounded-xl px-4 py-2 cursor-not-allowed">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">إجمالي السعر (ج.م)</label>
+                    <input type="number" id="edit-total" disabled class="w-full bg-[#0b0f19] border border-gray-700 text-gray-400 rounded-xl px-4 py-2 cursor-not-allowed">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">المدفوع (ج.م)</label>
+                        <input type="number" id="edit-paid" oninput="calcEditRemaining()" class="w-full bg-[#0b0f19] border border-gray-700 text-emerald-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">المتبقي (ج.م)</label>
+                        <input type="number" id="edit-rest" class="w-full bg-[#0b0f19] border border-gray-700 text-amber-400 font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">تاريخ الدفعة القادمة</label>
+                    <input type="date" id="edit-next-date" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
+                    <p class="text-xs text-gray-500 mt-1">اتركه فارغاً إذا كان الحساب خالصاً.</p>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-8">
+                <button onclick="saveEdit()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition shadow-lg shadow-blue-900/50">حفظ التعديلات</button>
+                <button onclick="closeEditModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // --- 1. توليد بيانات افتراضية ذكية ---
         function generateDummyData() {
             let dummySubs = [];
             let currentId = 201135;
             
-            const firstNames = ["أحمد", "محمد", "محمود", "سارة", "فاطمة", "علي", "كريم", "منى", "شادي", "خالد", "يوسف", "عمر", "زينب", "مريم", "إسلام", "حسن", "حسين"];
-            const lastNames = ["عبد الحميد", "محمود", "سعيد", "مصطفى", "إبراهيم", "عادل", "توفيق", "النجار", "الحداد", "المصري", "سامي", "كمال"];
+            const firstNames = ["أحمد", "محمد", "محمود", "سارة", "فاطمة", "علي", "كريم", "منى", "شادي", "خالد", "يوسف", "عمر", "زينب", "مريم"];
+            const lastNames = ["عبد الحميد", "محمود", "سعيد", "مصطفى", "إبراهيم", "عادل", "توفيق", "النجار", "الحداد"];
             
-            // الأسعار المحدثة حسب الطلب
             const productTypes = [
                 { type: 'دبلومة', spec: 'إنشائي', price: 9800 },
                 { type: 'دبلومة', spec: 'معماري', price: 8900 },
-                { type: 'كورس', spec: 'إنشائي', price: 4500 }, // ماكس 5000
-                { type: 'كورس', spec: 'معماري', price: 4900 }, // ماكس 5000
+                { type: 'كورس', spec: 'إنشائي', price: 4500 },
+                { type: 'كورس', spec: 'معماري', price: 4900 },
                 { type: 'برنامج', spec: 'أوتوديسك', price: 600 }
             ];
 
-            function getRandomName() {
-                return firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)];
-            }
-
-            function getRandomMobile() {
-                return "01" + Math.floor(10000000 + Math.random() * 90000000);
-            }
+            const today = new Date();
 
             function createSubsForRep(salesRep, count) {
                 for(let i = 0; i < count; i++) {
                     let prod = productTypes[Math.floor(Math.random() * productTypes.length)];
-                    let isFullyPaid = Math.random() > 0.5;
+                    let isFullyPaid = Math.random() > 0.6; // 60% paid full
                     let paid = isFullyPaid ? prod.price : (Math.floor(Math.random() * (prod.price / 1000)) * 1000);
-                    if(paid === 0 || paid >= prod.price) paid = prod.price * 0.5; // تسديد النصف في حال الأرقام الصفرية
+                    if(paid === 0 || paid >= prod.price) paid = prod.price * 0.5; 
                     if(isFullyPaid) paid = prod.price;
 
                     let remaining = prod.price - paid;
                     let status = remaining === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
-                    let round = prod.type === 'برنامج' ? 'N/A' : 'Round ' + (Math.floor(Math.random() * 10) + 20);
+                    
+                    // توليد تاريخ دفعة قادمة ذكي للإشعارات
+                    let nextPayDate = '';
+                    if (remaining > 0) {
+                        // -2 إلى +5 أيام من اليوم لاختبار الإشعارات
+                        let randomDaysOffset = Math.floor(Math.random() * 8) - 2; 
+                        let tempDate = new Date();
+                        tempDate.setDate(today.getDate() + randomDaysOffset);
+                        nextPayDate = tempDate.toISOString().split('T')[0];
+                    }
 
                     dummySubs.push({
                         id: currentId++,
-                        fullName: getRandomName(),
-                        mobile: getRandomMobile(),
+                        fullName: firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)],
+                        mobile: "01" + Math.floor(10000000 + Math.random() * 90000000),
                         salesRep: salesRep,
                         prodType: prod.type,
                         spec: prod.spec,
-                        round: round,
+                        round: prod.type === 'برنامج' ? 'N/A' : 'Round ' + (Math.floor(Math.random() * 10) + 20),
                         totalPrice: prod.price,
                         paidAmount: paid,
                         remainingAmount: remaining,
-                        status: status
+                        status: status,
+                        nextPaymentDate: nextPayDate
                     });
                 }
             }
@@ -182,19 +266,19 @@
             return dummySubs;
         }
 
-        // استخدام key جديد لضمان توليد البيانات المحدثة بالأسعار الجديدة
-        let subs = JSON.parse(localStorage.getItem('tobim_subs_v4') || '[]');
+        let subs = JSON.parse(localStorage.getItem('tobim_subs_v5') || '[]');
         if (subs.length === 0) {
             subs = generateDummyData();
-            localStorage.setItem('tobim_subs_v4', JSON.stringify(subs));
+            localStorage.setItem('tobim_subs_v5', JSON.stringify(subs));
         }
 
+        // --- 2. دالة الفلترة والرسم ---
         const tbody = document.getElementById('tableBody');
-
         window.filterTable = function() {
             const filterSales = document.getElementById('filter-sales').value;
             const filterType = document.getElementById('filter-type').value;
             const filterSpec = document.getElementById('filter-spec').value;
+            const filterStatus = document.getElementById('filter-status').value;
 
             tbody.innerHTML = '';
             
@@ -207,8 +291,9 @@
                 const matchSales = filterSales === 'الكل' || s.salesRep === filterSales;
                 const matchType = filterType === 'الكل' || s.prodType === filterType;
                 const matchSpec = filterSpec === 'الكل' || s.spec === filterSpec;
+                const matchStatus = filterStatus === 'الكل' || s.status === filterStatus;
 
-                if (matchSales && matchType && matchSpec) {
+                if (matchSales && matchType && matchSpec && matchStatus) {
                     displayedCount++;
                     totalSales += parseFloat(s.totalPrice) || 0;
                     totalPaid += parseFloat(s.paidAmount) || 0;
@@ -218,22 +303,23 @@
                         ? `<span class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold">خالص</span>`
                         : `<span class="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-xs font-bold">متبقي</span>`;
                     
-                    let typeIcon = '';
-                    if(s.prodType === 'دبلومة') typeIcon = '<i class="fa-solid fa-graduation-cap text-blue-400 ml-1"></i>';
-                    else if(s.prodType === 'كورس') typeIcon = '<i class="fa-solid fa-video text-purple-400 ml-1"></i>';
-                    else if(s.prodType === 'برنامج') typeIcon = '<i class="fa-solid fa-compact-disc text-amber-400 ml-1"></i>';
+                    let nextPayBadge = s.nextPaymentDate ? `<span class="text-xs text-gray-300 bg-gray-800 px-2 py-1 rounded border border-gray-700">${s.nextPaymentDate}</span>` : '<span class="text-xs text-gray-600">-</span>';
 
                     tbody.innerHTML += `
                         <tr class="hover:bg-gray-800/40 transition group">
                             <td class="p-4 font-bold text-gray-400">${s.id}</td>
                             <td class="p-4 font-bold text-white cursor-pointer hover:text-blue-400" onclick="location.href='receipt.html?id=${s.id}'">${s.fullName}</td>
                             <td class="p-4 text-sm text-gray-300"><span class="bg-blue-900/30 text-blue-300 px-2 py-1 rounded border border-blue-800/50">${s.salesRep}</span></td>
-                            <td class="p-4 text-sm text-gray-200">${typeIcon} ${s.prodType} (${s.spec})</td>
-                            <td class="p-4 text-sm text-gray-400">${s.round}</td>
-                            <td class="p-4 font-bold text-white">${s.totalPrice.toLocaleString()}</td>
+                            <td class="p-4 text-sm text-gray-200">${s.prodType} (${s.spec})</td>
                             <td class="p-4 font-bold text-emerald-400">${s.paidAmount.toLocaleString()}</td>
                             <td class="p-4 font-bold text-amber-400">${s.remainingAmount.toLocaleString()}</td>
+                            <td class="p-4">${nextPayBadge}</td>
                             <td class="p-4">${statusBadge}</td>
+                            <td class="p-4 text-center">
+                                <button onclick="openEditModal(${s.id})" class="bg-gray-700 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                                    <i class="fa-solid fa-pen"></i> تعديل
+                                </button>
+                            </td>
                         </tr>
                     `;
                 }
@@ -249,7 +335,130 @@
             document.getElementById('summary-rest').innerHTML = `${totalRest.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
         };
 
+        // --- 3. نظام الإشعارات (التنبيهات) ---
+        function checkNotifications() {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            const notifList = document.getElementById('notif-list');
+            notifList.innerHTML = '';
+            let notifCount = 0;
+
+            subs.forEach(s => {
+                if (s.remainingAmount > 0 && s.nextPaymentDate) {
+                    const payDate = new Date(s.nextPaymentDate);
+                    payDate.setHours(0,0,0,0);
+                    
+                    // حساب الفارق بالأيام
+                    const diffTime = payDate - today;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    let alertMessage = '';
+                    let alertClass = '';
+
+                    if (diffDays < 0) {
+                        alertMessage = `متأخر منذ ${Math.abs(diffDays)} يوم`;
+                        alertClass = 'text-rose-400 bg-rose-500/10 border-rose-500/20';
+                    } else if (diffDays === 0) {
+                        alertMessage = `مستحق اليوم!`;
+                        alertClass = 'text-rose-400 bg-rose-500/10 border-rose-500/20';
+                    } else if (diffDays <= 3) {
+                        alertMessage = `مستحق بعد ${diffDays} أيام`;
+                        alertClass = 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+                    }
+
+                    if (alertMessage) {
+                        notifCount++;
+                        notifList.innerHTML += `
+                            <div class="p-4 hover:bg-gray-800 transition cursor-pointer" onclick="openEditModal(${s.id})">
+                                <div class="flex justify-between items-start mb-1">
+                                    <p class="font-bold text-white text-sm">${s.fullName}</p>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${alertClass}">${alertMessage}</span>
+                                </div>
+                                <p class="text-xs text-gray-400">متبقي: <span class="font-bold text-amber-400">${s.remainingAmount} ج.م</span></p>
+                            </div>
+                        `;
+                    }
+                }
+            });
+
+            const badge = document.getElementById('notif-badge');
+            document.getElementById('notif-count-text').innerText = `${notifCount} إشعار`;
+            
+            if (notifCount > 0) {
+                badge.innerText = notifCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+                notifList.innerHTML = `<div class="p-6 text-center text-gray-500 text-sm">لا توجد دفعات مستحقة قريباً.</div>`;
+            }
+        }
+
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notif-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // إغلاق الإشعارات عند الضغط في أي مكان خارجها
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative')) {
+                document.getElementById('notif-dropdown').classList.add('hidden');
+            }
+        }
+
+        // --- 4. التعديل (Edit) ---
+        const editModal = document.getElementById('editModal');
+        
+        function openEditModal(id) {
+            const sub = subs.find(s => s.id === id);
+            if(!sub) return;
+
+            document.getElementById('edit-id').value = sub.id;
+            document.getElementById('edit-name').value = sub.fullName;
+            document.getElementById('edit-total').value = sub.totalPrice;
+            document.getElementById('edit-paid').value = sub.paidAmount;
+            document.getElementById('edit-rest').value = sub.remainingAmount;
+            document.getElementById('edit-next-date').value = sub.nextPaymentDate || '';
+            
+            editModal.classList.remove('hidden');
+            document.getElementById('notif-dropdown').classList.add('hidden'); // غلق الإشعارات إن كانت مفتوحة
+        }
+
+        function calcEditRemaining() {
+            const total = parseFloat(document.getElementById('edit-total').value) || 0;
+            let paid = parseFloat(document.getElementById('edit-paid').value) || 0;
+            if(paid > total) paid = total;
+            document.getElementById('edit-rest').value = total - paid;
+        }
+
+        function closeEditModal() {
+            editModal.classList.add('hidden');
+        }
+
+        function saveEdit() {
+            const id = parseInt(document.getElementById('edit-id').value);
+            const paid = parseFloat(document.getElementById('edit-paid').value) || 0;
+            const rest = parseFloat(document.getElementById('edit-rest').value) || 0;
+            const nextDate = document.getElementById('edit-next-date').value;
+
+            const index = subs.findIndex(s => s.id === id);
+            if(index !== -1) {
+                subs[index].paidAmount = paid;
+                subs[index].remainingAmount = rest;
+                subs[index].status = rest === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
+                subs[index].nextPaymentDate = rest === 0 ? '' : nextDate; // مسح التاريخ لو تم التسديد بالكامل
+
+                // حفظ وإعادة رسم الشاشة
+                localStorage.setItem('tobim_subs_v5', JSON.stringify(subs));
+                filterTable();
+                checkNotifications();
+                closeEditModal();
+            }
+        }
+
+        // تشغيل التهيئة عند التحميل
         filterTable();
+        checkNotifications();
     </script>
 </body>
 </html>

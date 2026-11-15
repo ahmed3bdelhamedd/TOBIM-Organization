@@ -38,12 +38,57 @@
 
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-black text-white">سجل المصروفات العامة</h2>
-            <!-- تم إضافة دالة الفتح هنا -->
-            <button onclick="openModal()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition"><i class="fa-solid fa-plus ml-1"></i> إضافة مصروف</button>
+            <button onclick="openModal()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
+                <i class="fa-solid fa-plus ml-1"></i> إضافة مصروف
+            </button>
         </div>
 
+        <!-- فلاتر التقارير -->
+        <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 mb-6">
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">الشهر</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-rose-500 w-32">
+                    <option value="الكل">الكل</option>
+                    <option value="1">يناير</option>
+                    <option value="2">فبراير</option>
+                    <option value="3">مارس</option>
+                    <option value="4">أبريل</option>
+                    <option value="5">مايو</option>
+                    <option value="6">يونيو</option>
+                    <option value="7">يوليو</option>
+                    <option value="8">أغسطس</option>
+                    <option value="9">سبتمبر</option>
+                    <option value="10">أكتوبر</option>
+                    <option value="11" selected>نوفمبر</option>
+                    <option value="12">ديسمبر</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">السنة</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-rose-500 w-32">
+                    <option value="2026" selected>2026</option>
+                    <option value="2027">2027</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2">تصنيف المصروف</label>
+                <select class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-rose-500 w-40">
+                    <option value="الكل" selected>جميع التصنيفات</option>
+                    <option value="إيجارات">إيجارات</option>
+                    <option value="ضيافة">ضيافة</option>
+                    <option value="كانتين">كانتين</option>
+                    <option value="مستلزمات صحية">مستلزمات صحية</option>
+                    <option value="أجهزة">أجهزة</option>
+                </select>
+            </div>
+            <button class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex-1 md:flex-none">
+                <i class="fa-solid fa-file-export ml-1"></i> استخراج التقرير
+            </button>
+        </div>
+
+        <!-- جدول المصروفات -->
         <div class="bg-[#111827] rounded-3xl border border-gray-800 overflow-hidden">
-            <table class="w-full text-right">
+            <table class="w-full text-right min-w-[700px]">
                 <thead class="bg-[#0f172a] text-gray-400 text-sm">
                     <tr>
                         <th class="p-4">البند</th>
@@ -54,18 +99,33 @@
                     </tr>
                 </thead>
                 <tbody id="expenses-table-body" class="divide-y divide-gray-800">
+                    <!-- تم تعديل الإيجار وإضافة أمثلة للتصنيفات الجديدة -->
                     <tr class="hover:bg-gray-800/30">
                         <td class="p-4 font-bold">إيجار المقر (نوفمبر)</td>
                         <td class="p-4 text-sm text-gray-400">إيجارات</td>
                         <td class="p-4 text-sm">01 نوفمبر 2026</td>
-                        <td class="p-4 font-bold text-white">15,000 ج.م</td>
+                        <td class="p-4 font-bold text-white">10,000 ج.م</td>
                         <td class="p-4"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">مدفوع</span></td>
                     </tr>
                     <tr class="hover:bg-gray-800/30">
-                        <td class="p-4 font-bold">تجديد استضافة وسيرفرات</td>
-                        <td class="p-4 text-sm text-gray-400">تقنية معلومات</td>
+                        <td class="p-4 font-bold">مشتريات بوفيه</td>
+                        <td class="p-4 text-sm text-gray-400">كانتين</td>
+                        <td class="p-4 text-sm">03 نوفمبر 2026</td>
+                        <td class="p-4 font-bold text-white">450 ج.م</td>
+                        <td class="p-4"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">مدفوع</span></td>
+                    </tr>
+                    <tr class="hover:bg-gray-800/30">
+                        <td class="p-4 font-bold">مطهرات وأدوات نظافة</td>
+                        <td class="p-4 text-sm text-gray-400">مستلزمات صحية</td>
                         <td class="p-4 text-sm">05 نوفمبر 2026</td>
-                        <td class="p-4 font-bold text-white">3,200 ج.م</td>
+                        <td class="p-4 font-bold text-white">200 ج.م</td>
+                        <td class="p-4"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">مدفوع</span></td>
+                    </tr>
+                    <tr class="hover:bg-gray-800/30">
+                        <td class="p-4 font-bold">شراء ماوس وكيبورد</td>
+                        <td class="p-4 text-sm text-gray-400">أجهزة</td>
+                        <td class="p-4 text-sm">10 نوفمبر 2026</td>
+                        <td class="p-4 font-bold text-white">850 ج.م</td>
                         <td class="p-4"><span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs font-bold">مستحق</span></td>
                     </tr>
                 </tbody>
@@ -74,19 +134,33 @@
     </main>
 
     <!-- النافذة المنبثقة (Modal) لإضافة المصروف -->
-    <div id="expenseModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md">
+    <div id="expenseModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 class="text-xl font-bold text-white mb-6">إضافة مصروف جديد</h3>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">اسم البند</label>
-                    <input type="text" id="expName" placeholder="مثال: فاتورة كهرباء" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-rose-500">
+                    <label class="block text-sm text-gray-400 mb-1">اسم البند (الوصف)</label>
+                    <input type="text" id="expName" placeholder="مثال: فاتورة كهرباء، أدوات نظافة..." class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-rose-500">
                 </div>
                 
                 <div>
                     <label class="block text-sm text-gray-400 mb-1">التصنيف</label>
-                    <input type="text" id="expCategory" placeholder="مثال: مرافق" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-rose-500">
+                    <!-- تحويل التصنيف إلى قائمة منسدلة بالتصنيفات المطلوبة -->
+                    <select id="expCategory" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-rose-500">
+                        <option value="إيجارات">إيجارات</option>
+                        <option value="ضيافة">ضيافة</option>
+                        <option value="كانتين">كانتين</option>
+                        <option value="مستلزمات صحية">مستلزمات صحية</option>
+                        <option value="أجهزة">أجهزة ومعدات</option>
+                        <option value="تقنية معلومات">تقنية معلومات (سيرفرات/نت)</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">تاريخ المصروف</label>
+                    <input type="date" id="expDate" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-rose-500" style="color-scheme: dark;">
                 </div>
 
                 <div>
@@ -98,13 +172,13 @@
                     <label class="block text-sm text-gray-400 mb-1">الحالة</label>
                     <select id="expStatus" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-rose-500">
                         <option value="مدفوع">مدفوع</option>
-                        <option value="مستحق">مستحق</option>
+                        <option value="مستحق">مستحق (آجل)</option>
                     </select>
                 </div>
             </div>
 
             <div class="flex gap-3 mt-6">
-                <button onclick="addExpense()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إضافة</button>
+                <button onclick="addExpense()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl font-bold transition">حفظ المصروف</button>
                 <button onclick="closeModal()" class="flex-1 bg-[#0b0f19] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
             </div>
         </div>
@@ -114,6 +188,10 @@
     <script>
         const modal = document.getElementById('expenseModal');
         const tableBody = document.getElementById('expenses-table-body');
+        const dateInput = document.getElementById('expDate');
+
+        // تعيين تاريخ اليوم كقيمة افتراضية
+        dateInput.valueAsDate = new Date();
 
         function openModal() {
             modal.classList.remove('hidden');
@@ -121,10 +199,11 @@
 
         function closeModal() {
             modal.classList.add('hidden');
-            // مسح الخانات بعد الإغلاق
             document.getElementById('expName').value = '';
-            document.getElementById('expCategory').value = '';
             document.getElementById('expAmount').value = '';
+            document.getElementById('expCategory').selectedIndex = 0;
+            document.getElementById('expStatus').selectedIndex = 0;
+            dateInput.valueAsDate = new Date();
         }
 
         function addExpense() {
@@ -132,23 +211,22 @@
             const category = document.getElementById('expCategory').value;
             const amount = document.getElementById('expAmount').value;
             const status = document.getElementById('expStatus').value;
+            const rawDate = document.getElementById('expDate').value;
 
             if (!name || !amount) {
-                alert("يرجى إدخال اسم البند والمبلغ على الأقل!");
+                alert("يرجى إدخال اسم البند والمبلغ!");
                 return;
             }
 
-            // الحصول على تاريخ اليوم
-            const today = new Date();
+            // تنسيق التاريخ لعرضه بالعربية
+            const dateObj = new Date(rawDate);
             const dateOptions = { day: '2-digit', month: 'long', year: 'numeric' };
-            const formattedDate = today.toLocaleDateString('ar-EG', dateOptions);
+            const formattedDate = dateObj.toLocaleDateString('ar-EG', dateOptions);
 
-            // تحديد لون الحالة
             const statusBadge = status === 'مدفوع' 
                 ? `<span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold">مدفوع</span>`
                 : `<span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded text-xs font-bold">مستحق</span>`;
 
-            // إنشاء سطر جديد في الجدول
             const newRow = document.createElement('tr');
             newRow.className = "hover:bg-gray-800/30";
             newRow.innerHTML = `
@@ -159,10 +237,8 @@
                 <td class="p-4">${statusBadge}</td>
             `;
 
-            // إضافة السطر لأول الجدول
+            // إضافة في بداية الجدول
             tableBody.insertBefore(newRow, tableBody.firstChild);
-
-            // إغلاق النافذة
             closeModal();
         }
     </script>

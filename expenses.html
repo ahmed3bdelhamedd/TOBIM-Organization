@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — إدارة الرواتب والأقسام</title>
+    <title>TOBIM — المصروفات العامة</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style> body { font-family: 'Cairo', sans-serif; background-color: #0b0f19; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Cairo', sans-serif; background-color: #0b0f19; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
 </head>
-<body class="text-gray-100 min-h-screen flex flex-col">
-
-    <!-- حماية صفحة الرواتب للإدارة فقط -->
-    <script>
-        if (localStorage.getItem('tobim_user_email') !== 'info@ahmedabdelhamed.com') {
-            alert("عذراً، هذه الصفحة مخصصة لمدير النظام (الإدارة) فقط.");
-            window.location.href = 'subscriptions.html';
-        }
-    </script>
+<body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
 
     <!-- الهيدر الموحد مع بروفايل الحساب -->
     <header class="bg-[#0f172a]/90 backdrop-blur-md border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50">
@@ -68,35 +65,31 @@
         <div class="flex items-center gap-3 overflow-x-auto pb-4 border-b border-gray-800/50">
             <a href="dashboard.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-chart-pie ml-2"></i>الداشبورد العام</a>
             <a href="statements.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-file-invoice-dollar ml-2"></i>كشف الحسابات</a>
-            <a href="payroll.html" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap shadow-lg"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</a>
+            <a href="payroll.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-users ml-2"></i>إدارة الرواتب</a>
             <a href="marketing.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-bullhorn ml-2"></i>التسويق</a>
-            <a href="expenses.html" class="bg-[#111827] hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-800 px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
+            <a href="expenses.html" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap shadow-lg"><i class="fa-solid fa-receipt ml-2"></i>المصروفات العامة</a>
         </div>
 
-        <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
-            <h2 class="text-2xl font-black text-white">إدارة الرواتب والأقسام</h2>
-            <div class="flex gap-3">
-                <button onclick="openEmployeeModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
-                    <i class="fa-solid fa-user-plus"></i> إضافة موظف جديد
-                </button>
-                <button onclick="alert('تم اعتماد الرواتب بنجاح!')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
-                    <i class="fa-solid fa-check-double"></i> اعتماد الرواتب
-                </button>
+        <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+            <div>
+                <h2 class="text-2xl font-black text-white">المصروفات العامة</h2>
+                <p class="text-sm text-gray-400 mt-1">متابعة وتسجيل المصروفات الإدارية والتشغيلية</p>
             </div>
+            <button id="add-exp-btn" onclick="openExpenseModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> إضافة مصروف جديد
+            </button>
         </div>
 
-        <!-- فلاتر التقارير والمدة والقسم مع الأيقونات -->
+        <!-- فلاتر التقارير والمدة والتصنيف -->
         <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 mb-6 shadow-lg">
             <div>
-                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-filter text-blue-500 ml-1"></i> القسم</label>
-                <select id="filter-dept" onchange="renderDepartments()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-48">
-                    <option value="الكل">جميع الأقسام</option>
-                    <option value="الإدارة">الإدارة</option>
-                    <option value="المبيعات">المبيعات</option>
-                    <option value="تقنية المعلومات">تقنية المعلومات</option>
-                    <option value="الجرافيك">الجرافيك</option>
-                    <option value="المدربين">المدربين</option>
-                    <option value="السوشيال ميديا">السوشيال ميديا</option>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-filter text-blue-500 ml-1"></i> تصنيف المصروف</label>
+                <select id="filter-category" onchange="renderExpenses()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-48">
+                    <option value="الكل">جميع التصنيفات</option>
+                    <option value="إيجار">إيجار</option>
+                    <option value="فواتير ومرافق">فواتير ومرافق</option>
+                    <option value="بوفيه ونظافة">بوفيه ونظافة</option>
+                    <option value="أخرى">أخرى</option>
                 </select>
             </div>
             <div>
@@ -116,54 +109,59 @@
             </div>
         </div>
 
-        <!-- حاوية الأقسام -->
-        <div id="departments-container" class="space-y-8"></div>
-
-        <!-- الإجمالي العام -->
-        <div id="grand-total-container" class="bg-gradient-to-r from-blue-900/40 to-[#111827] p-6 rounded-3xl border border-blue-500/30 shadow-xl flex justify-between items-center mt-8">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-sack-dollar text-blue-400 text-3xl"></i>
-                <span class="text-xl font-bold text-blue-200">الإجمالي العام للرواتب المعتمدة</span>
+        <!-- ملخص المصروفات -->
+        <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+            <div>
+                <h3 class="text-gray-400 text-sm font-bold">إجمالي المصروفات العامة</h3>
+                <p id="total-expenses-display" class="text-3xl font-black text-rose-400 mt-1">0 <span class="text-sm font-normal text-gray-500">ج.م</span></p>
             </div>
-            <span id="grand-total-payroll" class="text-4xl font-black text-white">0 <span class="text-lg font-normal text-blue-300">ج.م</span></span>
+            <i class="fa-solid fa-receipt text-rose-500/20 text-5xl"></i>
+        </div>
+
+        <!-- جدول المصروفات -->
+        <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse min-w-[700px]">
+                    <thead>
+                        <tr class="bg-[#0f172a] text-gray-400 text-sm border-b border-gray-800">
+                            <th class="p-4 font-semibold">التاريخ</th>
+                            <th class="p-4 font-semibold">بيان المصروف</th>
+                            <th class="p-4 font-semibold">التصنيف</th>
+                            <th class="p-4 font-semibold text-rose-400">القيمة (ج.م)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenses-tbody" class="divide-y divide-gray-800/50">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
-    <!-- نافذة إضافة موظف جديد -->
-    <div id="newEmployeeModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+    <!-- نافذة إضافة مصروف -->
+    <div id="expenseModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
-            <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-user-plus text-blue-500 ml-2"></i> تسجيل موظف جديد</h3>
-            <form onsubmit="saveNewEmployee(event)" class="space-y-4">
+            <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-receipt text-blue-500 ml-2"></i> إضافة مصروف جديد</h3>
+            <form onsubmit="saveExpense(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">اسم الموظف *</label>
-                    <input type="text" id="newEmpName" required placeholder="مثال: أحمد محمد" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                    <label class="block text-sm text-gray-400 mb-1">البيان / الوصف *</label>
+                    <input type="text" id="expDesc" required placeholder="مثال: إيجار المقر، كهرباء" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">المسمى الوظيفي *</label>
-                    <input type="text" id="newEmpRole" required placeholder="مثال: محاسب، مصمم" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">نبذة عنه (السطر تحت الاسم)</label>
-                    <input type="text" id="newEmpBio" placeholder="مثال: خبرة 3 سنوات" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">القسم *</label>
-                    <select id="newEmpDept" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
-                        <option value="الإدارة">الإدارة</option>
-                        <option value="المبيعات">المبيعات</option>
-                        <option value="تقنية المعلومات">تقنية المعلومات</option>
-                        <option value="الجرافيك">الجرافيك</option>
-                        <option value="المدربين">المدربين</option>
-                        <option value="السوشيال ميديا">السوشيال ميديا</option>
+                    <label class="block text-sm text-gray-400 mb-1">التصنيف *</label>
+                    <select id="expCategory" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                        <option value="إيجار">إيجار</option>
+                        <option value="فواتير ومرافق">فواتير ومرافق</option>
+                        <option value="بوفيه ونظافة">بوفيه ونظافة</option>
+                        <option value="أخرى">أخرى</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">الراتب الأساسي (ج.م) *</label>
-                    <input type="number" id="newEmpSalary" required placeholder="5000" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                    <label class="block text-sm text-gray-400 mb-1">القيمة (ج.م) *</label>
+                    <input type="number" id="expAmount" required placeholder="1000" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                 </div>
                 <div class="flex gap-3 mt-6">
                     <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition">حفظ</button>
-                    <button type="button" onclick="closeEmployeeModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
+                    <button type="button" onclick="closeExpenseModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
                 </div>
             </form>
         </div>
@@ -185,20 +183,28 @@
     </div>
 
     <script>
+        const currentUserEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
+        const isAdmin = (currentUserEmail === 'info@ahmedabdelhamed.com');
+
         document.addEventListener('DOMContentLoaded', () => {
-            const savedEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
             const savedName = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
-            document.getElementById('header-useremail').innerText = savedEmail;
-            document.getElementById('dropdown-email').innerText = savedEmail;
+            document.getElementById('header-useremail').innerText = currentUserEmail;
+            document.getElementById('dropdown-email').innerText = currentUserEmail;
             document.getElementById('header-username').innerText = savedName;
             document.getElementById('user-avatar-initial').innerText = savedName.charAt(0);
+
+            if (!isAdmin) {
+                document.getElementById('add-exp-btn').style.display = 'none';
+                const financeNav = document.getElementById('nav-finance');
+                if (financeNav) financeNav.style.display = 'none';
+            }
         });
 
         function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
         function openProfileModal() {
             document.getElementById('profile-dropdown').classList.add('hidden');
             document.getElementById('profile-name-input').value = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
-            document.getElementById('profile-email-input').value = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
+            document.getElementById('profile-email-input').value = currentUserEmail;
             document.getElementById('profileModal').classList.remove('hidden');
         }
         function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
@@ -211,161 +217,49 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // الرواتب والأقسام والأيقونات
-        const departmentsList = ['الإدارة', 'المبيعات', 'تقنية المعلومات', 'الجرافيك', 'المدربين', 'السوشيال ميديا'];
-        const departmentIcons = {
-            'الإدارة': 'fa-briefcase',
-            'المبيعات': 'fa-handshake',
-            'تقنية المعلومات': 'fa-laptop-code',
-            'الجرافيك': 'fa-palette',
-            'المدربين': 'fa-chalkboard-user',
-            'السوشيال ميديا': 'fa-share-nodes'
-        };
-
-        const defaultEmployees = [
-            { id: 1, name: "صلاح البدوي", role: "المدير", bio: "الإدارة العليا", department: "الإدارة", baseSalary: 40000, isManager: true },
-            { id: 2, name: "هشام غيب", role: "محاسب مالي", bio: "الحسابات والمراجعة", department: "الإدارة", baseSalary: 8000, isManager: false },
-            { id: 7, name: "صلاح الدين", role: "عامل نظافة", bio: "خدمات المقر", department: "الإدارة", baseSalary: 4500, isManager: false },
-            { id: 5, name: "صباح شعبان", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
-            { id: 6, name: "محسن إسلام", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 10000, isManager: false },
-            { id: 4, name: "عمر عبد العزيز", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
-            { id: 3, name: "أحمد عبد الحميد", role: "موظف IT", bio: "تطوير وأنظمة", department: "تقنية المعلومات", baseSalary: 6500, isManager: false },
-            { id: 8, name: "عامر علي", role: "مصمم جرافيك", bio: "التصميم والهوية البصرية", department: "الجرافيك", baseSalary: 16000, isManager: false },
-            { id: 9, name: "حسناء يسري", role: "مدرب معماري", bio: "تدريب هندسي معماري", department: "المدربين", baseSalary: 5500, isManager: false },
-            { id: 10, name: "مصطفى حنفي", role: "مدرب إنشائي", bio: "تدريب هندسي إنشائي", department: "المدربين", baseSalary: 7000, isManager: false },
-            { id: 11, name: "سحر الوزير", role: "أخصائي سوشيال ميديا", bio: "إدارة منصات التواصل", department: "السوشيال ميديا", baseSalary: 7000, isManager: false }
+        let expensesList = JSON.parse(localStorage.getItem('tobim_expenses_v3')) || [
+            { id: 1, date: '01/11/2026', desc: 'إيجار المقر', category: 'إيجار', amount: 12500 },
+            { id: 2, date: '05/11/2026', desc: 'فواتير كهرباء ومياه', category: 'فواتير ومرافق', amount: 3500 },
+            { id: 3, date: '10/11/2026', desc: 'بوفيه ونظافة', category: 'بوفيه ونظافة', amount: 4000 }
         ];
 
-        let employees = JSON.parse(localStorage.getItem('tobim_employees_v10')) || defaultEmployees;
-
-        function renderDepartments() {
-            const container = document.getElementById('departments-container');
-            container.innerHTML = '';
-            const selectedDept = document.getElementById('filter-dept').value;
-            let deptsToRender = selectedDept === 'الكل' ? departmentsList : [selectedDept];
+        function renderExpenses() {
+            const tbody = document.getElementById('expenses-tbody');
+            tbody.innerHTML = '';
+            const filterCat = document.getElementById('filter-category').value;
             
-            let grandTotal = 0;
-            const grandTotalContainer = document.getElementById('grand-total-container');
+            let total = 0;
+            let filteredList = filterCat === 'الكل' ? expensesList : expensesList.filter(e => e.category === filterCat);
 
-            if (selectedDept !== 'الكل') {
-                grandTotalContainer.classList.add('hidden');
-            } else {
-                grandTotalContainer.classList.remove('hidden');
-            }
-
-            deptsToRender.forEach(dept => {
-                const list = employees.filter(e => e.department === dept);
-                if(list.length > 0) {
-                    let rows = '';
-                    let subTotal = 0;
-
-                    list.forEach(emp => {
-                        const savedComm = parseFloat(localStorage.getItem(`comm_${emp.id}`)) || 0;
-                        const savedDed = parseFloat(localStorage.getItem(`ded_${emp.id}`)) || 0;
-                        const netVal = emp.baseSalary + savedComm - savedDed;
-                        subTotal += netVal;
-
-                        // العمولات تعمل بكفاءة في قسم المبيعات وباقي الأقسام حسب رغبتك
-                        let commInput = `<input type="number" id="comm_${emp.id}" value="${savedComm}" oninput="calculateNet(${emp.id}, ${emp.baseSalary}, '${dept}')" class="w-24 bg-[#0b0f19] border border-gray-700 text-emerald-400 rounded-lg px-2 py-1 text-sm focus:outline-none">`;
-                        let dedInput = `<input type="number" id="ded_${emp.id}" value="${savedDed}" oninput="calculateNet(${emp.id}, ${emp.baseSalary}, '${dept}')" class="w-24 bg-[#0b0f19] border border-gray-700 text-rose-400 rounded-lg px-2 py-1 text-sm focus:outline-none">`;
-
-                        rows += `
-                            <tr class="hover:bg-gray-800/35 transition">
-                                <td class="p-4">
-                                    <div class="font-bold text-white">${emp.name} ${emp.isManager ? '<span class="bg-amber-500/20 text-amber-400 text-xs px-2 py-0.5 rounded ml-2">المدير</span>' : ''}</div>
-                                    <div class="text-xs text-gray-400 mt-0.5">${emp.bio || emp.role}</div>
-                                </td>
-                                <td class="p-4 text-sm text-blue-400">${emp.role}</td>
-                                <td class="p-4 font-bold text-gray-300">${emp.baseSalary.toLocaleString()} ج.م</td>
-                                <td class="p-4">${commInput}</td>
-                                <td class="p-4">${dedInput}</td>
-                                <td class="p-4 font-black text-blue-400" id="net_${emp.id}">${netVal.toLocaleString()} ج.م</td>
-                            </tr>`;
-                    });
-
-                    grandTotal += subTotal;
-                    let iconClass = departmentIcons[dept] || 'fa-users';
-
-                    container.innerHTML += `
-                        <div class="bg-[#111827]/80 rounded-3xl border border-gray-800 overflow-hidden shadow-xl mb-6">
-                            <div class="bg-[#0f172a] p-4 border-b border-gray-800 font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid ${iconClass} text-blue-400"></i> قسم ${dept}
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-right min-w-[900px]">
-                                    <thead class="bg-[#0f172a]/50 text-gray-400 text-xs border-b border-gray-800">
-                                        <tr>
-                                            <th class="p-4">الموظف والنبذة</th>
-                                            <th class="p-4">الوظيفة</th>
-                                            <th class="p-4">الراتب الأساسي</th>
-                                            <th class="p-4 text-emerald-400">عمولة / مكافأة (+)</th>
-                                            <th class="p-4 text-rose-400">خصم / سلف (-)</th>
-                                            <th class="p-4">الصافي المستحق</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-800/50">${rows}</tbody>
-                                </table>
-                            </div>
-                            <div class="bg-[#0f172a] p-4 border-t border-gray-800 flex justify-between font-bold">
-                                <span>إجمالي رواتب قسم ${dept}:</span>
-                                <span class="text-white text-lg" id="subtotal_${dept}">${subTotal.toLocaleString()} ج.م</span>
-                            </div>
-                        </div>`;
-                }
+            filteredList.forEach(exp => {
+                total += exp.amount;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-800/30 transition">
+                        <td class="p-4 text-sm text-gray-400">${exp.date}</td>
+                        <td class="p-4 text-sm font-bold text-white">${exp.desc}</td>
+                        <td class="p-4 text-sm text-gray-300"><span class="bg-gray-800 px-2.5 py-1 rounded-lg text-xs">${exp.category}</span></td>
+                        <td class="p-4 font-bold text-rose-400">${exp.amount.toLocaleString()} ج.م</td>
+                    </tr>`;
             });
-
-            document.getElementById('grand-total-payroll').innerHTML = `${grandTotal.toLocaleString()} <span class="text-lg text-blue-300">ج.م</span>`;
+            document.getElementById('total-expenses-display').innerHTML = `${total.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
         }
 
-        renderDepartments();
+        renderExpenses();
 
-        function calculateNet(id, baseSalary, dept) {
-            const comm = parseFloat(document.getElementById(`comm_${id}`).value) || 0;
-            const ded = parseFloat(document.getElementById(`ded_${id}`).value) || 0;
-            const net = baseSalary + comm - ded;
-
-            localStorage.setItem(`comm_${id}`, comm);
-            localStorage.setItem(`ded_${id}`, ded);
-
-            document.getElementById(`net_${id}`).innerText = net.toLocaleString() + ' ج.م';
-
-            let deptTotal = 0;
-            const deptEmps = employees.filter(e => e.department === dept);
-            deptEmps.forEach(emp => {
-                const c = parseFloat(document.getElementById(`comm_${emp.id}`).value) || 0;
-                const d = parseFloat(document.getElementById(`ded_${emp.id}`).value) || 0;
-                deptTotal += (emp.baseSalary + c - d);
-            });
-
-            document.getElementById(`subtotal_${dept}`).innerText = deptTotal.toLocaleString() + ' ج.م';
-
-            let grandTotal = 0;
-            departmentsList.forEach(d => {
-                const list = employees.filter(e => e.department === d);
-                list.forEach(emp => {
-                    const c = parseFloat(document.getElementById(`comm_${emp.id}`).value) || 0;
-                    const dVal = parseFloat(document.getElementById(`ded_${emp.id}`).value) || 0;
-                    grandTotal += (emp.baseSalary + c - dVal);
-                });
-            });
-
-            document.getElementById('grand-total-payroll').innerHTML = `${grandTotal.toLocaleString()} <span class="text-lg text-blue-300">ج.م</span>`;
-        }
-
-        function openEmployeeModal() { document.getElementById('newEmployeeModal').classList.remove('hidden'); }
-        function closeEmployeeModal() { document.getElementById('newEmployeeModal').classList.add('hidden'); }
-        function saveNewEmployee(e) {
+        function openExpenseModal() { if(isAdmin) document.getElementById('expenseModal').classList.remove('hidden'); }
+        function closeExpenseModal() { document.getElementById('expenseModal').classList.add('hidden'); }
+        function saveExpense(e) {
             e.preventDefault();
-            let name = document.getElementById('newEmpName').value;
-            let role = document.getElementById('newEmpRole').value;
-            let bio = document.getElementById('newEmpBio').value;
-            let department = document.getElementById('newEmpDept').value;
-            let baseSalary = parseFloat(document.getElementById('newEmpSalary').value) || 0;
+            if(!isAdmin) return;
+            let desc = document.getElementById('expDesc').value;
+            let category = document.getElementById('expCategory').value;
+            let amount = parseFloat(document.getElementById('expAmount').value) || 0;
+            let today = new Date().toLocaleDateString('en-GB');
 
-            employees.push({ id: Date.now(), name, role, bio, department, baseSalary, isManager: false });
-            localStorage.setItem('tobim_employees_v10', JSON.stringify(employees));
-            renderDepartments();
-            closeEmployeeModal();
+            expensesList.push({ id: Date.now(), date: today, desc, category, amount });
+            localStorage.setItem('tobim_expenses_v3', JSON.stringify(expensesList));
+            renderExpenses();
+            closeExpenseModal();
         }
     </script>
 </body>

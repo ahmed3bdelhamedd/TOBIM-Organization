@@ -73,7 +73,7 @@
         <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white">الحملات الإعلانية والتسويق</h2>
-                <p class="text-sm text-gray-400 mt-1">متابعة ميزانية وتكاليف الحملات على المنصات الرقمية</p>
+                <p class="text-sm text-gray-400 mt-1">متابعة ميزانية وتكاليف الحملات على المنصات الرقمية وحالة السداد</p>
             </div>
             <button id="add-mkt-btn" onclick="openMarketingModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> إضافة حملة جديدة
@@ -127,6 +127,7 @@
                             <th class="p-4 font-semibold">التاريخ</th>
                             <th class="p-4 font-semibold">اسم الحملة / الوصف</th>
                             <th class="p-4 font-semibold">المنصة</th>
+                            <th class="p-4 font-semibold">الحالة</th>
                             <th class="p-4 font-semibold text-fuchsia-400">التكلفة (ج.م)</th>
                         </tr>
                     </thead>
@@ -137,11 +138,15 @@
         </div>
     </main>
 
-    <!-- نافذة إضافة حملة -->
+    <!-- نافذة إضافة حملة (مع تاريخ العملية وحالة المبلغ) -->
     <div id="marketingModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
             <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-bullhorn text-blue-500 ml-2"></i> إضافة حملة إعلانية جديدة</h3>
             <form onsubmit="saveMarketing(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">تاريخ العملية *</label>
+                    <input type="date" id="mktDate" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500" style="color-scheme: dark;">
+                </div>
                 <div>
                     <label class="block text-sm text-gray-400 mb-1">اسم الحملة / الوصف *</label>
                     <input type="text" id="mktDesc" required placeholder="مثال: إعلان دبلومة البيم نوفمبر" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
@@ -153,6 +158,13 @@
                         <option value="جوجل أدز">جوجل أدز</option>
                         <option value="تيك توك">تيك توك</option>
                         <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">حالة المبلغ *</label>
+                    <select id="mktStatus" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                        <option value="مدفوع">مدفوع</option>
+                        <option value="مستحق">مستحق</option>
                     </select>
                 </div>
                 <div>
@@ -198,6 +210,9 @@
                 const financeNav = document.getElementById('nav-finance');
                 if (financeNav) financeNav.style.display = 'none';
             }
+
+            document.getElementById('mktDate').valueAsDate = new Date();
+            renderMarketing();
         });
 
         function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
@@ -217,9 +232,9 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        let marketingList = JSON.parse(localStorage.getItem('tobim_marketing_v2')) || [
-            { id: 1, date: '02/11/2026', desc: 'حملة إعلانية فيسبوك (دبلومة)', platform: 'فيسبوك / إنستجرام', amount: 15000 },
-            { id: 2, date: '12/11/2026', desc: 'حملة إعلانية جوجل (كورسات)', platform: 'جوجل أدز', amount: 10000 }
+        let marketingList = JSON.parse(localStorage.getItem('tobim_marketing_v3')) || [
+            { id: 1, date: '02/11/2026', desc: 'حملة إعلانية فيسبوك (دبلومة)', platform: 'فيسبوك / إنستجرام', status: 'مدفوع', amount: 15000 },
+            { id: 2, date: '12/11/2026', desc: 'حملة إعلانية جوجل (كورسات)', platform: 'جوجل أدز', status: 'مستحق', amount: 10000 }
         ];
 
         function renderMarketing() {
@@ -232,31 +247,44 @@
 
             filteredList.forEach(mkt => {
                 total += mkt.amount;
+                let statusBadge = mkt.status === 'مدفوع' 
+                    ? '<span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-1 rounded-lg font-bold">مدفوع</span>' 
+                    : '<span class="bg-amber-500/20 text-amber-400 text-xs px-2.5 py-1 rounded-lg font-bold">مستحق</span>';
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-800/30 transition">
                         <td class="p-4 text-sm text-gray-400">${mkt.date}</td>
                         <td class="p-4 text-sm font-bold text-white">${mkt.desc}</td>
                         <td class="p-4 text-sm text-gray-300"><span class="bg-gray-800 px-2.5 py-1 rounded-lg text-xs">${mkt.platform}</span></td>
+                        <td class="p-4">${statusBadge}</td>
                         <td class="p-4 font-bold text-fuchsia-400">${mkt.amount.toLocaleString()} ج.م</td>
                     </tr>`;
             });
             document.getElementById('total-marketing-display').innerHTML = `${total.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
         }
 
-        renderMarketing();
-
-        function openMarketingModal() { if(isAdmin) document.getElementById('marketingModal').classList.remove('hidden'); }
+        function openMarketingModal() { 
+            if(isAdmin) {
+                document.getElementById('mktDate').valueAsDate = new Date();
+                document.getElementById('marketingModal').classList.remove('hidden'); 
+            }
+        }
         function closeMarketingModal() { document.getElementById('marketingModal').classList.add('hidden'); }
+        
         function saveMarketing(e) {
             e.preventDefault();
             if(!isAdmin) return;
+
+            let rawDate = document.getElementById('mktDate').value;
+            let formattedDate = rawDate ? rawDate.split('-').reverse().join('/') : new Date().toLocaleDateString('en-GB');
+
             let desc = document.getElementById('mktDesc').value;
             let platform = document.getElementById('mktPlatform').value;
+            let status = document.getElementById('mktStatus').value;
             let amount = parseFloat(document.getElementById('mktAmount').value) || 0;
-            let today = new Date().toLocaleDateString('en-GB');
 
-            marketingList.push({ id: Date.now(), date: today, desc, platform, amount });
-            localStorage.setItem('tobim_marketing_v2', JSON.stringify(marketingList));
+            marketingList.push({ id: Date.now(), date: formattedDate, desc, platform, status, amount });
+            localStorage.setItem('tobim_marketing_v3', JSON.stringify(marketingList));
             renderMarketing();
             closeMarketingModal();
         }

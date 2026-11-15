@@ -3,37 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — لوحة التحكم</title>
+    <title>TOBIM — لوحة التحكم المالية</title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style> body { font-family: 'Cairo', sans-serif; }</style>
 </head>
 <body class="bg-[#0b0f19] text-gray-100 min-h-screen flex flex-col">
     <script>
-        if(!localStorage.getItem('tobim_logged')) window.location.href = 'login.html';
+        if(!localStorage.getItem('tobim_logged')) {
+            // Uncomment in production
+            // window.location.href = 'login.html'; 
+        }
     </script>
 
+    <!-- Header -->
     <header class="bg-[#0f172a] border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-40">
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-3">
-                <img src="TobimLogo.jpg" class="w-10 h-10 rounded-xl object-cover border border-gray-700" alt="Logo">
+                <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="w-10 h-10 rounded-xl object-cover border border-gray-700" alt="Logo">
                 <span class="text-xl font-black text-white">TO BIM</span>
             </div>
             <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
-                <a href="dashboard.html" class="bg-blue-600 text-white px-4 py-2 rounded-xl transition">الرئيسية</a>
-                <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">اشتراكاتي</a>
-                <a href="new-sub.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">+ اشتراك جديد</a>
+                <a href="dashboard.html" class="bg-blue-600 text-white px-4 py-2 rounded-xl transition shadow-lg shadow-blue-600/20">لوحة الميزانية</a>
+                <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">القيود اليومية</a>
+                <a href="new-sub.html" class="text-gray-400 hover:text-white px-4 py-2 rounded-xl transition">+ إضافة قيد</a>
             </nav>
         </div>
-        <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-sm font-bold">خروج</button>
+        <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-500/20 transition">خروج</button>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto p-8 space-y-6">
-        <div class="bg-[#111827] p-8 rounded-3xl border border-gray-800">
-            <h2 class="text-2xl font-black text-white mb-2">مرحباً بك في لوحة تحكم TOBIM</h2>
-            <p class="text-gray-400 text-sm">استخدم القائمة العلوية للتنقل بين الأقسام وإدارة المشتركين والمدفوعات بسهولة.</p>
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6">
+        
+        <!-- Welcome Section -->
+        <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 flex justify-between items-center">
+            <div>
+                <h2 class="text-2xl font-black text-white mb-1">لوحة التحكم المالية (الداشبورد)</h2>
+                <p class="text-gray-400 text-sm">نظرة عامة على الحسابات البنكية، الخزينة، والمصروفات.</p>
+            </div>
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                <i class="fa-solid fa-file-invoice-dollar"></i> فاتورة جديدة
+            </button>
         </div>
+
+        <!-- Odoo-Style Journals (اليوميات) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Bank Account -->
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 relative overflow-hidden group hover:border-gray-600 transition">
+                <div class="absolute top-0 right-0 w-1 h-full bg-blue-500"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="font-bold text-lg text-white">البنك (CIB)</h3>
+                    <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                </div>
+                <p class="text-3xl font-black text-white mb-2">124,500 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
+                <p class="text-sm text-gray-400 mb-6">الرصيد في دفتر الأستاذ</p>
+                <div class="flex gap-2">
+                    <button class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">تحويل جديد</button>
+                    <button class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">مراجعة (3)</button>
+                </div>
+            </div>
+
+            <!-- Cash -->
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 relative overflow-hidden group hover:border-gray-600 transition">
+                <div class="absolute top-0 right-0 w-1 h-full bg-emerald-500"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="font-bold text-lg text-white">الخزينة الرئيسية</h3>
+                    <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                </div>
+                <p class="text-3xl font-black text-white mb-2">15,200 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
+                <p class="text-sm text-gray-400 mb-6">الرصيد الحالي</p>
+                <div class="flex gap-2">
+                    <button class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">سند قبض</button>
+                    <button class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">سند صرف</button>
+                </div>
+            </div>
+
+            <!-- Vendor Bills / Expenses -->
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 relative overflow-hidden group hover:border-gray-600 transition">
+                <div class="absolute top-0 right-0 w-1 h-full bg-rose-500"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="font-bold text-lg text-white">فواتير الموردين</h3>
+                    <button class="text-gray-400 hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                </div>
+                <p class="text-3xl font-black text-white mb-2">8,450 <span class="text-sm text-gray-500 font-normal">ج.م</span></p>
+                <p class="text-sm text-rose-400 mb-6">فواتير مستحقة الدفع</p>
+                <div class="flex gap-2">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition flex-1 text-center">تسجيل فاتورة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Tables Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Cashflow Chart -->
+            <div class="lg:col-span-2 bg-[#111827] p-6 rounded-3xl border border-gray-800">
+                <h3 class="font-bold text-lg text-white mb-6">تحليل التدفقات النقدية (الإيرادات vs المصروفات)</h3>
+                <div class="relative h-72 w-full">
+                    <canvas id="cashflowChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Expenses Table -->
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 flex flex-col">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg text-white">أحدث المصروفات</h3>
+                    <a href="#" class="text-sm text-blue-500 hover:text-blue-400">عرض الكل</a>
+                </div>
+                
+                <div class="space-y-4 flex-1">
+                    <!-- Expense Item -->
+                    <div class="flex justify-between items-center p-3 hover:bg-gray-800/50 rounded-xl transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center">
+                                <i class="fa-solid fa-laptop-code"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-white">استضافة سيرفر</p>
+                                <p class="text-xs text-gray-400">12 نوفمبر 2026</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-bold text-rose-400">- 1,200 ج.م</span>
+                    </div>
+
+                    <!-- Expense Item -->
+                    <div class="flex justify-between items-center p-3 hover:bg-gray-800/50 rounded-xl transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-white">فواتير كهرباء</p>
+                                <p class="text-xs text-gray-400">10 نوفمبر 2026</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-bold text-rose-400">- 450 ج.م</span>
+                    </div>
+
+                    <!-- Expense Item -->
+                    <div class="flex justify-between items-center p-3 hover:bg-gray-800/50 rounded-xl transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-purple-500/20 text-purple-500 flex items-center justify-center">
+                                <i class="fa-solid fa-bullhorn"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-white">حملة تسويقية</p>
+                                <p class="text-xs text-gray-400">05 نوفمبر 2026</p>
+                            </div>
+                        </div>
+                        <span class="text-sm font-bold text-rose-400">- 3,000 ج.م</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
+
+    <!-- Chart Configuration Script -->
+    <script>
+        const ctx = document.getElementById('cashflowChart').getContext('2d');
+        
+        // Gradient for Income
+        const incomeGradient = ctx.createLinearGradient(0, 0, 0, 400);
+        incomeGradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)'); // Blue
+        incomeGradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+        // Gradient for Expenses
+        const expenseGradient = ctx.createLinearGradient(0, 0, 0, 400);
+        expenseGradient.addColorStop(0, 'rgba(244, 63, 94, 0.5)'); // Rose
+        expenseGradient.addColorStop(1, 'rgba(244, 63, 94, 0)');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر'],
+                datasets: [
+                    {
+                        label: 'الإيرادات',
+                        data: [12000, 19000, 15000, 22000, 18000, 25000],
+                        borderColor: '#3b82f6',
+                        backgroundColor: incomeGradient,
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'المصروفات',
+                        data: [8000, 12000, 10000, 14000, 11000, 13000],
+                        borderColor: '#f43f5e',
+                        backgroundColor: expenseGradient,
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { color: '#9ca3af', font: { family: 'Cairo' } }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#1f2937', drawBorder: false },
+                        ticks: { color: '#9ca3af', font: { family: 'Cairo' } }
+                    },
+                    y: {
+                        grid: { color: '#1f2937', drawBorder: false },
+                        ticks: { color: '#9ca3af', font: { family: 'Cairo' } }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+            }
+        });
+    </script>
 </body>
 </html>

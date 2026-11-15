@@ -41,14 +41,13 @@
                     <i class="fa-regular fa-bell text-xl"></i>
                     <span id="notif-badge" class="hidden absolute top-0 right-0 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-[#0f172a]">0</span>
                 </button>
-                <!-- قائمة الإشعارات المنسدلة -->
                 <div id="notif-dropdown" class="hidden absolute left-0 mt-3 w-80 bg-[#111827] border border-gray-700 rounded-2xl shadow-2xl overflow-hidden z-50">
                     <div class="p-4 border-b border-gray-800 bg-[#0f172a] flex justify-between items-center">
                         <h4 class="font-bold text-white text-sm">إشعارات الدفعات المستحقة</h4>
                         <span id="notif-count-text" class="text-xs text-rose-400 font-bold bg-rose-500/10 px-2 py-1 rounded">0 إشعار</span>
                     </div>
                     <div id="notif-list" class="max-h-80 overflow-y-auto divide-y divide-gray-800">
-                        <!-- سيتم إدراج الإشعارات هنا -->
+                        <!-- الإشعارات -->
                     </div>
                 </div>
             </div>
@@ -101,7 +100,6 @@
                 </select>
             </div>
 
-            <!-- الفلتر الجديد للحالة -->
             <div>
                 <label class="block text-sm text-gray-400 mb-2">حالة الدفع</label>
                 <select id="filter-status" onchange="filterTable()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-32">
@@ -203,9 +201,9 @@
     </div>
 
     <script>
-        // --- 1. توليد بيانات افتراضية ذكية ---
+        // --- 1. توليد بيانات عشوائية متداخلة ---
         function generateDummyData() {
-            let dummySubs = [];
+            let rawSubs = [];
             let currentId = 201135;
             
             const firstNames = ["أحمد", "محمد", "محمود", "سارة", "فاطمة", "علي", "كريم", "منى", "شادي", "خالد", "يوسف", "عمر", "زينب", "مريم"];
@@ -224,7 +222,7 @@
             function createSubsForRep(salesRep, count) {
                 for(let i = 0; i < count; i++) {
                     let prod = productTypes[Math.floor(Math.random() * productTypes.length)];
-                    let isFullyPaid = Math.random() > 0.6; // 60% paid full
+                    let isFullyPaid = Math.random() > 0.6; 
                     let paid = isFullyPaid ? prod.price : (Math.floor(Math.random() * (prod.price / 1000)) * 1000);
                     if(paid === 0 || paid >= prod.price) paid = prod.price * 0.5; 
                     if(isFullyPaid) paid = prod.price;
@@ -232,18 +230,16 @@
                     let remaining = prod.price - paid;
                     let status = remaining === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
                     
-                    // توليد تاريخ دفعة قادمة ذكي للإشعارات
                     let nextPayDate = '';
                     if (remaining > 0) {
-                        // -2 إلى +5 أيام من اليوم لاختبار الإشعارات
                         let randomDaysOffset = Math.floor(Math.random() * 8) - 2; 
                         let tempDate = new Date();
                         tempDate.setDate(today.getDate() + randomDaysOffset);
                         nextPayDate = tempDate.toISOString().split('T')[0];
                     }
 
-                    dummySubs.push({
-                        id: currentId++,
+                    // نضيف البيانات للمصفوفة بدون ID مبدئياً
+                    rawSubs.push({
                         fullName: firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)],
                         mobile: "01" + Math.floor(10000000 + Math.random() * 90000000),
                         salesRep: salesRep,
@@ -263,13 +259,25 @@
             createSubsForRep('صباح', 10);
             createSubsForRep('محسن', 43);
 
+            // خلط البيانات (Fisher-Yates Shuffle) لتكون متداخلة تماماً
+            for (let i = rawSubs.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [rawSubs[i], rawSubs[j]] = [rawSubs[j], rawSubs[i]];
+            }
+
+            // إضافة الـ ID بعد الخلط ليكون متسلسلاً بشكل سليم في الجدول
+            let dummySubs = rawSubs.map(sub => {
+                return { id: currentId++, ...sub };
+            });
+
             return dummySubs;
         }
 
-        let subs = JSON.parse(localStorage.getItem('tobim_subs_v5') || '[]');
+        // استخدام مسار جديد v6 لضمان التوليد بالخلط
+        let subs = JSON.parse(localStorage.getItem('tobim_subs_v6') || '[]');
         if (subs.length === 0) {
             subs = generateDummyData();
-            localStorage.setItem('tobim_subs_v5', JSON.stringify(subs));
+            localStorage.setItem('tobim_subs_v6', JSON.stringify(subs));
         }
 
         // --- 2. دالة الفلترة والرسم ---
@@ -349,7 +357,6 @@
                     const payDate = new Date(s.nextPaymentDate);
                     payDate.setHours(0,0,0,0);
                     
-                    // حساب الفارق بالأيام
                     const diffTime = payDate - today;
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -395,11 +402,9 @@
         }
 
         function toggleNotifications() {
-            const dropdown = document.getElementById('notif-dropdown');
-            dropdown.classList.toggle('hidden');
+            document.getElementById('notif-dropdown').classList.toggle('hidden');
         }
 
-        // إغلاق الإشعارات عند الضغط في أي مكان خارجها
         window.onclick = function(event) {
             if (!event.target.closest('.relative')) {
                 document.getElementById('notif-dropdown').classList.add('hidden');
@@ -421,7 +426,7 @@
             document.getElementById('edit-next-date').value = sub.nextPaymentDate || '';
             
             editModal.classList.remove('hidden');
-            document.getElementById('notif-dropdown').classList.add('hidden'); // غلق الإشعارات إن كانت مفتوحة
+            document.getElementById('notif-dropdown').classList.add('hidden');
         }
 
         function calcEditRemaining() {
@@ -446,17 +451,15 @@
                 subs[index].paidAmount = paid;
                 subs[index].remainingAmount = rest;
                 subs[index].status = rest === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
-                subs[index].nextPaymentDate = rest === 0 ? '' : nextDate; // مسح التاريخ لو تم التسديد بالكامل
+                subs[index].nextPaymentDate = rest === 0 ? '' : nextDate;
 
-                // حفظ وإعادة رسم الشاشة
-                localStorage.setItem('tobim_subs_v5', JSON.stringify(subs));
+                localStorage.setItem('tobim_subs_v6', JSON.stringify(subs));
                 filterTable();
                 checkNotifications();
                 closeEditModal();
             }
         }
 
-        // تشغيل التهيئة عند التحميل
         filterTable();
         checkNotifications();
     </script>

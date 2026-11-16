@@ -70,14 +70,14 @@
         <div class="flex justify-between items-center mb-2 flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white">سجل الاشتراكات والمبيعات</h2>
-                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، فلاتر شاملة، وطباعة إيصالات معتمدة</p>
+                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، فلاتر زمنية وتخصصية دقيقة، وطباعة إيصالات معتمدة</p>
             </div>
             <a href="new-sub.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> اشتراك جديد
             </a>
         </div>
 
-        <!-- بطاقات الملخص العلوي (إجمالي، مدفوع، مستحق) -->
+        <!-- بطاقات الملخص العلوي -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
                 <div>
@@ -102,15 +102,15 @@
             </div>
         </div>
 
-        <!-- فلاتر البحث والفلترة الشاملة -->
+        <!-- فلاتر البحث والفلترة الذكية المتطورة -->
         <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-magnifying-glass text-blue-500 ml-1"></i> بحث بالاسم أو الموبايل</label>
-                <input type="text" id="search-input" oninput="renderSubscriptions()" placeholder="اكتب للبحث..." class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-56">
+                <input type="text" id="search-input" oninput="renderSubscriptions()" placeholder="اكتب للبحث..." class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-48">
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-filter text-emerald-500 ml-1"></i> مسؤول المبيعات</label>
-                <select id="filter-sales" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500 w-40">
+                <select id="filter-sales" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500 w-36">
                     <option value="الجميع">الجميع</option>
                     <option value="عمر">عمر</option>
                     <option value="محسن">محسن</option>
@@ -119,12 +119,29 @@
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-graduation-cap text-amber-500 ml-1"></i> نوع المنتج</label>
-                <select id="filter-type" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 w-44">
+                <select id="filter-type" onchange="onTypeFilterChange()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 w-36">
                     <option value="الجميع">جميع المنتجات</option>
                     <option value="دبلومة">دبلومة</option>
                     <option value="كورس">كورس</option>
                     <option value="برنامج">برنامج</option>
                 </select>
+            </div>
+            <div id="sub-filter-wrapper" class="hidden">
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-code-branch text-purple-400 ml-1"></i> التخصص الفرعي</label>
+                <select id="filter-spec" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 w-40">
+                    <option value="الكل">كل التخصصات</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar-days text-blue-400 ml-1"></i> من تاريخ</label>
+                <input type="date" id="date-from" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none w-36" style="color-scheme: dark;">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar-days text-blue-400 ml-1"></i> إلى تاريخ</label>
+                <input type="date" id="date-to" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none w-36" style="color-scheme: dark;">
+            </div>
+            <div>
+                <button onclick="resetDateFilter()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-sm font-bold transition">إلغاء التواريخ</button>
             </div>
         </div>
 
@@ -136,7 +153,7 @@
                         <tr>
                             <th class="p-4">اسم المشترك</th>
                             <th class="p-4">المبيعات</th>
-                            <th class="p-4">المنتج والتخصص</th>
+                            <th class="p-4">المنتج والتخصص والراوند</th>
                             <th class="p-4 text-emerald-400">المدفوع</th>
                             <th class="p-4 text-amber-400">المتبقي</th>
                             <th class="p-4">تاريخ الاستحقاق</th>
@@ -150,24 +167,19 @@
         </div>
     </main>
 
-    <!-- نافذة معاينة وطباعة إيصال السداد (مطابق لتصميمك الاحترافي والدفعات تحت بعضها) -->
+    <!-- نافذة معاينة وطباعة إيصال السداد -->
     <div id="receiptModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div class="bg-[#111827] border border-gray-800 p-8 rounded-3xl w-full max-w-2xl shadow-2xl space-y-6 text-gray-100 relative">
             <button onclick="closeReceiptModal()" class="no-print absolute top-6 left-6 text-gray-400 hover:text-white text-2xl">&times;</button>
             
-            <!-- رأس الإيصال مع اللوجو -->
             <div class="text-center space-y-2 border-b border-gray-800 pb-5">
                 <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/60'" class="w-16 h-16 rounded-2xl object-cover mx-auto border border-gray-700 shadow-md" alt="Logo">
                 <h3 class="text-xl font-black text-white">TO BIM Training Center</h3>
                 <p class="text-xs text-gray-400">إيصال سداد معتمد — سجل الاشتراكات المالية</p>
             </div>
 
-            <!-- تفاصيل العميل -->
-            <div id="receipt-header-info" class="grid grid-cols-2 gap-4 text-sm bg-[#0b0f19] p-4 rounded-2xl border border-gray-800">
-                <!-- يولد برمجياً -->
-            </div>
+            <div id="receipt-header-info" class="grid grid-cols-2 gap-4 text-sm bg-[#0b0f19] p-4 rounded-2xl border border-gray-800"></div>
 
-            <!-- جدول الدفعات تحت بعضها -->
             <div class="space-y-2">
                 <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">سجل الدفعات (Kind Pay)</h4>
                 <div class="overflow-x-auto border border-gray-800 rounded-xl">
@@ -180,19 +192,13 @@
                                 <th class="p-3">تاريخ الدفعة</th>
                             </tr>
                         </thead>
-                        <tbody id="receipt-installments-tbody" class="divide-y divide-gray-800/50">
-                            <!-- يولد برمجياً -->
-                        </tbody>
+                        <tbody id="receipt-installments-tbody" class="divide-y divide-gray-800/50"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- إجمالي المتبقي والملخص -->
-            <div id="receipt-footer-info" class="flex justify-between items-center bg-[#0b0f19] p-4 rounded-2xl border border-gray-800 text-sm font-bold">
-                <!-- يولد برمجياً -->
-            </div>
+            <div id="receipt-footer-info" class="flex justify-between items-center bg-[#0b0f19] p-4 rounded-2xl border border-gray-800 text-sm font-bold"></div>
 
-            <!-- أزرار الإجراءات (لا تظهر عند الطباعة) -->
             <div class="no-print flex gap-3 pt-2">
                 <button onclick="window.print()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/50">
                     <i class="fa-solid fa-print"></i> طباعة الإيصال
@@ -233,6 +239,7 @@
                 if (financeNav) financeNav.style.display = 'none';
             }
 
+            generateInitialData();
             renderSubscriptions();
         });
 
@@ -253,48 +260,100 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // قاعدة بيانات افتراضية غنية بالدبلومات والكورسات والبرامج مع دفعات متعددة لكل عميل
-        let subscriptionsList = JSON.parse(localStorage.getItem('tobim_subscriptions_v3')) || [
-            { 
-                id: 101, name: "محمد إبراهيم علي", mobile: "01012345678", email: "mohamed@gmail.com", sales: "عمر", type: "دبلومة", spec: "دبلومة الإنشائي (Round 1)", total: 9800, 
-                installments: [
-                    { amount: 5000, source: "إنستاباي CIB", date: "05/11/2026" },
-                    { amount: 4800, source: "فودافون كاش", date: "15/11/2026" }
-                ],
-                nextDate: "-" 
-            },
-            { 
-                id: 102, name: "أمنية محمد محروس", mobile: "01097930658", email: "omnia@gmail.com", sales: "محسن", type: "كورس", spec: "3ds Max Masterclass", total: 12000, 
-                installments: [
-                    { amount: 750, source: "V.cash 1", date: "05/07/2023" },
-                    { amount: 300, source: "V.cash 1", date: "26/01/2024" },
-                    { amount: 200, source: "V.cash 1", date: "19/02/2024" },
-                    { amount: 750, source: "V.cash 1", date: "30/05/2024" }
-                ],
-                nextDate: "01/12/2026" 
-            },
-            { 
-                id: 103, name: "فاطمة محمود حسن", mobile: "01198765432", email: "fatma@gmail.com", sales: "صباح", type: "كورس", spec: "كورس Revit Architecture", total: 3000, 
-                installments: [
-                    { amount: 3000, source: "فودافون كاش", date: "10/11/2026" }
-                ],
-                nextDate: "-" 
-            },
-            { 
-                id: 104, name: "محمود خالد السيد", mobile: "01233344556", email: "mahmoud@gmail.com", sales: "محسن", type: "برنامج", spec: "برنامج أوتوديسك", total: 3000, 
-                installments: [
-                    { amount: 2500, source: "الخزينة (كاش)", date: "12/11/2026" }
-                ],
-                nextDate: "15/12/2026" 
-            },
-            { 
-                id: 105, name: "ياسمين عبد الله", mobile: "01555667788", email: "yasmin@gmail.com", sales: "عمر", type: "دبلومة", spec: "دبلومة المعماري (Round 2)", total: 6000, 
-                installments: [
-                    { amount: 6000, source: "بنك التعمير والإسكان", date: "01/11/2026" }
-                ],
-                nextDate: "-" 
+        // توليد بيانات ضخمة (أكثر من 50 بند) بالأسعار الدقيقة للأنشائي، المعماري، الماكس، الأوتوديسك والريفيت
+        let subscriptionsList = JSON.parse(localStorage.getItem('tobim_subscriptions_v8'));
+        function generateInitialData() {
+            if (subscriptionsList && subscriptionsList.length >= 50) return;
+            
+            const firstNames = ["محمد", "أحمد", "محمود", "فاطمة", "ياسمين", "سارة", "إبراهيم", "عمر", "كريم", "نور", "علي", "منى", "حسناء", "مصطفى", "سحر", "زينب", "بيتر", "مينا", "خالد", "عبد الرحمن"];
+            const lastNames = ["علي", "محمد", "حسن", "حسين", "محمود", "إبراهيم", "السيد", "عبد الله", "خالد", "عثمان", "الراوي", "الشناوي", "البدوي", "عزمي", "جمال"];
+            const salesTeam = ["عمر", "محسن", "صباح"];
+            
+            const catalog = [
+                { type: "دبلومة", name: "دبلومة الإنشائي", price: 9800 },
+                { type: "دبلومة", name: "دبلومة المعماري", price: 8900 },
+                { type: "كورس", name: "3ds Max Masterclass", price: 5000 },
+                { type: "كورس", name: "ريفيت معماري", price: 6000 },
+                { type: "كورس", name: "ريفيت إنشائي", price: 6000 },
+                { type: "برنامج", name: "برنامج أوتوديسك", price: 600 }
+            ];
+            const sources = ["إنستاباي CIB", "فودافون كاش", "بنك التعمير والإسكان", "الخزينة (كاش)"];
+
+            subscriptionsList = [];
+            for (let i = 1; i <= 60; i++) {
+                let fName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                let lName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                let fullName = fName + " " + lName + " " + (i);
+                let mobile = "01" + Math.floor(100000000 + Math.random() * 900000000);
+                let sales = salesTeam[Math.floor(Math.random() * salesTeam.length)];
+                
+                let item = catalog[Math.floor(Math.random() * catalog.length)];
+                let specName = item.name;
+                let total = item.price;
+
+                if (item.type === "دبلومة") {
+                    let roundNum = Math.floor(Math.random() * 15) + 1;
+                    specName += ` (Round ${roundNum})`;
+                }
+
+                let paid1 = Math.floor(total * (Math.random() * 0.5 + 0.5));
+                let rest = total - paid1;
+
+                let day = (i % 28) + 1;
+                let formattedDay = day < 10 ? '0' + day : day;
+                let dateStr = `${formattedDay}/11/2026`;
+                let rawDateStr = `2026-11-${formattedDay}`;
+
+                let installments = [{ amount: paid1, source: sources[Math.floor(Math.random() * sources.length)], date: dateStr, rawDate: rawDateStr }];
+                if (rest > 0 && Math.random() > 0.5) {
+                    let paid2 = rest;
+                    rest = 0;
+                    installments.push({ amount: paid2, source: sources[Math.floor(Math.random() * sources.length)], date: dateStr, rawDate: rawDateStr });
+                }
+
+                subscriptionsList.push({
+                    id: 3000 + i,
+                    name: fullName,
+                    mobile: mobile,
+                    email: fName.toLowerCase() + i + "@gmail.com",
+                    sales: sales,
+                    type: item.type,
+                    spec: specName,
+                    total: total,
+                    installments: installments,
+                    nextDate: rest > 0 ? "01/12/2026" : "-"
+                });
             }
-        ];
+            localStorage.setItem('tobim_subscriptions_v8', JSON.stringify(subscriptionsList));
+        }
+
+        function onTypeFilterChange() {
+            const type = document.getElementById('filter-type').value;
+            const wrapper = document.getElementById('sub-filter-wrapper');
+            const specSelect = document.getElementById('filter-spec');
+            
+            specSelect.innerHTML = '<option value="الكل">كل التخصصات</option>';
+
+            if (type === 'دبلومة') {
+                wrapper.classList.remove('hidden');
+                specSelect.innerHTML += '<option value="دبلومة الإنشائي">دبلومة الإنشائي</option><option value="دبلومة المعماري">دبلومة المعماري</option>';
+            } else if (type === 'كورس') {
+                wrapper.classList.remove('hidden');
+                specSelect.innerHTML += '<option value="3ds Max">3ds Max</option><option value="ريفيت معماري">ريفيت معماري</option><option value="ريفيت إنشائي">ريفيت إنشائي</option>';
+            } else if (type === 'برنامج') {
+                wrapper.classList.remove('hidden');
+                specSelect.innerHTML += '<option value="أوتوديسك">برنامج أوتوديسك</option>';
+            } else {
+                wrapper.classList.add('hidden');
+            }
+            renderSubscriptions();
+        }
+
+        function resetDateFilter() {
+            document.getElementById('date-from').value = '';
+            document.getElementById('date-to').value = '';
+            renderSubscriptions();
+        }
 
         function renderSubscriptions() {
             const tbody = document.getElementById('subscriptions-tbody');
@@ -302,12 +361,24 @@
             const search = document.getElementById('search-input').value.toLowerCase();
             const filterSales = document.getElementById('filter-sales').value;
             const filterType = document.getElementById('filter-type').value;
+            const filterSpec = document.getElementById('filter-spec').value;
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
 
             let filtered = subscriptionsList.filter(sub => {
                 let matchSearch = sub.name.toLowerCase().includes(search) || sub.mobile.includes(search);
                 let matchSales = filterSales === 'الجميع' || sub.sales === filterSales;
                 let matchType = filterType === 'الجميع' || sub.type === filterType;
-                return matchSearch && matchSales && matchType;
+                let matchSpec = filterSpec === 'الكل' || sub.spec.includes(filterSpec);
+                
+                let matchDate = true;
+                if (dateFrom || dateTo) {
+                    let subRawDate = sub.installments[0].rawDate || '2026-11-01';
+                    if (dateFrom && subRawDate < dateFrom) matchDate = false;
+                    if (dateTo && subRawDate > dateTo) matchDate = false;
+                }
+
+                return matchSearch && matchSales && matchType && matchSpec && matchDate;
             });
 
             let totalSalesAll = 0;
@@ -340,7 +411,6 @@
                     </tr>`;
             });
 
-            // تحديث بطاقات الأرقام بالأعلى
             document.getElementById('kpi-total-sales').innerHTML = `${totalSalesAll.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
             document.getElementById('kpi-total-paid').innerHTML = `${totalPaidAll.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
             document.getElementById('kpi-total-rest').innerHTML = `${totalRestAll.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
@@ -394,7 +464,7 @@
             if(!isAdmin) return;
             if(confirm("هل أنت متأكد من حذف هذا الاشتراك؟")) {
                 subscriptionsList = subscriptionsList.filter(s => s.id !== id);
-                localStorage.setItem('tobim_subscriptions_v3', JSON.stringify(subscriptionsList));
+                localStorage.setItem('tobim_subscriptions_v8', JSON.stringify(subscriptionsList));
                 renderSubscriptions();
             }
         }

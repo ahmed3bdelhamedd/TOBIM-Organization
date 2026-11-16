@@ -66,7 +66,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-black text-white">تسجيل اشتراك جديد</h2>
-                <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعات بدقة</p>
+                <p class="text-sm text-gray-400 mt-1">توليد الـ ID تلقائياً (دبلومة: موبايل | كورسات: 400+ | برامج: 600+)</p>
             </div>
             <button type="button" onclick="window.history.back()" class="bg-[#111827] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
                 <i class="fa-solid fa-arrow-left ml-2"></i> رجوع
@@ -84,7 +84,7 @@
                         <input type="text" id="sub-name" required placeholder="مثال: أحمد عبد الحميد" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2">موبايل المشترك *</label>
+                        <label class="block text-sm text-gray-400 mb-2">موبايل المشترك (سيكون ID للدبلومات) *</label>
                         <input type="tel" id="sub-mobile" required placeholder="01xxxxxxxxx" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
@@ -241,13 +241,40 @@
         </form>
     </main>
 
+    <!-- نافذة تعديل الحساب -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-black text-white mb-6">تعديل بيانات الحساب</h3>
+            <form onsubmit="saveProfileChanges(event)" class="space-y-4">
+                <input type="text" id="profile-name-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <input type="email" id="profile-email-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-bold">حفظ</button>
+                    <button type="button" onclick="closeProfileModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2 rounded-bold">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const currentUserEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
         const isAdmin = (currentUserEmail === 'info@ahmedabdelhamed.com');
 
+        const catalogCourses = [
+            "Revit Architecture", "Revit Structural", "Shopdrawing Reinforcement", "Structural BIM Technical Office", 
+            "CSI", "CSI/REVIT ST package", "Enscape", "Navisworks 4D & 5D", "Navisworks Coordinator", 
+            "Revit Family", "Revit MEP", "Revit Schedule", "Revit Template", "Revit worksharing", 
+            "Shopdrawing Concrete", "Twinmotion", "Facebook ADS GUID", "POWER BI", "Photoshop", 
+            "3DsMAX", "3DsMAX Masterclass", "Advanced Rendering Vray", "Advanced Modeling", 
+            "AutoCad Workshop", "AutoCad Full Course", "Excel Engineering", "Visualization package", 
+            "Advanced Corona", "Fourest Back", "how to persent your work", "BIM Interior Design", 
+            "linkedin", "Marketing Package", "presentation Package", "Reail Clone", "The Perfect Starting", 
+            "Long Story Short", "ACC", "Shopdrawing Architecture", "TANK WORKSHOP", "PRIMAVERA", "BUILD CITY"
+        ];
+
         document.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
-            document.getElementById('header-useremail').innerText = savedName;
+            document.getElementById('header-useremail').innerText = currentUserEmail;
             document.getElementById('dropdown-email').innerText = currentUserEmail;
             document.getElementById('header-username').innerText = savedName;
             document.getElementById('user-avatar-initial').innerText = savedName.charAt(0);
@@ -277,53 +304,9 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // كتالوج الأسعار
         const catalogPrices = JSON.parse(localStorage.getItem('tobim_prices_catalog_v2')) || [
             { name: "دبلومة الإنشائي", price: 9800 },
             { name: "دبلومة المعماري", price: 8900 },
-            { name: "Revit Architecture", price: 5000 },
-            { name: "Revit Structural", price: 4000 },
-            { name: "Shopdrawing Reinforcement", price: 5000 },
-            { name: "Structural BIM Technical Office", price: 15000 },
-            { name: "BIM Architecture Diploma", price: 15000 },
-            { name: "CSI", price: 4000 },
-            { name: "CSI/REVIT ST package", price: 8000 },
-            { name: "Enscape", price: 2500 },
-            { name: "Navisworks 4D & 5D", price: 5000 },
-            { name: "Navisworks Coordinator", price: 5000 },
-            { name: "Revit Family", price: 5000 },
-            { name: "Revit MEP", price: 3000 },
-            { name: "Revit Schedule", price: 3000 },
-            { name: "Revit Template", price: 3000 },
-            { name: "Revit worksharing", price: 3000 },
-            { name: "Shopdrawing Concrete", price: 5000 },
-            { name: "Twinmotion", price: 3000 },
-            { name: "Facebook ADS GUID", price: 1000 },
-            { name: "POWER BI", price: 3000 },
-            { name: "Photoshop", price: 3000 },
-            { name: "3DsMAX", price: 5000 },
-            { name: "3DsMAX Masterclass", price: 12000 },
-            { name: "Advanced Rendering Vray", price: 6000 },
-            { name: "Advanced Modeling", price: 5000 },
-            { name: "AutoCad Workshop", price: 2000 },
-            { name: "AutoCad Full Course", price: 3000 },
-            { name: "Excel Engineering", price: 3000 },
-            { name: "Visualization package", price: 10000 },
-            { name: "Advanced Corona", price: 3000 },
-            { name: "Fourest Back", price: 2000 },
-            { name: "how to persent your work", price: 2000 },
-            { name: "BIM Interior Design", price: 30000 },
-            { name: "linkedin", price: 2000 },
-            { name: "Marketing Package", price: 8000 },
-            { name: "presentation Package", price: 8000 },
-            { name: "Reail Clone", price: 2000 },
-            { name: "The Perfect Starting", price: 1500 },
-            { name: "Long Story Short", price: 6000 },
-            { name: "ACC", price: 6000 },
-            { name: "Shopdrawing Architecture", price: 6000 },
-            { name: "TANK WORKSHOP", price: 6000 },
-            { name: "PRIMAVERA", price: 6000 },
-            { name: "BUILD CITY", price: 8000 },
             { name: "برنامج أوتوديسك", price: 600 }
         ];
 
@@ -336,21 +319,16 @@
             round.innerHTML = '<option value="" disabled selected>اختر التخصص أولاً</option>';
             round.disabled = true;
 
-            // الدبلومة: إنشائي ومعماري فقط
             if (type === 'دبلومة') {
                 spec.innerHTML += '<option value="دبلومة الإنشائي">دبلومة الإنشائي</option>';
                 spec.innerHTML += '<option value="دبلومة المعماري">دبلومة المعماري</option>';
                 document.getElementById('transfer-wrapper').classList.remove('hidden');
-            } 
-            // الكورسات: باقي الخدمات
-            else if (type === 'كورس') {
-                catalogPrices.filter(c => c.price !== 600 && !c.name.includes('دبلومة')).forEach(c => {
-                    spec.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+            } else if (type === 'كورس') {
+                catalogCourses.forEach(c => {
+                    spec.innerHTML += `<option value="${c}">${c}</option>`;
                 });
                 document.getElementById('transfer-wrapper').classList.add('hidden');
-            } 
-            // البرنامج: أوتوديسك فقط
-            else if (type === 'برنامج') {
+            } else if (type === 'برنامج') {
                 spec.innerHTML += '<option value="برنامج أوتوديسك">برنامج أوتوديسك</option>';
                 document.getElementById('transfer-wrapper').classList.add('hidden');
             }
@@ -365,6 +343,7 @@
             if (specName.includes('دبلومة الإنشائي')) found = { price: 9800 };
             if (specName.includes('دبلومة المعماري')) found = { price: 8900 };
             if (specName.includes('برنامج أوتوديسك')) found = { price: 600 };
+            if (!found && catalogCourses.includes(specName)) found = { price: 4000 }; // سعر افتراضي للكورسات إذا لم يوجد بالكتالوج
 
             if (found) {
                 totalInput.value = found.price;
@@ -449,15 +428,29 @@
             const source2 = document.getElementById('sub-source-2').value;
             const nextDate = document.getElementById('sub-next-date').value;
 
-            let subs = JSON.parse(localStorage.getItem('tobim_subscriptions_v11') || '[]');
+            let subs = JSON.parse(localStorage.getItem('tobim_subscriptions_v15') || '[]');
             
+            // توليد الـ ID تلقائياً حسب نوع المنتج
+            let subId = "";
+            if (type === 'دبلومة') {
+                subId = mobile; // رقم الموبايل
+            } else if (type === 'كورس') {
+                let maxCourseId = 399;
+                subs.forEach(s => { if(typeof s.id === 'number' && s.id >= 400 && s.id < 600) maxCourseId = Math.max(maxCourseId, s.id); });
+                subId = maxCourseId + 1; // تبدأ من 400
+            } else {
+                let maxProgramId = 599;
+                subs.forEach(s => { if(typeof s.id === 'number' && s.id >= 600) maxProgramId = Math.max(maxProgramId, s.id); });
+                subId = maxProgramId + 1; // تبدأ من 600
+            }
+
             let installments = [{ amount: paid1, source: source1, date: new Date().toLocaleDateString('en-GB') }];
             if(paid2 > 0) {
                 installments.push({ amount: paid2, source: source2, date: new Date().toLocaleDateString('en-GB') });
             }
 
             const newSub = {
-                id: Date.now(),
+                id: subId,
                 name: name,
                 mobile: mobile,
                 email: email,
@@ -466,13 +459,14 @@
                 spec: spec + (round !== 'N/A' ? ` (${round})` : ''),
                 total: total,
                 installments: installments,
+                rawDate: new Date().toISOString().split('T')[0],
                 nextDate: rest > 0 ? (nextDate ? nextDate.split('-').reverse().join('/') : '01/12/2026') : '-'
             };
 
             subs.unshift(newSub);
-            localStorage.setItem('tobim_subscriptions_v11', JSON.stringify(subs));
+            localStorage.setItem('tobim_subscriptions_v15', JSON.stringify(subs));
 
-            alert("تم تسجيل الاشتراك بنجاح!");
+            alert(`تم تسجيل الاشتراك بنجاح!\nمعرف العميل (ID): ${subId}`);
             window.location.href = 'subscriptions.html';
         }
     </script>

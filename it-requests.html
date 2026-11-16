@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -29,7 +28,10 @@
                 <a href="dashboard.html" id="nav-finance" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">الماليات</a>
                 <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">سجل الاشتراكات</a>
                 <a href="pricing.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">قائمة الأسعار</a>
-                <a href="it-requests.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition">طلبات IT</a>
+                <a href="it-requests.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition flex items-center gap-2 relative">
+                    طلبات IT
+                    <span id="nav-badge" class="hidden absolute -top-2 -left-2 bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg animate-pulse">0</span>
+                </a>
                 <a href="new-sub.html" class="bg-emerald-600/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 px-4 py-2.5 rounded-xl transition flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i> اشتراك جديد
                 </a>
@@ -63,19 +65,49 @@
     </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6 relative z-10">
-        <div class="flex justify-between items-center mb-2">
+        <div class="flex justify-between items-center mb-2 flex-wrap gap-4">
             <div>
-                <h2 class="text-2xl font-black text-white">طلبات قسم الـ IT</h2>
-                <p class="text-sm text-gray-400 mt-1">متابعة العمليات والعملاء الذين تم إرسال طلباتهم للـ IT وحالتها</p>
+                <h2 class="text-2xl font-black text-white flex items-center gap-3">
+                    طلبات قسم الـ IT 
+                    <span id="header-notif-badge" class="hidden bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs px-3 py-1 rounded-full font-bold">
+                        <i class="fa-solid fa-bell ml-1"></i> <span id="pending-count-text">0</span> طلبات جاري العمل عليها
+                    </span>
+                </h2>
+                <p class="text-sm text-gray-400 mt-1">متابعة العمليات، تفعيل الاشتراكات، وحالة طلبات الـ IT</p>
             </div>
-            <button onclick="clearItRequests()" class="bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500/30 px-4 py-2 rounded-xl text-xs font-bold transition">
+            <button onclick="clearItRequests()" class="bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500/30 px-4 py-2.5 rounded-xl text-xs font-bold transition">
                 <i class="fa-solid fa-trash ml-1"></i> تفريغ السجل
             </button>
         </div>
 
+        <!-- بطاقات الإحصائيات (الأعلى) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-400 text-sm font-bold">إجمالي طلبات IT</h3>
+                    <p id="kpi-total" class="text-3xl font-black text-white mt-1">0</p>
+                </div>
+                <i class="fa-solid fa-headset text-blue-500/20 text-4xl"></i>
+            </div>
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-400 text-sm font-bold">الطلبات التي تمت</h3>
+                    <p id="kpi-done" class="text-3xl font-black text-emerald-400 mt-1">0</p>
+                </div>
+                <i class="fa-solid fa-circle-check text-emerald-500/20 text-4xl"></i>
+            </div>
+            <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-400 text-sm font-bold">جاري العمل عليها (لسه)</h3>
+                    <p id="kpi-pending" class="text-3xl font-black text-amber-400 mt-1">0</p>
+                </div>
+                <i class="fa-solid fa-clock-rotate-left text-amber-500/20 text-4xl"></i>
+            </div>
+        </div>
+
         <!-- جدول طلبات الـ IT -->
         <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
-            <div class="overflow-x-auto h-[550px]">
+            <div class="overflow-x-auto h-[500px]">
                 <table class="w-full text-right text-sm min-w-[900px]">
                     <thead class="bg-[#0f172a] text-gray-400 text-xs uppercase border-b border-gray-800 sticky top-0 z-20">
                         <tr>
@@ -111,16 +143,70 @@
                 if (financeNav) financeNav.style.display = 'none';
             }
 
+            generateInitialItRequests();
             renderItRequests();
         });
 
         function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
+        // توليد بيانات افتراضية ضخمة لطلبات الـ IT من الدبلومات والكورسات (متنوعة بين "تمت" و "جاري العمل عليها")
+        function generateInitialItRequests() {
+            let requests = JSON.parse(localStorage.getItem('tobim_it_requests') || '[]');
+            if (requests.length >= 20) return;
+
+            const names = ["محمد إبراهيم علي", "أمنية محمد محروس", "فاطمة محمود", "محمود خالد السيد", "ياسمين عبد الله", "سارة إبراهيم", "كريم عزمي", "نور الشناوي", "مينا الراوي", "زينب عبد الرحمن"];
+            const specs = ["دبلومة الإنشائي (Round 5)", "دبلومة المعماري (Round 3)", "3ds Max Masterclass", "ريفيت معماري", "ريفيت إنشائي", "برنامج أوتوديسك", "CSI/REVIT ST package"];
+            const salesTeam = ["عمر", "محسن", "صباح"];
+            const statuses = ["تمت", "جاري العمل عليها (لسه)"];
+
+            requests = [];
+            for (let i = 1; i <= 25; i++) {
+                let name = names[Math.floor(Math.random() * names.length)] + ` (${i})`;
+                let spec = specs[Math.floor(Math.random() * specs.length)];
+                let sales = salesTeam[Math.floor(Math.random() * salesTeam.length)];
+                let status = (i % 3 === 0) ? "جاري العمل عليها (لسه)" : "تمت"; // جعل بعضها قيد العمل للإشعارات
+
+                requests.push({
+                    reqId: Date.now() - (i * 3600000),
+                    subId: 3000 + i,
+                    name: name,
+                    mobile: "01" + Math.floor(100000000 + Math.random() * 900000000),
+                    spec: spec,
+                    sales: sales,
+                    date: `16/11/2026 02:${i < 10 ? '0'+i : i}`,
+                    status: status
+                });
+            }
+            localStorage.setItem('tobim_it_requests', JSON.stringify(requests));
+        }
+
         function renderItRequests() {
             const tbody = document.getElementById('it-tbody');
             tbody.innerHTML = '';
             let requests = JSON.parse(localStorage.getItem('tobim_it_requests') || '[]');
+
+            let total = requests.length;
+            let doneCount = requests.filter(r => r.status === 'تمت').length;
+            let pendingCount = requests.filter(r => r.status.includes('جاري')).length;
+
+            // تحديث البطاقات الإحصائية
+            document.getElementById('kpi-total').innerText = total;
+            document.getElementById('kpi-done').innerText = doneCount;
+            document.getElementById('kpi-pending').innerText = pendingCount;
+
+            // تحديث الإشعارات
+            const navBadge = document.getElementById('nav-badge');
+            const notifBadge = document.getElementById('header-notif-badge');
+            if (pendingCount > 0) {
+                navBadge.innerText = pendingCount;
+                navBadge.classList.remove('hidden');
+                document.getElementById('pending-count-text').innerText = pendingCount;
+                notifBadge.classList.remove('hidden');
+            } else {
+                navBadge.classList.add('hidden');
+                notifBadge.classList.add('hidden');
+            }
 
             if(requests.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500 font-semibold">لا توجد طلبات مرسلة لقسم الـ IT حتى الآن.</td></tr>`;
@@ -128,6 +214,10 @@
             }
 
             requests.forEach((req, index) => {
+                let statusBadge = req.status === 'تمت' 
+                    ? `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5"><i class="fa-solid fa-check-circle"></i> ${req.status}</span>`
+                    : `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 animate-pulse"><i class="fa-solid fa-clock"></i> ${req.status}</span>`;
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-800/30 transition">
                         <td class="p-4 text-center text-gray-400 font-bold">#${index + 1}</td>
@@ -137,9 +227,7 @@
                         <td class="p-4 text-blue-400 font-semibold">${req.sales}</td>
                         <td class="p-4 text-gray-400 text-xs">${req.date}</td>
                         <td class="p-4 text-center">
-                            <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5">
-                                <i class="fa-solid fa-check-circle"></i> ${req.status}
-                            </span>
+                            ${statusBadge}
                         </td>
                     </tr>
                 `;

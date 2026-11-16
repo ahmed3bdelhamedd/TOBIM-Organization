@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOBIM — أكاديمية هندسة البناء ونمذجة معلومات البناء (BIM)</title>
+    <title>TOBIM — HOME </title>
     <link rel="icon" type="image/jpeg" href="TobimLogo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,75 +13,90 @@
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .engineering-grid {
+            background-image: linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
     </style>
 </head>
-<body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
+<body class="text-gray-100 min-h-screen flex flex-col engineering-grid relative">
 
-    <!-- الهيدر العلوي -->
-    <header class="bg-[#0f172a]/90 backdrop-blur-md border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50">
+    <!-- الهيدر الهندسي -->
+    <header class="bg-[#0f172a]/95 backdrop-blur-md border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50 shadow-xl">
         <div class="flex items-center gap-4">
-            <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="w-11 h-11 rounded-xl object-cover border border-gray-700 shadow-lg" alt="Logo">
-            <span class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-400">TO BIM ACADEMY</span>
+            <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="w-11 h-11 rounded-xl object-cover border border-blue-500/30 shadow-lg" alt="Logo">
+            <div>
+                <span class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-400">TO BIM ACADEMY</span>
+                <span class="block text-[10px] text-blue-500 font-bold tracking-widest">ENGINEERING PLATFORM</span>
+            </div>
         </div>
-        <div>
-            <a href="login.html" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center gap-2 text-sm">
-                <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول للنظام
+        <div class="flex items-center gap-3">
+            <a href="https://ahmed3bdelhamedd.github.io/3eng/" target="_blank" class="bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-xs">
+                <i class="fa-solid fa-globe text-blue-400"></i> زيارة الموقع الهندسي
+            </a>
+            <a href="login.html" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2.5 rounded-xl transition shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center gap-2 text-xs">
+                <i class="fa-solid fa-right-to-bracket"></i> دخول النظام
             </a>
         </div>
     </header>
 
-    <!-- القسم الرئيسي (Hero Section) -->
-    <main class="flex-1 flex flex-col items-center justify-center px-6 py-20 text-center max-w-5xl mx-auto space-y-8 relative z-10">
+    <!-- المحتوى الرئيسي (Hero Section) -->
+    <main class="flex-1 flex flex-col items-center justify-center px-6 py-16 text-center max-w-5xl mx-auto space-y-8 relative z-10">
         <div class="space-y-4">
-            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider inline-block">
-                النظام الإداري والمالي المعتمد
+            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider inline-flex items-center gap-2">
+                <i class="fa-solid fa-compass-drafting"></i> نظام إدارة البناء ونمذجة معلومات الكورسات
             </span>
             <h1 class="text-4xl sm:text-6xl font-black text-white leading-tight">
                 المنصة الهندسية المتكاملة <br>لإدارة الدورات والاشتراكات
             </h1>
             <p class="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
-                أكاديمية TOBIM المتخصصة في تدريب وبرمجيات الهندسة المعمارية والإنشائية ونمذجة معلومات البناء (BIM).
+                أكاديمية TOBIM المتخصصة في تدريب وبرمجيات الهندسة المعمارية والإنشائية، وتتبع الاشتراكات المالية وطلبات الـ IT بدقة واحترافية.
             </p>
         </div>
 
-        <div class="flex flex-wrap justify-center gap-4 pt-4">
+        <div class="flex flex-wrap justify-center gap-4 pt-2">
             <a href="login.html" class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-black px-8 py-4 rounded-2xl shadow-[0_0_25px_rgba(59,130,246,0.4)] transition transform hover:scale-105 flex items-center gap-3 text-base">
                 <i class="fa-solid fa-gauge-high"></i> دخول لوحة التحكم الإدارية
             </a>
-            <a href="pricing.html" class="bg-[#111827] hover:bg-gray-800 border border-gray-700 text-white font-bold px-8 py-4 rounded-2xl transition flex items-center gap-3 text-base">
-                <i class="fa-solid fa-tag text-emerald-400"></i> استعراض قائمة الأسعار
+            <a href="https://ahmed3bdelhamedd.github.io/3eng/" target="_blank" class="bg-[#111827] hover:bg-gray-800 border border-gray-700 text-white font-bold px-8 py-4 rounded-2xl transition flex items-center gap-3 text-base shadow-lg">
+                <i class="fa-solid fa-external-link-alt text-blue-400"></i> تصفح الموقع الإلكتروني الخارجي
             </a>
         </div>
 
-        <!-- مميزات سريعة -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full pt-16 text-right">
-            <div class="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 p-6 rounded-3xl shadow-xl space-y-3">
+        <!-- بطاقات الأقسام الهندسية -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full pt-12 text-right">
+            <div class="bg-[#111827]/90 backdrop-blur-xl border border-gray-800 p-6 rounded-3xl shadow-xl space-y-3 hover:border-blue-500/50 transition">
                 <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 text-lg">
                     <i class="fa-solid fa-users-rectangle"></i>
                 </div>
-                <h3 class="text-lg font-bold text-white">إدارة الاشتراكات والمبيعات</h3>
-                <p class="text-xs text-gray-400 leading-relaxed">تسجيل بيانات المشتركين بدقة، متابعة الدفعات، وطباعة إيصالات معتمدة.</p>
+                <h3 class="text-lg font-bold text-white">سجل الاشتراكات والمبيعات</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">إدارة بيانات المشتركين، تتبع الدفعات، والربط الذكي مع أرقام الهواتف وIDs المخصصة.</p>
             </div>
-            <div class="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 p-6 rounded-3xl shadow-xl space-y-3">
+            <div class="bg-[#111827]/90 backdrop-blur-xl border border-gray-800 p-6 rounded-3xl shadow-xl space-y-3 hover:border-emerald-500/50 transition">
                 <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg">
                     <i class="fa-solid fa-headset"></i>
                 </div>
                 <h3 class="text-lg font-bold text-white">إدارة طلبات الـ IT</h3>
-                <p class="text-xs text-gray-400 leading-relaxed">ربط المبيعات بالدعم الفني لتفعيل الدبلومات، فتح الكورسات، وأكونتات أوتوديسك.</p>
+                <p class="text-xs text-gray-400 leading-relaxed">تفعيل دبلومات الـ IDs، فتح وغلق الكورسات، وتفعيلات أكونتات أوتوديسك مع إشعارات لحظية.</p>
             </div>
-            <div class="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 p-6 rounded-3xl shadow-xl space-y-3">
+            <div class="bg-[#111827]/90 backdrop-blur-xl border border-gray-800 p-6 rounded-3xl shadow-xl space-y-3 hover:border-amber-500/50 transition">
                 <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-lg">
-                    <i class="fa-solid fa-chart-pie"></i>
+                    <i class="fa-solid fa-file-excel"></i>
                 </div>
-                <h3 class="text-lg font-bold text-white">التقارير والإحصائيات</h3>
-                <p class="text-xs text-gray-400 leading-relaxed">تحليل المبيعات، حساب الإيرادات والمتبقي، وتصدير التقارير إلى شيت إكسل.</p>
+                <h3 class="text-lg font-bold text-white">التقارير والشيتات</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">تصدير الفلاتر والتقارير المالية مباشرة إلى شيتات إكسل مع طباعة الإيصالات المعتمدة.</p>
             </div>
         </div>
     </main>
 
-    <!-- الفوتر -->
-    <footer class="bg-[#0f172a]/50 border-t border-gray-800/60 py-6 text-center text-xs text-gray-500">
-        <p>جميع الحقوق محفوظة © 2026 TO BIM Training Center</p>
+    <!-- الفوتر مع بيانات التواصل والشكاوى الدعم الفني -->
+    <footer class="bg-[#0f172a] border-t border-gray-800 py-8 px-6 text-center space-y-3">
+        <div class="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-400">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-envelope text-blue-400"></i> البريد للدعم والشكاوى: <a href="mailto:info@ahmedabdelhamed.com" class="text-white hover:underline font-bold">info@ahmedabdelhamed.com</a></span>
+            <span class="flex items-center gap-2"><i class="fa-solid fa-phone text-emerald-400"></i> رقم التواصل: <a href="tel:01116512028" class="text-white hover:underline font-bold" dir="ltr">0111 651 2028</a></span>
+        </div>
+        <p class="text-xs text-gray-500 pt-2">جميع الحقوق محفوظة © 2026 TO BIM Training Center — Designed with Engineering Precision.</p>
     </footer>
 
 </body>

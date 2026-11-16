@@ -72,11 +72,17 @@
         <div class="flex justify-between items-center mb-2 flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white">سجل الاشتراكات والمبيعات</h2>
-                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، فلاتر زمنية وتخصصية دقيقة، وطباعة إيصالات معتمدة</p>
+                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، فلاتر دقيقة، وتصدير نتائج الفلترة لشيت إكسل</p>
             </div>
-            <a href="new-sub.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i> اشتراك جديد
-            </a>
+            <div class="flex items-center gap-3">
+                <!-- زر تصدير النتائج الحالية (بعد الفلتر) إلى إكسل -->
+                <button onclick="exportFilteredToExcel()" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 px-4 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-file-excel"></i> تصدير نتائج الفلتر لإكسل
+                </button>
+                <a href="new-sub.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> اشتراك جديد
+                </a>
+            </div>
         </div>
 
         <!-- بطاقات الملخص العلوي -->
@@ -198,7 +204,7 @@
     <div id="editSubModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm overflow-y-auto">
         <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-2xl shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b border-gray-800 pb-3">
-                <h3 class="text-xl font-black text-white"><i class="fa-solid fa-pen-to-square text-blue-500 ml-2"></i> تعديل تفاصيل الاشتراك بالكامل</h3>
+                <h3 class="text-xl font-black text-white"><i class="fa-solid fa-pen-to-square text-blue-500 ml-2"></i> تعديل بيانات الاشتراك بالكامل</h3>
                 <button onclick="closeEditSubModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
             </div>
             
@@ -391,19 +397,24 @@
             localStorage.setItem('tobim_subscriptions_v11', JSON.stringify(subscriptionsList));
         }
 
-        function renderSubscriptions() {
-            const tbody = document.getElementById('subscriptions-tbody');
-            tbody.innerHTML = '';
+        function getFilteredSubscriptions() {
             const search = document.getElementById('search-input').value.toLowerCase();
             const filterSales = document.getElementById('filter-sales').value;
             const filterType = document.getElementById('filter-type').value;
 
-            let filtered = subscriptionsList.filter(sub => {
+            return subscriptionsList.filter(sub => {
                 let matchSearch = sub.name.toLowerCase().includes(search) || sub.mobile.includes(search) || sub.id.toString().includes(search);
                 let matchSales = filterSales === 'الجميع' || sub.sales === filterSales;
                 let matchType = filterType === 'الجميع' || sub.type === filterType;
                 return matchSearch && matchSales && matchType;
             });
+        }
+
+        function renderSubscriptions() {
+            const tbody = document.getElementById('subscriptions-tbody');
+            tbody.innerHTML = '';
+            
+            let filtered = getFilteredSubscriptions();
 
             let totalSalesAll = 0;
             let totalPaidAll = 0;
@@ -446,14 +457,35 @@
             document.getElementById('kpi-total-rest').innerHTML = `${totalRestAll.toLocaleString()} <span class="text-sm font-normal text-gray-500">ج.م</span>`;
         }
 
-        // دالة طلب الـ IT
+        // دالة تصدير البيانات الظاهرة في جدول الفلتر الحالي فقط إلى شيت إكسل (CSV)
+        function exportFilteredToExcel() {
+            let filteredData = getFilteredSubscriptions();
+            if (filteredData.length === 0) {
+                alert("لا توجد بيانات مطابقة للفلتر الحالي لتصديرها.");
+                return;
+            }
+
+            let csv = '\uFEFFID,اسم المشترك,رقم الموبايل,البريد الإلكتروني,مسؤول المبيعات,المنتج والتخصص,الإجمالي,المدفوع,المتبقي,تاريخ الاستحقاق\n';
+            filteredData.forEach(sub => {
+                let paidSum = sub.installments.reduce((acc, curr) => acc + curr.amount, 0);
+                let restVal = sub.total - paidSum;
+                if(restVal < 0) restVal = 0;
+                csv += `"#${sub.id}","${sub.name}","${sub.mobile}","${sub.email || ''}","${sub.sales}","${sub.spec}",${sub.total},${paidSum},${restVal},"${sub.nextDate}"\n`;
+            });
+
+            let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = `TOBIM_Filtered_Report_${new Date().toLocaleDateString('en-GB')}.csv`;
+            a.click();
+        }
+
         function sendToIt(id) {
             const sub = subscriptionsList.find(s => s.id === id);
             if(!sub) return;
 
             let itRequests = JSON.parse(localStorage.getItem('tobim_it_requests') || '[]');
-            
-            // التحقق عدم تكرار الطلب المفتوح لنفس الـ ID
             itRequests.unshift({
                 reqId: Date.now(),
                 subId: sub.id,

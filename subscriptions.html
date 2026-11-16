@@ -109,15 +109,15 @@
             </div>
         </div>
 
-        <!-- فلاتر البحث الشاملة والمتقدمة -->
+        <!-- فلاتر البحث الشاملة (تشمل جميع الكورسات وفلتر رقم الراوند) -->
         <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-magnifying-glass text-blue-500 ml-1"></i> بحث بالاسم أو الموبايل أو ID</label>
-                <input type="text" id="search-input" oninput="renderSubscriptions()" placeholder="اكتب للبحث..." class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-44">
+                <input type="text" id="search-input" oninput="renderSubscriptions()" placeholder="اكتب للبحث..." class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-40">
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-filter text-emerald-500 ml-1"></i> مسؤول المبيعات</label>
-                <select id="filter-sales" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500 w-32">
+                <select id="filter-sales" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500 w-28">
                     <option value="الجميع">الجميع</option>
                     <option value="عمر">عمر</option>
                     <option value="محسن">محسن</option>
@@ -126,7 +126,7 @@
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-graduation-cap text-amber-500 ml-1"></i> نوع المنتج</label>
-                <select id="filter-type" onchange="onTypeFilterChange()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 w-32">
+                <select id="filter-type" onchange="onTypeFilterChange()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 w-28">
                     <option value="الجميع">الجميع</option>
                     <option value="دبلومة">دبلومة</option>
                     <option value="كورس">كورس</option>
@@ -134,18 +134,24 @@
                 </select>
             </div>
             <div id="sub-filter-wrapper" class="hidden">
-                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-code-branch text-purple-400 ml-1"></i> اسم الكورس أو الدبلومة</label>
-                <select id="filter-spec" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 w-40">
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-code-branch text-purple-400 ml-1"></i> اسم الكورس / الخدمة</label>
+                <select id="filter-spec" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 w-44">
                     <option value="الكل">كل التخصصات</option>
                 </select>
             </div>
             <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-rotate text-blue-400 ml-1"></i> رقم الراوند</label>
+                <select id="filter-round" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-28">
+                    <option value="الكل">كل الراوندات</option>
+                </select>
+            </div>
+            <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar-days text-blue-400 ml-1"></i> من تاريخ</label>
-                <input type="date" id="date-from" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none w-36" style="color-scheme: dark;">
+                <input type="date" id="date-from" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none w-32" style="color-scheme: dark;">
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar-days text-blue-400 ml-1"></i> إلى تاريخ</label>
-                <input type="date" id="date-to" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none w-36" style="color-scheme: dark;">
+                <input type="date" id="date-to" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none w-32" style="color-scheme: dark;">
             </div>
             <div>
                 <button onclick="resetFilters()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-sm font-bold transition">إلغاء الفلاتر</button>
@@ -311,6 +317,19 @@
         const currentUserEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
         const isAdmin = (currentUserEmail === 'info@ahmedabdelhamed.com');
 
+        // قائمة الكورسات الكاملة من الكتالوج
+        const catalogCourses = [
+            "Revit Architecture", "Revit Structural", "Shopdrawing Reinforcement", "Structural BIM Technical Office", 
+            "CSI", "CSI/REVIT ST package", "Enscape", "Navisworks 4D & 5D", "Navisworks Coordinator", 
+            "Revit Family", "Revit MEP", "Revit Schedule", "Revit Template", "Revit worksharing", 
+            "Shopdrawing Concrete", "Twinmotion", "Facebook ADS GUID", "POWER BI", "Photoshop", 
+            "3DsMAX", "3DsMAX Masterclass", "Advanced Rendering Vray", "Advanced Modeling", 
+            "AutoCad Workshop", "AutoCad Full Course", "Excel Engineering", "Visualization package", 
+            "Advanced Corona", "Fourest Back", "how to persent your work", "BIM Interior Design", 
+            "linkedin", "Marketing Package", "presentation Package", "Reail Clone", "The Perfect Starting", 
+            "Long Story Short", "ACC", "Shopdrawing Architecture", "TANK WORKSHOP", "PRIMAVERA", "BUILD CITY"
+        ];
+
         document.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
             document.getElementById('header-useremail').innerText = currentUserEmail;
@@ -323,9 +342,18 @@
                 if (financeNav) financeNav.style.display = 'none';
             }
 
+            populateRoundFilter();
             generateInitialData();
             renderSubscriptions();
         });
+
+        function populateRoundFilter() {
+            const roundSelect = document.getElementById('filter-round');
+            roundSelect.innerHTML = '<option value="الكل">كل الراوندات</option>';
+            for (let i = 1; i <= 30; i++) {
+                roundSelect.innerHTML += `<option value="Round ${i}">Round ${i}</option>`;
+            }
+        }
 
         function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
         function openProfileModal() {
@@ -344,22 +372,13 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        let subscriptionsList = JSON.parse(localStorage.getItem('tobim_subscriptions_v12') || '[]');
+        let subscriptionsList = JSON.parse(localStorage.getItem('tobim_subscriptions_v13') || '[]');
         function generateInitialData() {
             if (subscriptionsList && subscriptionsList.length >= 50) return;
             
             const firstNames = ["محمد", "أحمد", "محمود", "فاطمة", "ياسمين", "سارة", "إبراهيم", "عمر", "كريم", "نور", "علي", "منى", "حسناء", "مصطفى", "سحر", "زينب", "بيتر", "مينا", "خالد", "عبد الرحمن"];
             const lastNames = ["علي", "محمد", "حسن", "حسين", "محمود", "إبراهيم", "السيد", "عبد الله", "خالد", "عثمان", "الراوي", "الشناوي", "البدوي", "عزمي", "جمال"];
             const salesTeam = ["عمر", "محسن", "صباح"];
-            
-            const catalog = [
-                { type: "دبلومة", name: "دبلومة الإنشائي", price: 9800 },
-                { type: "دبلومة", name: "دبلومة المعماري", price: 8900 },
-                { type: "كورس", name: "3ds Max Masterclass", price: 5000 },
-                { type: "كورس", name: "ريفيت معماري", price: 6000 },
-                { type: "كورس", name: "ريفيت إنشائي", price: 6000 },
-                { type: "برنامج", name: "برنامج أوتوديسك", price: 600 }
-            ];
             const sources = ["إنستاباي CIB", "فودافون كاش", "بنك التعمير والإسكان", "الخزينة (كاش)"];
 
             subscriptionsList = [];
@@ -370,13 +389,25 @@
                 let mobile = "01" + Math.floor(100000000 + Math.random() * 900000000);
                 let sales = salesTeam[Math.floor(Math.random() * salesTeam.length)];
                 
-                let item = catalog[Math.floor(Math.random() * catalog.length)];
-                let specName = item.name;
-                let total = item.price;
+                let type = (i % 3 === 0) ? "دبلومة" : ((i % 3 === 1) ? "كورس" : "برنامج");
+                let specName = "";
+                let total = 5000;
 
-                if (item.type === "دبلومة") {
+                if (type === "دبلومة") {
+                    specName = (i % 2 === 0) ? "دبلومة الإنشائي" : "دبلومة المعماري";
+                    total = (i % 2 === 0) ? 9800 : 8900;
                     let roundNum = Math.floor(Math.random() * 15) + 1;
                     specName += ` (Round ${roundNum})`;
+                } else if (type === "كورس") {
+                    specName = catalogCourses[i % catalogCourses.length];
+                    total = 4000;
+                    if (Math.random() > 0.5) {
+                        let roundNum = Math.floor(Math.random() * 10) + 1;
+                        specName += ` (Round ${roundNum})`;
+                    }
+                } else {
+                    specName = "برنامج أوتوديسك";
+                    total = 600;
                 }
 
                 let paid1 = Math.floor(total * (Math.random() * 0.5 + 0.5));
@@ -394,7 +425,7 @@
                     installments.push({ amount: paid2, source: sources[Math.floor(Math.random() * sources.length)], date: dateStr, rawDate: rawDateStr });
                 }
 
-                let subId = (item.type === 'دبلومة') ? mobile : (3000 + i);
+                let subId = (type === 'دبلومة') ? mobile : (3000 + i);
 
                 subscriptionsList.push({
                     id: subId,
@@ -402,7 +433,7 @@
                     mobile: mobile,
                     email: fName.toLowerCase() + i + "@gmail.com",
                     sales: sales,
-                    type: item.type,
+                    type: type,
                     spec: specName,
                     total: total,
                     installments: installments,
@@ -410,7 +441,7 @@
                     nextDate: rest > 0 ? "01/12/2026" : "-"
                 });
             }
-            localStorage.setItem('tobim_subscriptions_v12', JSON.stringify(subscriptionsList));
+            localStorage.setItem('tobim_subscriptions_v13', JSON.stringify(subscriptionsList));
         }
 
         function onTypeFilterChange() {
@@ -425,7 +456,9 @@
                 specSelect.innerHTML += '<option value="دبلومة الإنشائي">دبلومة الإنشائي</option><option value="دبلومة المعماري">دبلومة المعماري</option>';
             } else if (type === 'كورس') {
                 wrapper.classList.remove('hidden');
-                specSelect.innerHTML += '<option value="3ds Max">3ds Max</option><option value="ريفيت معماري">ريفيت معماري</option><option value="ريفيت إنشائي">ريفيت إنشائي</option>';
+                catalogCourses.forEach(c => {
+                    specSelect.innerHTML += `<option value="${c}">${c}</option>`;
+                });
             } else if (type === 'برنامج') {
                 wrapper.classList.remove('hidden');
                 specSelect.innerHTML += '<option value="برنامج أوتوديسك">برنامج أوتوديسك</option>';
@@ -440,6 +473,7 @@
             document.getElementById('filter-sales').value = 'الجميع';
             document.getElementById('filter-type').value = 'الجميع';
             document.getElementById('sub-filter-wrapper').classList.add('hidden');
+            document.getElementById('filter-round').value = 'الكل';
             document.getElementById('date-from').value = '';
             document.getElementById('date-to').value = '';
             renderSubscriptions();
@@ -450,6 +484,7 @@
             const filterSales = document.getElementById('filter-sales').value;
             const filterType = document.getElementById('filter-type').value;
             const filterSpec = document.getElementById('filter-spec').value;
+            const filterRound = document.getElementById('filter-round').value;
             const dateFrom = document.getElementById('date-from').value;
             const dateTo = document.getElementById('date-to').value;
 
@@ -458,6 +493,7 @@
                 let matchSales = filterSales === 'الجميع' || sub.sales === filterSales;
                 let matchType = filterType === 'الجميع' || sub.type === filterType;
                 let matchSpec = filterSpec === 'الكل' || sub.spec.includes(filterSpec);
+                let matchRound = filterRound === 'الكل' || sub.spec.includes(filterRound);
                 
                 let matchDate = true;
                 if (dateFrom || dateTo) {
@@ -466,7 +502,7 @@
                     if (dateTo && subRawDate > dateTo) matchDate = false;
                 }
 
-                return matchSearch && matchSales && matchType && matchSpec && matchDate;
+                return matchSearch && matchSales && matchType && matchSpec && matchRound && matchDate;
             });
         }
 
@@ -684,7 +720,7 @@
                     subscriptionsList[index].id = mobile;
                 }
 
-                localStorage.setItem('tobim_subscriptions_v12', JSON.stringify(subscriptionsList));
+                localStorage.setItem('tobim_subscriptions_v13', JSON.stringify(subscriptionsList));
                 renderSubscriptions();
                 closeEditSubModal();
                 alert("تم تحديث بيانات الاشتراك والدفعات بنجاح!");
@@ -695,7 +731,7 @@
             if(!isAdmin) return;
             if(confirm("هل أنت متأكد من حذف هذا الاشتراك؟")) {
                 subscriptionsList = subscriptionsList.filter(s => s.id != id);
-                localStorage.setItem('tobim_subscriptions_v12', JSON.stringify(subscriptionsList));
+                localStorage.setItem('tobim_subscriptions_v13', JSON.stringify(subscriptionsList));
                 renderSubscriptions();
             }
         }

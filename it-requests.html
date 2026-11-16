@@ -68,23 +68,23 @@
         <div class="flex justify-between items-center mb-2 flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white flex items-center gap-3">
-                    طلبات قسم الـ IT 
+                    طلبات قسم الـ IT مقسمة
                     <span id="header-notif-badge" class="hidden bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs px-3 py-1 rounded-full font-bold">
                         <i class="fa-solid fa-bell ml-1"></i> <span id="pending-count-text">0</span> طلبات جاري العمل عليها
                     </span>
                 </h2>
-                <p class="text-sm text-gray-400 mt-1">متابعة العمليات، تفعيل الاشتراكات، وحالة طلبات الـ IT</p>
+                <p class="text-sm text-gray-400 mt-1">قسم الدبلومات (IDs)، قسم الكورسات (فتح/غلق)، قسم البرامج (تفعيلات أكونتات أوتوديسك)</p>
             </div>
             <button onclick="clearItRequests()" class="bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500/30 px-4 py-2.5 rounded-xl text-xs font-bold transition">
                 <i class="fa-solid fa-trash ml-1"></i> تفريغ السجل
             </button>
         </div>
 
-        <!-- بطاقات الإحصائيات (الأعلى) -->
+        <!-- بطاقات الإحصائيات بالأعلى -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
                 <div>
-                    <h3 class="text-gray-400 text-sm font-bold">إجمالي طلبات IT</h3>
+                    <h3 class="text-gray-400 text-sm font-bold">إجمالي الطلبات</h3>
                     <p id="kpi-total" class="text-3xl font-black text-white mt-1">0</p>
                 </div>
                 <i class="fa-solid fa-headset text-blue-500/20 text-4xl"></i>
@@ -105,19 +105,26 @@
             </div>
         </div>
 
+        <!-- أزرار التبويب بين الأقسام الثلاثة -->
+        <div class="flex items-center gap-3 bg-[#111827] p-2 rounded-2xl border border-gray-800 w-fit">
+            <button onclick="switchTab('diplomas')" id="tab-diplomas" class="px-6 py-2.5 rounded-xl text-sm font-bold transition bg-blue-600 text-white shadow-md">الدبلومات (IDs)</button>
+            <button onclick="switchTab('courses')" id="tab-courses" class="px-6 py-2.5 rounded-xl text-sm font-bold transition text-gray-400 hover:text-white">الكورسات (فتح/غلق)</button>
+            <button onclick="switchTab('programs')" id="tab-programs" class="px-6 py-2.5 rounded-xl text-sm font-bold transition text-gray-400 hover:text-white">البرامج (أوتوديسك)</button>
+        </div>
+
         <!-- جدول طلبات الـ IT -->
         <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
-            <div class="overflow-x-auto h-[500px]">
+            <div class="overflow-x-auto h-[450px]">
                 <table class="w-full text-right text-sm min-w-[900px]">
                     <thead class="bg-[#0f172a] text-gray-400 text-xs uppercase border-b border-gray-800 sticky top-0 z-20">
                         <tr>
-                            <th class="p-4 w-24 text-center">رقم الطلب</th>
+                            <th class="p-4 w-20 text-center">الرقم</th>
                             <th class="p-4 w-24 text-center">عميل ID</th>
                             <th class="p-4">اسم المشترك</th>
-                            <th class="p-4">التخصص والمنتج</th>
+                            <th class="p-4" id="table-header-spec">التخصص / الخدمة</th>
                             <th class="p-4">مسؤول المبيعات</th>
                             <th class="p-4">وقت الإرسال</th>
-                            <th class="p-4 text-center">حالة الـ IT</th>
+                            <th class="p-4 text-center">حالة الـ IT (اضغط للتبديل)</th>
                         </tr>
                     </thead>
                     <tbody id="it-tbody" class="divide-y divide-gray-800/50">
@@ -127,9 +134,25 @@
         </div>
     </main>
 
+    <!-- نافذة تعديل الحساب -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-black text-white mb-6">تعديل بيانات الحساب</h3>
+            <form onsubmit="saveProfileChanges(event)" class="space-y-4">
+                <input type="text" id="profile-name-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <input type="email" id="profile-email-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">حفظ</button>
+                    <button type="button" onclick="closeProfileModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2 rounded-xl font-bold">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const currentUserEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
         const isAdmin = (currentUserEmail === 'info@ahmedabdelhamed.com');
+        let currentTab = 'diplomas'; // التبويب الافتراضي
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
@@ -148,54 +171,102 @@
         });
 
         function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
+        function openProfileModal() {
+            document.getElementById('profile-dropdown').classList.add('hidden');
+            document.getElementById('profile-name-input').value = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
+            document.getElementById('profile-email-input').value = currentUserEmail;
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+        function saveProfileChanges(e) {
+            e.preventDefault();
+            localStorage.setItem('tobim_user_name', document.getElementById('profile-name-input').value);
+            localStorage.setItem('tobim_user_email', document.getElementById('profile-email-input').value);
+            alert("تم التحديث بنجاح!");
+            location.reload();
+        }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // توليد بيانات افتراضية ضخمة لطلبات الـ IT من الدبلومات والكورسات (متنوعة بين "تمت" و "جاري العمل عليها")
         function generateInitialItRequests() {
-            let requests = JSON.parse(localStorage.getItem('tobim_it_requests') || '[]');
-            if (requests.length >= 20) return;
+            let requests = JSON.parse(localStorage.getItem('tobim_it_requests_v2') || '[]');
+            if (requests.length >= 30) return;
 
-            const names = ["محمد إبراهيم علي", "أمنية محمد محروس", "فاطمة محمود", "محمود خالد السيد", "ياسمين عبد الله", "سارة إبراهيم", "كريم عزمي", "نور الشناوي", "مينا الراوي", "زينب عبد الرحمن"];
-            const specs = ["دبلومة الإنشائي (Round 5)", "دبلومة المعماري (Round 3)", "3ds Max Masterclass", "ريفيت معماري", "ريفيت إنشائي", "برنامج أوتوديسك", "CSI/REVIT ST package"];
+            const names = ["محمد إبراهيم", "أمنية محروس", "فاطمة محمود", "محمود خالد", "ياسمين عبد الله", "سارة إبراهيم", "كريم عزمي", "نور الشناوي", "مينا الراوي", "زينب عبد الرحمن"];
             const salesTeam = ["عمر", "محسن", "صباح"];
-            const statuses = ["تمت", "جاري العمل عليها (لسه)"];
-
+            
             requests = [];
-            for (let i = 1; i <= 25; i++) {
-                let name = names[Math.floor(Math.random() * names.length)] + ` (${i})`;
-                let spec = specs[Math.floor(Math.random() * specs.length)];
-                let sales = salesTeam[Math.floor(Math.random() * salesTeam.length)];
-                let status = (i % 3 === 0) ? "جاري العمل عليها (لسه)" : "تمت"; // جعل بعضها قيد العمل للإشعارات
-
+            // توليد طلبات دبلومات (IDs)
+            for (let i = 1; i <= 10; i++) {
                 requests.push({
-                    reqId: Date.now() - (i * 3600000),
+                    reqId: 6000 + i,
                     subId: 3000 + i,
-                    name: name,
+                    category: 'diplomas',
+                    name: names[i % names.length] + ` (${i})`,
                     mobile: "01" + Math.floor(100000000 + Math.random() * 900000000),
-                    spec: spec,
-                    sales: sales,
-                    date: `16/11/2026 02:${i < 10 ? '0'+i : i}`,
-                    status: status
+                    spec: i % 2 === 0 ? "دبلومة الإنشائي (تفعيل ID)" : "دبلومة المعماري (تفعيل ID)",
+                    sales: salesTeam[i % salesTeam.length],
+                    date: `16/11/2026 02:0${i}`,
+                    status: (i % 3 === 0) ? "جاري العمل عليها (لسه)" : "تمت"
                 });
             }
-            localStorage.setItem('tobim_it_requests', JSON.stringify(requests));
+            // توليد طلبات كورسات (فتح أو غلق الكورس)
+            for (let i = 11; i <= 20; i++) {
+                requests.push({
+                    reqId: 6000 + i,
+                    subId: 3000 + i,
+                    category: 'courses',
+                    name: names[i % names.length] + ` (${i})`,
+                    mobile: "01" + Math.floor(100000000 + Math.random() * 900000000),
+                    spec: i % 2 === 0 ? "فتح كورس (3ds Max)" : "غلق كورس (Revit Arch)",
+                    sales: salesTeam[i % salesTeam.length],
+                    date: `16/11/2026 02:1${i}`,
+                    status: (i % 4 === 0) ? "جاري العمل عليها (لسه)" : "تمت"
+                });
+            }
+            // توليد طلبات برامج (تفعيلات أكونتات أوتوديسك فقط)
+            for (let i = 21; i <= 30; i++) {
+                requests.push({
+                    reqId: 6000 + i,
+                    subId: 3000 + i,
+                    category: 'programs',
+                    name: names[i % names.length] + ` (${i})`,
+                    mobile: "01" + Math.floor(100000000 + Math.random() * 900000000),
+                    spec: "تفعيل أكونت أوتوديسك",
+                    sales: salesTeam[i % salesTeam.length],
+                    date: `16/11/2026 02:2${i}`,
+                    status: (i % 5 === 0) ? "جاري العمل عليها (لسه)" : "تمت"
+                });
+            }
+            localStorage.setItem('tobim_it_requests_v2', JSON.stringify(requests));
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tab-diplomas').className = tab === 'diplomas' ? "px-6 py-2.5 rounded-xl text-sm font-bold transition bg-blue-600 text-white shadow-md" : "px-6 py-2.5 rounded-xl text-sm font-bold transition text-gray-400 hover:text-white";
+            document.getElementById('tab-courses').className = tab === 'courses' ? "px-6 py-2.5 rounded-xl text-sm font-bold transition bg-blue-600 text-white shadow-md" : "px-6 py-2.5 rounded-xl text-sm font-bold transition text-gray-400 hover:text-white";
+            document.getElementById('tab-programs').className = tab === 'programs' ? "px-6 py-2.5 rounded-xl text-sm font-bold transition bg-blue-600 text-white shadow-md" : "px-6 py-2.5 rounded-xl text-sm font-bold transition text-gray-400 hover:text-white";
+
+            const thSpec = document.getElementById('table-header-spec');
+            if(tab === 'diplomas') thSpec.innerText = "الدبلومة وطلب الـ ID";
+            else if(tab === 'courses') thSpec.innerText = "فتح أو غلق الكورس";
+            else if(tab === 'programs') thSpec.innerText = "تفعيل أكونت أوتوديسك";
+
+            renderItRequests();
         }
 
         function renderItRequests() {
             const tbody = document.getElementById('it-tbody');
             tbody.innerHTML = '';
-            let requests = JSON.parse(localStorage.getItem('tobim_it_requests') || '[]');
+            let allRequests = JSON.parse(localStorage.getItem('tobim_it_requests_v2') || '[]');
 
-            let total = requests.length;
-            let doneCount = requests.filter(r => r.status === 'تمت').length;
-            let pendingCount = requests.filter(r => r.status.includes('جاري')).length;
+            let total = allRequests.length;
+            let doneCount = allRequests.filter(r => r.status === 'تمت').length;
+            let pendingCount = allRequests.filter(r => r.status.includes('جاري')).length;
 
-            // تحديث البطاقات الإحصائية
             document.getElementById('kpi-total').innerText = total;
             document.getElementById('kpi-done').innerText = doneCount;
             document.getElementById('kpi-pending').innerText = pendingCount;
 
-            // تحديث الإشعارات
             const navBadge = document.getElementById('nav-badge');
             const notifBadge = document.getElementById('header-notif-badge');
             if (pendingCount > 0) {
@@ -208,22 +279,25 @@
                 notifBadge.classList.add('hidden');
             }
 
+            // فلترة الطلبات حسب التبويب النشط
+            let requests = allRequests.filter(r => r.category === currentTab);
+
             if(requests.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500 font-semibold">لا توجد طلبات مرسلة لقسم الـ IT حتى الآن.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500 font-semibold">لا توجد طلبات في هذا القسم حالياً.</td></tr>`;
                 return;
             }
 
             requests.forEach((req, index) => {
                 let statusBadge = req.status === 'تمت' 
-                    ? `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5"><i class="fa-solid fa-check-circle"></i> ${req.status}</span>`
-                    : `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 animate-pulse"><i class="fa-solid fa-clock"></i> ${req.status}</span>`;
+                    ? `<button onclick="toggleStatus(${req.reqId})" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 transition cursor-pointer"><i class="fa-solid fa-check-circle"></i> ${req.status}</button>`
+                    : `<button onclick="toggleStatus(${req.reqId})" class="bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 transition cursor-pointer animate-pulse"><i class="fa-solid fa-clock"></i> ${req.status}</button>`;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-800/30 transition">
                         <td class="p-4 text-center text-gray-400 font-bold">#${index + 1}</td>
                         <td class="p-4 text-center text-blue-400 font-bold">#${req.subId}</td>
                         <td class="p-4 font-bold text-white">${req.name}<div class="text-xs text-gray-400">${req.mobile}</div></td>
-                        <td class="p-4 text-gray-300">${req.spec}</td>
+                        <td class="p-4 text-gray-300 font-semibold">${req.spec}</td>
                         <td class="p-4 text-blue-400 font-semibold">${req.sales}</td>
                         <td class="p-4 text-gray-400 text-xs">${req.date}</td>
                         <td class="p-4 text-center">
@@ -234,9 +308,19 @@
             });
         }
 
+        function toggleStatus(reqId) {
+            let allRequests = JSON.parse(localStorage.getItem('tobim_it_requests_v2') || '[]');
+            let req = allRequests.find(r => r.reqId === reqId);
+            if (req) {
+                req.status = req.status === 'تمت' ? 'جاري العمل عليها (لسه)' : 'تمت';
+                localStorage.setItem('tobim_it_requests_v2', JSON.stringify(allRequests));
+                renderItRequests();
+            }
+        }
+
         function clearItRequests() {
             if(confirm("هل أنت متأكد من تفريغ سجل طلبات الـ IT؟")) {
-                localStorage.removeItem('tobim_it_requests');
+                localStorage.removeItem('tobim_it_requests_v2');
                 renderItRequests();
             }
         }

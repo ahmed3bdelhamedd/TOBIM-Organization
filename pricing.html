@@ -63,8 +63,8 @@
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6 relative z-10">
         <div class="flex justify-between items-center mb-2 flex-wrap gap-4">
             <div>
-                <h2 class="text-2xl font-black text-white">قائمة الأسعار الرسمية</h2>
-                <p class="text-sm text-gray-400 mt-1">استعراض أسعار الدبلومات، الكورسات، والبرامج الهندسية المعتمدة</p>
+                <h2 class="text-2xl font-black text-white">قائمة الأسعار الرسمية والخصومات</h2>
+                <p class="text-sm text-gray-400 mt-1">استعراض الأسعار الأصلية، قيمة الخصم، والأسعار النهائية بعد الخصم</p>
             </div>
             <!-- زر الإضافة يظهر للمدير فقط -->
             <button id="add-price-btn" onclick="openPriceModal()" class="hidden bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
@@ -80,21 +80,9 @@
             </div>
         </div>
 
-        <!-- جدول الأسعار -->
-        <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
-            <div class="overflow-x-auto h-[550px]">
-                <table class="w-full text-right text-sm min-w-[700px]">
-                    <thead class="bg-[#0f172a] text-gray-400 text-xs uppercase border-b border-gray-800 sticky top-0 z-20">
-                        <tr>
-                            <th class="p-4">اسم الكورس / الدبلومة / الباكدج</th>
-                            <th class="p-4 text-emerald-400">السعر الرسمي (ج.م)</th>
-                            <th class="p-4 text-center admin-col hidden">إجراءات الإدارة (للمدير فقط)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="prices-tbody" class="divide-y divide-gray-800/50">
-                    </tbody>
-                </table>
-            </div>
+        <!-- شبكة المربعات (Grid Cards) للأسعار والخصومات -->
+        <div id="prices-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- توليد المربعات برمجياً -->
         </div>
     </main>
 
@@ -108,12 +96,42 @@
                     <input type="text" id="newPriceName" required placeholder="مثال: Revit Advanced" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm text-gray-400 mb-1">السعر (ج.م) *</label>
+                    <label class="block text-sm text-gray-400 mb-1">السعر الأصلي (ج.م) *</label>
                     <input type="number" id="newPriceVal" required placeholder="5000" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">قيمة الخصم (ج.م) [اختياري]</label>
+                    <input type="number" id="newPriceDiscount" placeholder="0" value="0" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
                 </div>
                 <div class="flex gap-3 mt-6">
                     <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition">حفظ</button>
                     <button type="button" onclick="closePriceModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل السعر (للأدمن فقط) -->
+    <div id="editPriceModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl space-y-4">
+            <h3 class="text-xl font-black text-white mb-4"><i class="fa-solid fa-pen-to-square text-emerald-500 ml-2"></i> تعديل سعر الكورس والخصم</h3>
+            <form onsubmit="updatePrice(event)" class="space-y-4">
+                <input type="hidden" id="editPriceId">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">اسم الخدمة / الكورس *</label>
+                    <input type="text" id="editPriceName" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">السعر الأصلي (ج.م) *</label>
+                    <input type="number" id="editPriceVal" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-1">قيمة الخصم (ج.م)</label>
+                    <input type="number" id="editPriceDiscount" placeholder="0" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold transition">تحديث</button>
+                    <button type="button" onclick="closeEditPriceModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition">إلغاء</button>
                 </div>
             </form>
         </div>
@@ -150,7 +168,6 @@
                 if (financeNav) financeNav.style.display = 'none';
             } else {
                 document.getElementById('add-price-btn').classList.remove('hidden');
-                document.querySelectorAll('.admin-col').forEach(el => el.classList.remove('hidden'));
             }
 
             initPrices();
@@ -174,80 +191,114 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        let pricesCatalog = JSON.parse(localStorage.getItem('tobim_prices_catalog')) || [
-            { id: 1, name: "Revit Architecture", price: 5000 },
-            { id: 2, name: "Revit Structural", price: 4000 },
-            { id: 3, name: "Shopdrawing Reinforcement", price: 5000 },
-            { id: 4, name: "Structural BIM Technical Office", price: 15000 },
-            { id: 5, name: "BIM Architecture Diploma", price: 15000 },
-            { id: 6, name: "CSI", price: 4000 },
-            { id: 7, name: "CSI/REVIT ST package", price: 8000 },
-            { id: 8, name: "Enscape", price: 2500 },
-            { id: 9, name: "Navisworks 4D & 5D", price: 5000 },
-            { id: 10, name: "Navisworks Coordinator", price: 5000 },
-            { id: 11, name: "Revit Family", price: 5000 },
-            { id: 12, name: "Revit MEP", price: 3000 },
-            { id: 13, name: "Revit Schedule", price: 3000 },
-            { id: 14, name: "Revit Template", price: 3000 },
-            { id: 15, name: "Revit worksharing", price: 3000 },
-            { id: 16, name: "Shopdrawing Concrete", price: 5000 },
-            { id: 17, name: "Twinmotion", price: 3000 },
-            { id: 18, name: "Facebook ADS GUID", price: 1000 },
-            { id: 19, name: "POWER BI", price: 3000 },
-            { id: 20, name: "Photoshop", price: 3000 },
-            { id: 21, name: "3DsMAX", price: 5000 },
-            { id: 22, name: "3DsMAX Masterclass", price: 12000 },
-            { id: 23, name: "Advanced Rendering Vray", price: 6000 },
-            { id: 24, name: "Advanced Modeling", price: 5000 },
-            { id: 25, name: "AutoCad Workshop", price: 2000 },
-            { id: 26, name: "AutoCad Full Course", price: 3000 },
-            { id: 27, name: "Excel Engineering", price: 3000 },
-            { id: 28, name: "Visualization package", price: 10000 },
-            { id: 29, name: "Advanced Corona", price: 3000 },
-            { id: 30, name: "Fourest Back", price: 2000 },
-            { id: 31, name: "how to persent your work", price: 2000 },
-            { id: 32, name: "BIM Interior Design", price: 30000 },
-            { id: 33, name: "linkedin", price: 2000 },
-            { id: 34, name: "Marketing Package", price: 8000 },
-            { id: 35, name: "presentation Package", price: 8000 },
-            { id: 36, name: "Reail Clone", price: 2000 },
-            { id: 37, name: "The Perfect Starting", price: 1500 },
-            { id: 38, name: "Long Story Short", price: 6000 },
-            { id: 39, name: "ACC", price: 6000 },
-            { id: 40, name: "Shopdrawing Architecture", price: 6000 },
-            { id: 41, name: "TANK WORKSHOP", price: 6000 },
-            { id: 42, name: "PRIMAVERA", price: 6000 },
-            { id: 43, name: "BUILD CITY", price: 8000 }
+        // قائمة الأسعار مع دعم حقل الخصم والسعر الأصلي
+        let pricesCatalog = JSON.parse(localStorage.getItem('tobim_prices_catalog_v2')) || [
+            { id: 1, name: "Revit Architecture", price: 5000, discount: 0 },
+            { id: 2, name: "Revit Structural", price: 4000, discount: 0 },
+            { id: 3, name: "Shopdrawing Reinforcement", price: 5000, discount: 500 },
+            { id: 4, name: "Structural BIM Technical Office", price: 15000, discount: 1000 },
+            { id: 5, name: "BIM Architecture Diploma", price: 15000, discount: 2000 },
+            { id: 6, name: "CSI", price: 4000, discount: 0 },
+            { id: 7, name: "CSI/REVIT ST package", price: 8000, discount: 1000 },
+            { id: 8, name: "Enscape", price: 2500, discount: 0 },
+            { id: 9, name: "Navisworks 4D & 5D", price: 5000, discount: 0 },
+            { id: 10, name: "Navisworks Coordinator", price: 5000, discount: 0 },
+            { id: 11, name: "Revit Family", price: 5000, discount: 0 },
+            { id: 12, name: "Revit MEP", price: 3000, discount: 0 },
+            { id: 13, name: "Revit Schedule", price: 3000, discount: 0 },
+            { id: 14, name: "Revit Template", price: 3000, discount: 0 },
+            { id: 15, name: "Revit worksharing", price: 3000, discount: 0 },
+            { id: 16, name: "Shopdrawing Concrete", price: 5000, discount: 0 },
+            { id: 17, name: "Twinmotion", price: 3000, discount: 0 },
+            { id: 18, name: "Facebook ADS GUID", price: 1000, discount: 0 },
+            { id: 19, name: "POWER BI", price: 3000, discount: 0 },
+            { id: 20, name: "Photoshop", price: 3000, discount: 0 },
+            { id: 21, name: "3DsMAX", price: 5000, discount: 0 },
+            { id: 22, name: "3DsMAX Masterclass", price: 12000, discount: 1500 },
+            { id: 23, name: "Advanced Rendering Vray", price: 6000, discount: 0 },
+            { id: 24, name: "Advanced Modeling", price: 5000, discount: 0 },
+            { id: 25, name: "AutoCad Workshop", price: 2000, discount: 0 },
+            { id: 26, name: "AutoCad Full Course", price: 3000, discount: 0 },
+            { id: 27, name: "Excel Engineering", price: 3000, discount: 0 },
+            { id: 28, name: "Visualization package", price: 10000, discount: 1000 },
+            { id: 29, name: "Advanced Corona", price: 3000, discount: 0 },
+            { id: 30, name: "Fourest Back", price: 2000, discount: 0 },
+            { id: 31, name: "how to persent your work", price: 2000, discount: 0 },
+            { id: 32, name: "BIM Interior Design", price: 30000, discount: 5000 },
+            { id: 33, name: "linkedin", price: 2000, discount: 0 },
+            { id: 34, name: "Marketing Package", price: 8000, discount: 1000 },
+            { id: 35, name: "presentation Package", price: 8000, discount: 1000 },
+            { id: 36, name: "Reail Clone", price: 2000, discount: 0 },
+            { id: 37, name: "The Perfect Starting", price: 1500, discount: 0 },
+            { id: 38, name: "Long Story Short", price: 6000, discount: 0 },
+            { id: 39, name: "ACC", price: 6000, discount: 0 },
+            { id: 40, name: "Shopdrawing Architecture", price: 6000, discount: 0 },
+            { id: 41, name: "TANK WORKSHOP", price: 6000, discount: 0 },
+            { id: 42, name: "PRIMAVERA", price: 6000, discount: 0 },
+            { id: 43, name: "BUILD CITY", price: 8000, discount: 0 }
         ];
 
         function initPrices() {
-            if (!localStorage.getItem('tobim_prices_catalog')) {
-                localStorage.setItem('tobim_prices_catalog', JSON.stringify(pricesCatalog));
+            if (!localStorage.getItem('tobim_prices_catalog_v2')) {
+                localStorage.setItem('tobim_prices_catalog_v2', JSON.stringify(pricesCatalog));
             } else {
-                pricesCatalog = JSON.parse(localStorage.getItem('tobim_prices_catalog'));
+                pricesCatalog = JSON.parse(localStorage.getItem('tobim_prices_catalog_v2'));
             }
         }
 
         function renderPrices() {
-            const tbody = document.getElementById('prices-tbody');
-            tbody.innerHTML = '';
+            const grid = document.getElementById('prices-grid');
+            grid.innerHTML = '';
             const search = document.getElementById('search-price').value.toLowerCase();
 
             let filtered = pricesCatalog.filter(item => item.name.toLowerCase().includes(search));
 
             filtered.forEach(item => {
-                let adminColContent = isAdmin ? `
-                    <button onclick="deletePrice(${item.id})" class="bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-rose-500/30 transition">
-                        <i class="fa-solid fa-trash ml-1"></i> حذف
-                    </button>
+                let discountVal = item.discount || 0;
+                let finalPrice = item.price - discountVal;
+                if (finalPrice < 0) finalPrice = 0;
+
+                let priceDisplay = '';
+                if (discountVal > 0) {
+                    priceDisplay = `
+                        <div class="flex items-baseline gap-3">
+                            <span class="text-xl font-bold text-gray-500 line-through">${item.price.toLocaleString()} ج.م</span>
+                            <span class="text-2xl font-black text-emerald-400">${finalPrice.toLocaleString()} <span class="text-xs">ج.م</span></span>
+                        </div>
+                        <span class="text-[11px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 w-fit">خصم: ${discountVal.toLocaleString()} ج.م</span>
+                    `;
+                } else {
+                    priceDisplay = `
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-2xl font-black text-emerald-400">${item.price.toLocaleString()}</span>
+                            <span class="text-xs text-gray-400">ج.م</span>
+                        </div>
+                        <span class="text-[11px] text-gray-500">بدون خصم</span>
+                    `;
+                }
+
+                let adminActions = isAdmin ? `
+                    <div class="flex gap-2 pt-3 border-t border-gray-800">
+                        <button onclick="openEditPriceModal(${item.id})" class="flex-1 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 py-2 rounded-xl text-xs font-bold hover:bg-emerald-600/30 transition">
+                            <i class="fa-solid fa-pen ml-1"></i> تعديل
+                        </button>
+                        <button onclick="deletePrice(${item.id})" class="flex-1 bg-rose-500/20 text-rose-400 border border-rose-500/30 py-2 rounded-xl text-xs font-bold hover:bg-rose-500/30 transition">
+                            <i class="fa-solid fa-trash ml-1"></i> حذف
+                        </button>
+                    </div>
                 ` : '';
 
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-800/30 transition">
-                        <td class="p-4 font-bold text-white">${item.name}</td>
-                        <td class="p-4 font-black text-emerald-400">${item.price.toLocaleString()} ج.م</td>
-                        <td class="p-4 text-center admin-col ${isAdmin ? '' : 'hidden'}">${adminColContent}</td>
-                    </tr>
+                grid.innerHTML += `
+                    <div class="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 p-6 rounded-3xl shadow-xl flex flex-col justify-between space-y-4 hover:border-gray-700 transition">
+                        <div>
+                            <span class="text-xs font-bold text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">معتمد رسمي</span>
+                            <h3 class="text-lg font-black text-white mt-3">${item.name}</h3>
+                        </div>
+                        <div class="flex flex-col space-y-1">
+                            ${priceDisplay}
+                        </div>
+                        ${adminActions}
+                    </div>
                 `;
             });
         }
@@ -261,20 +312,56 @@
 
             let name = document.getElementById('newPriceName').value;
             let price = parseFloat(document.getElementById('newPriceVal').value) || 0;
+            let discount = parseFloat(document.getElementById('newPriceDiscount').value) || 0;
 
-            pricesCatalog.push({ id: Date.now(), name, price });
-            localStorage.setItem('tobim_prices_catalog', JSON.stringify(pricesCatalog));
+            pricesCatalog.push({ id: Date.now(), name, price, discount });
+            localStorage.setItem('tobim_prices_catalog_v2', JSON.stringify(pricesCatalog));
             renderPrices();
             closePriceModal();
             document.getElementById('newPriceName').value = '';
             document.getElementById('newPriceVal').value = '';
+            document.getElementById('newPriceDiscount').value = '0';
+        }
+
+        function openEditPriceModal(id) {
+            if(!isAdmin) return;
+            const item = pricesCatalog.find(p => p.id === id);
+            if(!item) return;
+
+            document.getElementById('editPriceId').value = item.id;
+            document.getElementById('editPriceName').value = item.name;
+            document.getElementById('editPriceVal').value = item.price;
+            document.getElementById('editPriceDiscount').value = item.discount || 0;
+            document.getElementById('editPriceModal').classList.remove('hidden');
+        }
+
+        function closeEditPriceModal() { document.getElementById('editPriceModal').classList.add('hidden'); }
+
+        function updatePrice(e) {
+            e.preventDefault();
+            if(!isAdmin) return;
+
+            let id = parseInt(document.getElementById('editPriceId').value);
+            let name = document.getElementById('editPriceName').value;
+            let price = parseFloat(document.getElementById('editPriceVal').value) || 0;
+            let discount = parseFloat(document.getElementById('editPriceDiscount').value) || 0;
+
+            let index = pricesCatalog.findIndex(p => p.id === id);
+            if(index !== -1) {
+                pricesCatalog[index].name = name;
+                pricesCatalog[index].price = price;
+                pricesCatalog[index].discount = discount;
+                localStorage.setItem('tobim_prices_catalog_v2', JSON.stringify(pricesCatalog));
+                renderPrices();
+                closeEditPriceModal();
+            }
         }
 
         function deletePrice(id) {
             if(!isAdmin) return;
             if(confirm("هل أنت متأكد من حذف هذا السعر من الكتالوج؟")) {
                 pricesCatalog = pricesCatalog.filter(p => p.id !== id);
-                localStorage.setItem('tobim_prices_catalog', JSON.stringify(pricesCatalog));
+                localStorage.setItem('tobim_prices_catalog_v2', JSON.stringify(pricesCatalog));
                 renderPrices();
             }
         }

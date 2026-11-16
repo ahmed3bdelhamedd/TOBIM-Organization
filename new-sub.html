@@ -17,26 +17,46 @@
 </head>
 <body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
 
-    <!-- الهيدر -->
-    <header class="bg-[#0f172a]/80 backdrop-blur-md border-b border-gray-800/60 h-20 flex items-center px-6 justify-between sticky top-0 z-50 transition-all">
+    <!-- الهيدر الموحد مع بروفايل الحساب -->
+    <header class="bg-[#0f172a]/90 backdrop-blur-md border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50">
         <div class="flex items-center gap-6">
-            <div class="flex items-center gap-3 group cursor-pointer">
-                <div class="relative">
-                    <div class="absolute inset-0 bg-blue-500 blur-md opacity-0 group-hover:opacity-40 transition duration-500"></div>
-                    <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="relative w-10 h-10 rounded-xl object-cover border border-gray-700 shadow-lg" alt="Logo">
-                </div>
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="location.href='subscriptions.html'">
+                <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/40'" class="w-10 h-10 rounded-xl object-cover border border-gray-700 shadow-lg" alt="Logo">
                 <span class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">TO BIM</span>
             </div>
             <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
-                <a href="dashboard.html" class="text-gray-400 hover:text-white hover:bg-gray-800/50 px-4 py-2.5 rounded-xl transition">الماليات</a>
-                <a href="subscriptions.html" class="text-gray-400 hover:text-white hover:bg-gray-800/50 px-4 py-2.5 rounded-xl transition">سجل الاشتراكات</a>
-                <a href="new-sub.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-5 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition transform hover:scale-105 flex items-center gap-2">
+                <a href="dashboard.html" id="nav-finance" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">الماليات</a>
+                <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">سجل الاشتراكات</a>
+                <a href="pricing.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">قائمة الأسعار</a>
+                <a href="new-sub.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i> اشتراك جديد
                 </a>
             </nav>
         </div>
-        <div class="flex items-center gap-4">
-            <button onclick="localStorage.clear(); location.href='login.html';" class="bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 px-4 py-2 rounded-xl text-sm font-bold transition">خروج</button>
+
+        <div class="relative">
+            <button onclick="toggleProfileDropdown()" class="flex items-center gap-3 bg-[#111827] hover:bg-gray-800 border border-gray-700 px-4 py-2 rounded-2xl transition">
+                <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white shadow-md" id="user-avatar-initial">أ</div>
+                <div class="text-right hidden sm:block">
+                    <p id="header-username" class="text-xs font-bold text-white">أحمد عبد الحميد</p>
+                    <p id="header-useremail" class="text-[10px] text-gray-400">info@ahmedabdelhamed.com</p>
+                </div>
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 mr-1"></i>
+            </button>
+            <div id="profile-dropdown" class="hidden absolute left-0 mt-3 w-64 bg-[#111827] border border-gray-700 rounded-2xl shadow-2xl overflow-hidden z-50">
+                <div class="p-4 border-b border-gray-800 bg-[#0f172a]">
+                    <p class="text-xs text-gray-400">الحساب الحالي</p>
+                    <p id="dropdown-email" class="text-xs font-bold text-white truncate mt-1">info@ahmedabdelhamed.com</p>
+                </div>
+                <div class="p-2 space-y-1">
+                    <button onclick="openProfileModal()" class="w-full text-right px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-blue-400"></i> تعديل بيانات الحساب
+                    </button>
+                    <button onclick="logout()" class="w-full text-right px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -45,7 +65,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-black text-white">تسجيل اشتراك جديد</h2>
-                <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعات بدقة (صورة الإيصال إجبارية)</p>
+                <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعات بدقة (الأسعار تسحب تلقائياً من قائمة الأسعار)</p>
             </div>
             <button type="button" onclick="window.history.back()" class="bg-[#111827] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
                 <i class="fa-solid fa-arrow-left ml-2"></i> رجوع
@@ -99,7 +119,7 @@
                     
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">التخصص / الكورس *</label>
-                        <select id="sub-spec" required onchange="updateRounds()" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500 disabled:opacity-50" disabled>
+                        <select id="sub-spec" required onchange="onSpecChange()" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500 disabled:opacity-50" disabled>
                             <option value="" disabled selected>اختر النوع أولاً</option>
                         </select>
                     </div>
@@ -133,7 +153,7 @@
                 <!-- ملخص السعر والمتبقي -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-[#0b0f19] p-5 rounded-2xl border border-gray-800">
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2">سعر البيع الإجمالي (ج.م) *</label>
+                        <label class="block text-sm text-gray-400 mb-2">سعر البيع الإجمالي (ج.م) [يُسحب تلقائياً وقابل للتعديل] *</label>
                         <input type="number" id="sub-total" required oninput="calcRemaining()" placeholder="مثال: 9800" class="w-full bg-[#111827] border border-gray-700 text-white font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
                     </div>
                     <div>
@@ -208,7 +228,6 @@
                     </div>
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">تاريخ استحقاق الدفعة القادمة (للمتبقي)</label>
-                        <!-- أضفت خاصية onchange للسماح بالتعديل اليدوي، مع برمجة الحساب التلقائي -->
                         <input type="date" id="sub-next-date" class="w-full bg-[#111827] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500" style="color-scheme: dark;">
                         <p class="text-[10px] text-gray-500 mt-1">يتحدد تلقائياً بعد شهر من تاريخ التحويل (ويمكنك تعديله يدوياً).</p>
                     </div>
@@ -226,229 +245,255 @@
 
     </main>
 
+    <!-- نافذة تعديل الحساب -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-black text-white mb-6">تعديل بيانات الحساب</h3>
+            <form onsubmit="saveProfileChanges(event)" class="space-y-4">
+                <input type="text" id="profile-name-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <input type="email" id="profile-email-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">حفظ</button>
+                    <button type="button" onclick="closeProfileModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2 rounded-xl font-bold">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // تعيين تاريخ اليوم كقيمة افتراضية
-        document.getElementById('sub-date-1').valueAsDate = new Date();
+        const currentUserEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
+        const isAdmin = (currentUserEmail === 'info@ahmedabdelhamed.com');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
+            document.getElementById('header-useremail').innerText = currentUserEmail;
+            document.getElementById('dropdown-email').innerText = currentUserEmail;
+            document.getElementById('header-username').innerText = savedName;
+            document.getElementById('user-avatar-initial').innerText = savedName.charAt(0);
+
+            if (!isAdmin) {
+                const financeNav = document.getElementById('nav-finance');
+                if (financeNav) financeNav.style.display = 'none';
+            }
+
+            document.getElementById('sub-date-1').valueAsDate = new Date();
+        });
+
+        function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
+        function openProfileModal() {
+            document.getElementById('profile-dropdown').classList.add('hidden');
+            document.getElementById('profile-name-input').value = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
+            document.getElementById('profile-email-input').value = currentUserEmail;
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+        function saveProfileChanges(e) {
+            e.preventDefault();
+            localStorage.setItem('tobim_user_name', document.getElementById('profile-name-input').value);
+            localStorage.setItem('tobim_user_email', document.getElementById('profile-email-input').value);
+            alert("تم التحديث بنجاح!");
+            location.reload();
+        }
+        function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
+
+        // قائمة الكورسات والأسعار المسحوبة من الكتالوج
+        const catalogPrices = JSON.parse(localStorage.getItem('tobim_prices_catalog_v2')) || [
+            { name: "دبلومة الإنشائي", price: 9800 },
+            { name: "دبلومة المعماري", price: 8900 },
+            { name: "Revit Architecture", price: 5000 },
+            { name: "Revit Structural", price: 4000 },
+            { name: "Shopdrawing Reinforcement", price: 5000 },
+            { name: "Structural BIM Technical Office", price: 15000 },
+            { name: "BIM Architecture Diploma", price: 15000 },
+            { name: "CSI", price: 4000 },
+            { name: "CSI/REVIT ST package", price: 8000 },
+            { name: "Enscape", price: 2500 },
+            { name: "Navisworks 4D & 5D", price: 5000 },
+            { name: "Navisworks Coordinator", price: 5000 },
+            { name: "Revit Family", price: 5000 },
+            { name: "Revit MEP", price: 3000 },
+            { name: "Revit Schedule", price: 3000 },
+            { name: "Revit Template", price: 3000 },
+            { name: "Revit worksharing", price: 3000 },
+            { name: "Shopdrawing Concrete", price: 5000 },
+            { name: "Twinmotion", price: 3000 },
+            { name: "Facebook ADS GUID", price: 1000 },
+            { name: "POWER BI", price: 3000 },
+            { name: "Photoshop", price: 3000 },
+            { name: "3DsMAX", price: 5000 },
+            { name: "3DsMAX Masterclass", price: 12000 },
+            { name: "Advanced Rendering Vray", price: 6000 },
+            { name: "Advanced Modeling", price: 5000 },
+            { name: "AutoCad Workshop", price: 2000 },
+            { name: "AutoCad Full Course", price: 3000 },
+            { name: "Excel Engineering", price: 3000 },
+            { name: "Visualization package", price: 10000 },
+            { name: "Advanced Corona", price: 3000 },
+            { name: "Fourest Back", price: 2000 },
+            { name: "how to persent your work", price: 2000 },
+            { name: "BIM Interior Design", price: 30000 },
+            { name: "linkedin", price: 2000 },
+            { name: "Marketing Package", price: 8000 },
+            { name: "presentation Package", price: 8000 },
+            { name: "Reail Clone", price: 2000 },
+            { name: "The Perfect Starting", price: 1500 },
+            { name: "Long Story Short", price: 6000 },
+            { name: "ACC", price: 6000 },
+            { name: "Shopdrawing Architecture", price: 6000 },
+            { name: "TANK WORKSHOP", price: 6000 },
+            { name: "PRIMAVERA", price: 6000 },
+            { name: "BUILD CITY", price: 8000 },
+            { name: "برنامج أوتوديسك", price: 600 }
+        ];
 
         function updateSpecializations() {
-            const typeSelect = document.getElementById('sub-type');
-            const specSelect = document.getElementById('sub-spec');
-            const roundSelect = document.getElementById('sub-round');
-            const oldRoundSelect = document.getElementById('sub-old-round');
-            const transferWrapper = document.getElementById('transfer-wrapper');
-            const typeValue = typeSelect.value;
+            const type = document.getElementById('sub-type').value;
+            const spec = document.getElementById('sub-spec');
+            const round = document.getElementById('sub-round');
+            spec.innerHTML = '<option value="" disabled selected>اختر التخصص/الكورس</option>';
+            spec.disabled = false;
+            round.innerHTML = '<option value="" disabled selected>اختر التخصص أولاً</option>';
+            round.disabled = true;
 
-            specSelect.innerHTML = '<option value="" disabled selected>اختر التخصص/الكورس</option>';
-            specSelect.disabled = false;
-            
-            roundSelect.innerHTML = '<option value="" disabled selected>اختر التخصص أولاً</option>';
-            roundSelect.disabled = true;
-            oldRoundSelect.innerHTML = '';
+            if (type === 'دبلومة') {
+                spec.innerHTML += '<option value="دبلومة الإنشائي">دبلومة الإنشائي (9,800 ج.م)</option>';
+                spec.innerHTML += '<option value="دبلومة المعماري">دبلومة المعماري (8,900 ج.م)</option>';
+                document.getElementById('transfer-wrapper').classList.remove('hidden');
+            } else if (type === 'كورس') {
+                catalogPrices.filter(c => c.price !== 600 && !c.name.includes('دبلومة')).forEach(c => {
+                    spec.innerHTML += `<option value="${c.name}">${c.name} (${c.price.toLocaleString()} ج.م)</option>`;
+                });
+                document.getElementById('transfer-wrapper').classList.add('hidden');
+            } else if (type === 'برنامج') {
+                spec.innerHTML += '<option value="برنامج أوتوديسك">برنامج أوتوديسك (600 ج.م)</option>';
+                catalogPrices.filter(c => c.price === 600 || c.name.includes('ACC') || c.name.includes('PRIMAVERA')).forEach(c => {
+                    if(!spec.innerHTML.includes(c.name)) spec.innerHTML += `<option value="${c.name}">${c.name} (${c.price.toLocaleString()} ج.م)</option>`;
+                });
+                document.getElementById('transfer-wrapper').classList.add('hidden');
+            }
+        }
 
-            if (typeValue === 'دبلومة') {
-                specSelect.innerHTML += '<option value="إنشائي">القسم الإنشائي</option>';
-                specSelect.innerHTML += '<option value="معماري">القسم المعماري</option>';
-                transferWrapper.classList.remove('hidden'); 
-            } 
-            else if (typeValue === 'كورس') {
-                specSelect.innerHTML += '<option value="3ds Max">3ds Max</option>';
-                specSelect.innerHTML += '<option value="Revit Structure">Revit Structure</option>';
-                specSelect.innerHTML += '<option value="Revit Architecture">Revit Architecture</option>';
-                transferWrapper.classList.add('hidden');
-                document.getElementById('is-transferred').checked = false;
-                toggleTransferSection();
-            } 
-            else if (typeValue === 'برنامج') {
-                specSelect.innerHTML += '<option value="أوتوديسك">أوتوديسك</option>';
-                transferWrapper.classList.add('hidden');
-                document.getElementById('is-transferred').checked = false;
-                toggleTransferSection();
+        // عند اختيار التخصص، يتم سحب السعر تلقائياً وضعه في حقل السعر الإجمالي
+        function onSpecChange() {
+            updateRounds();
+            const specName = document.getElementById('sub-spec').value;
+            const totalInput = document.getElementById('sub-total');
+
+            // البحث عن السعر المطابق في الكتالوج
+            let found = catalogPrices.find(c => specName.includes(c.name) || c.name.includes(specName));
+            if (specName.includes('دبلومة الإنشائي')) found = { price: 9800 };
+            if (specName.includes('دبلومة المعماري')) found = { price: 8900 };
+
+            if (found) {
+                totalInput.value = found.price;
+                calcRemaining();
             }
         }
 
         function updateRounds() {
-            const specValue = document.getElementById('sub-spec').value;
-            const typeValue = document.getElementById('sub-type').value;
-            const roundSelect = document.getElementById('sub-round');
-            const oldRoundSelect = document.getElementById('sub-old-round');
+            const spec = document.getElementById('sub-spec').value;
+            const type = document.getElementById('sub-type').value;
+            const round = document.getElementById('sub-round');
+            const oldRound = document.getElementById('sub-old-round');
+            round.innerHTML = '<option value="" disabled selected>اختر الراوند</option>';
+            oldRound.innerHTML = '<option value="" disabled selected>اختر الراوند السابق</option>';
 
-            roundSelect.innerHTML = '<option value="" disabled selected>اختر الراوند</option>';
-            oldRoundSelect.innerHTML = '<option value="" disabled selected>اختر الراوند السابق</option>';
-
-            if (typeValue === 'برنامج') {
-                roundSelect.innerHTML += '<option value="N/A">لا يوجد راوند (N/A)</option>';
-                roundSelect.value = 'N/A';
-                roundSelect.disabled = true;
+            if (type === 'برنامج') {
+                round.innerHTML += '<option value="N/A">لا يوجد راوند (N/A)</option>';
+                round.value = 'N/A';
+                round.disabled = true;
             } else {
-                roundSelect.disabled = false;
-                let maxRound = 0;
-                
-                if (specValue === 'معماري' || specValue === 'Revit Architecture' || specValue === '3ds Max') {
-                    maxRound = 20;
-                } else if (specValue === 'إنشائي' || specValue === 'Revit Structure') {
-                    maxRound = 30;
-                }
-
-                for (let i = 1; i <= maxRound; i++) {
-                    const optionHtml = `<option value="Round ${i}">Round ${i}</option>`;
-                    roundSelect.innerHTML += optionHtml;
-                    oldRoundSelect.innerHTML += optionHtml;
+                round.disabled = false;
+                let max = (spec.includes('معماري') || spec.includes('3ds Max')) ? 20 : 30;
+                for (let i = 1; i <= max; i++) {
+                    round.innerHTML += `<option value="Round ${i}">Round ${i}</option>`;
+                    oldRound.innerHTML += `<option value="Round ${i}">Round ${i}</option>`;
                 }
             }
         }
 
         function toggleTransferSection() {
-            const isTransferred = document.getElementById('is-transferred').checked;
-            const transferSection = document.getElementById('transfer-section');
-            const oldRound = document.getElementById('sub-old-round');
-            
-            if (isTransferred) {
-                transferSection.classList.remove('hidden');
-                oldRound.required = true;
-            } else {
-                transferSection.classList.add('hidden');
-                oldRound.required = false;
-                oldRound.value = '';
-            }
+            const checked = document.getElementById('is-transferred').checked;
+            const sec = document.getElementById('transfer-section');
+            if (checked) sec.classList.remove('hidden');
+            else sec.classList.add('hidden');
         }
 
-        // متغير لتتبع ما إذا قام المستخدم بتعديل تاريخ الاستحقاق يدوياً
         let userModifiedNextDate = false;
-
-        document.getElementById('sub-next-date').addEventListener('change', function() {
-            userModifiedNextDate = true;
-        });
+        document.getElementById('sub-next-date').addEventListener('change', () => { userModifiedNextDate = true; });
 
         function calcRemaining() {
             const total = parseFloat(document.getElementById('sub-total').value) || 0;
-            const paid1Input = document.getElementById('sub-paid-1');
-            const paid2Input = document.getElementById('sub-paid-2');
-            
-            let paid1 = parseFloat(paid1Input.value) || 0;
-            let paid2 = parseFloat(paid2Input.value) || 0;
-            
-            // حماية للدفعة الأولى: لا تتخطى الإجمالي
-            if(paid1 > total) {
-                paid1 = total;
-                paid1Input.value = total;
-            }
+            let paid1 = parseFloat(document.getElementById('sub-paid-1').value) || 0;
+            let paid2 = parseFloat(document.getElementById('sub-paid-2').value) || 0;
 
-            // تحديث الـ placeholder للدفعة الثانية ليوضح المتبقي
-            let maxAllowedForPaid2 = total - paid1;
-            paid2Input.placeholder = maxAllowedForPaid2 > 0 ? `المتبقي للسداد: ${maxAllowedForPaid2}` : "0";
+            if (paid1 > total) { paid1 = total; document.getElementById('sub-paid-1').value = total; }
+            let max2 = total - paid1;
+            if (paid2 > max2) { paid2 = max2 > 0 ? max2 : 0; document.getElementById('sub-paid-2').value = paid2; }
 
-            // حماية للدفعة الثانية: لا تتخطى المتبقي الفعلي
-            if(paid2 > maxAllowedForPaid2) {
-                paid2 = maxAllowedForPaid2;
-                paid2Input.value = maxAllowedForPaid2 > 0 ? maxAllowedForPaid2 : '';
-            }
-            
             const rest = total - (paid1 + paid2);
             document.getElementById('sub-rest').value = rest >= 0 ? rest : 0;
 
             const nextDateInput = document.getElementById('sub-next-date');
-
-            // إذا كان هناك متبقي ولم يقم المستخدم بتعديل التاريخ يدوياً، حدد تاريخ الدفعة القادمة تلقائياً بعد شهر
             if (rest > 0) {
                 if (!userModifiedNextDate) {
-                    const date1Val = document.getElementById('sub-date-1').value;
-                    let baseDate = date1Val ? new Date(date1Val) : new Date();
-                    baseDate.setMonth(baseDate.getMonth() + 1); // إضافة شهر
-                    nextDateInput.value = baseDate.toISOString().split('T')[0];
+                    let d1 = document.getElementById('sub-date-1').value;
+                    let base = d1 ? new Date(d1) : new Date();
+                    base.setMonth(base.getMonth() + 1);
+                    nextDateInput.value = base.toISOString().split('T')[0];
                 }
             } else {
                 nextDateInput.value = '';
-                userModifiedNextDate = false; // إعادة تعيين
-            }
-
-            // متطلبات الدفعة الثانية
-            const source2Input = document.getElementById('sub-source-2');
-            const date2Input = document.getElementById('sub-date-2');
-            const receipt2Input = document.getElementById('sub-receipt-2');
-            
-            if(paid2 > 0) {
-                source2Input.required = true;
-                date2Input.required = true;
-                receipt2Input.required = true;
-                if(!date2Input.value) date2Input.valueAsDate = new Date();
-            } else {
-                source2Input.required = false;
-                date2Input.required = false;
-                receipt2Input.required = false;
+                userModifiedNextDate = false;
             }
         }
 
         function saveSubscription(e) {
-            e.preventDefault(); 
-            
+            e.preventDefault();
             calcRemaining();
-            const rest = parseFloat(document.getElementById('sub-rest').value) || 0;
-            if (rest < 0) {
-                alert("خطأ: إجمالي الدفعات أكبر من سعر البيع. لا يمكن الحفظ.");
-                return;
-            }
 
             const name = document.getElementById('sub-name').value;
             const mobile = document.getElementById('sub-mobile').value;
             const email = document.getElementById('sub-email').value;
             const sales = document.getElementById('sub-sales').value;
-            
             const type = document.getElementById('sub-type').value;
             const spec = document.getElementById('sub-spec').value;
             const round = document.getElementById('sub-round').value;
-            
-            const isTransferred = document.getElementById('is-transferred').checked;
-            const oldRound = document.getElementById('sub-old-round').value;
-
             const total = parseFloat(document.getElementById('sub-total').value) || 0;
             const paid1 = parseFloat(document.getElementById('sub-paid-1').value) || 0;
             const paid2 = parseFloat(document.getElementById('sub-paid-2').value) || 0;
-            
-            const totalPaid = paid1 + paid2;
-            
-            const nextDate = document.getElementById('sub-next-date').value;
-            const status = rest === 0 ? 'خالص (Paid)' : 'متبقي (Rest)';
-            
+            const rest = parseFloat(document.getElementById('sub-rest').value) || 0;
             const source1 = document.getElementById('sub-source-1').value;
             const source2 = document.getElementById('sub-source-2').value;
-            const sender = document.getElementById('sub-sender').value;
+            const nextDate = document.getElementById('sub-next-date').value;
 
-            let subs = JSON.parse(localStorage.getItem('tobim_subs_v7') || '[]');
-            let maxId = 201134; 
-            if (subs.length > 0) {
-                maxId = Math.max(...subs.map(s => s.id));
+            let subs = JSON.parse(localStorage.getItem('tobim_subscriptions_v10') || '[]');
+            
+            let installments = [{ amount: paid1, source: source1, date: new Date().toLocaleDateString('en-GB') }];
+            if(paid2 > 0) {
+                installments.push({ amount: paid2, source: source2, date: new Date().toLocaleDateString('en-GB') });
             }
-            const newId = maxId + 1;
 
-            const newSubscription = {
-                id: newId,
-                fullName: name,
+            const newSub = {
+                id: Date.now(),
+                name: name,
                 mobile: mobile,
-                email: email, 
-                salesRep: sales,
-                prodType: type,
-                spec: spec,
-                round: round,
-                isTransferred: isTransferred,
-                oldRound: oldRound,
-                totalPrice: total,
-                paidAmount: totalPaid,
-                paidAmount1: paid1,
-                paidAmount2: paid2,
-                remainingAmount: rest,
-                status: status,
-                paySource: source1,
-                paySource2: source2,
-                senderName: sender,
-                nextPaymentDate: rest === 0 ? '' : nextDate 
+                email: email,
+                sales: sales,
+                type: type,
+                spec: spec + (round !== 'N/A' ? ` (${round})` : ''),
+                total: total,
+                installments: installments,
+                nextDate: rest > 0 ? (nextDate ? nextDate.split('-').reverse().join('/') : '01/12/2026') : '-'
             };
 
-            subs.unshift(newSubscription);
-            localStorage.setItem('tobim_subs_v7', JSON.stringify(subs));
+            subs.unshift(newSub);
+            localStorage.setItem('tobim_subscriptions_v10', JSON.stringify(subs));
 
-            alert(`تم تسجيل الاشتراك بنجاح!\nالاسم: ${name}\nرقم الاشتراك (ID): ${newId}\n(تم رفع الإيصالات بنجاح)`);
+            alert("تم تسجيل الاشتراك بنجاح!");
             window.location.href = 'subscriptions.html';
         }
     </script>
 </body>
 </html>
+```[cite: 10, 16, 17]

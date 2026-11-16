@@ -72,7 +72,7 @@
         <div class="flex justify-between items-center mb-2 flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white">سجل الاشتراكات والمبيعات</h2>
-                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، فلاتر دقيقة، والـ ID يعتمد على رقم الموبايل للدبلومات</p>
+                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، فلاتر دقيقة حسب الكورس والراوند والفترة الزمنية</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="exportFilteredToExcel()" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 px-4 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg">
@@ -109,15 +109,15 @@
             </div>
         </div>
 
-        <!-- فلاتر البحث -->
+        <!-- فلاتر البحث الشاملة والمتقدمة -->
         <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-magnifying-glass text-blue-500 ml-1"></i> بحث بالاسم أو الموبايل أو ID</label>
-                <input type="text" id="search-input" oninput="renderSubscriptions()" placeholder="اكتب للبحث..." class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-48">
+                <input type="text" id="search-input" oninput="renderSubscriptions()" placeholder="اكتب للبحث..." class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 w-44">
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-filter text-emerald-500 ml-1"></i> مسؤول المبيعات</label>
-                <select id="filter-sales" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500 w-36">
+                <select id="filter-sales" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-emerald-500 w-32">
                     <option value="الجميع">الجميع</option>
                     <option value="عمر">عمر</option>
                     <option value="محسن">محسن</option>
@@ -126,12 +126,29 @@
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-graduation-cap text-amber-500 ml-1"></i> نوع المنتج</label>
-                <select id="filter-type" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 w-36">
-                    <option value="الجميع">جميع المنتجات</option>
+                <select id="filter-type" onchange="onTypeFilterChange()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-amber-500 w-32">
+                    <option value="الجميع">الجميع</option>
                     <option value="دبلومة">دبلومة</option>
                     <option value="كورس">كورس</option>
                     <option value="برنامج">برنامج</option>
                 </select>
+            </div>
+            <div id="sub-filter-wrapper" class="hidden">
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-code-branch text-purple-400 ml-1"></i> اسم الكورس أو الدبلومة</label>
+                <select id="filter-spec" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 focus:outline-none focus:border-purple-500 w-40">
+                    <option value="الكل">كل التخصصات</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar-days text-blue-400 ml-1"></i> من تاريخ</label>
+                <input type="date" id="date-from" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none w-36" style="color-scheme: dark;">
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-calendar-days text-blue-400 ml-1"></i> إلى تاريخ</label>
+                <input type="date" id="date-to" onchange="renderSubscriptions()" class="bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none w-36" style="color-scheme: dark;">
+            </div>
+            <div>
+                <button onclick="resetFilters()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-sm font-bold transition">إلغاء الفلاتر</button>
             </div>
         </div>
 
@@ -158,19 +175,16 @@
         </div>
     </main>
 
-    <!-- نافذة معاينة وطباعة إيصال السداد -->
+    <!-- نافذة معاينة وطباعة الإيصال -->
     <div id="receiptModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div class="bg-[#111827] border border-gray-800 p-8 rounded-3xl w-full max-w-2xl shadow-2xl space-y-6 text-gray-100 relative">
             <button onclick="closeReceiptModal()" class="no-print absolute top-6 left-6 text-gray-400 hover:text-white text-2xl">&times;</button>
-            
             <div class="text-center space-y-2 border-b border-gray-800 pb-5">
                 <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/60'" class="w-16 h-16 rounded-2xl object-cover mx-auto border border-gray-700 shadow-md" alt="Logo">
                 <h3 class="text-xl font-black text-white">TO BIM Training Center</h3>
                 <p class="text-xs text-gray-400">إيصال سداد معتمد — سجل الاشتراكات المالية</p>
             </div>
-
             <div id="receipt-header-info" class="grid grid-cols-2 gap-4 text-sm bg-[#0b0f19] p-4 rounded-2xl border border-gray-800"></div>
-
             <div class="space-y-2">
                 <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">سجل الدفعات (Kind Pay)</h4>
                 <div class="overflow-x-auto border border-gray-800 rounded-xl">
@@ -187,11 +201,9 @@
                     </table>
                 </div>
             </div>
-
             <div id="receipt-footer-info" class="flex justify-between items-center bg-[#0b0f19] p-4 rounded-2xl border border-gray-800 text-sm font-bold"></div>
-
             <div class="no-print flex gap-3 pt-2">
-                <button onclick="window.print()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/50">
+                <button onclick="window.print()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg">
                     <i class="fa-solid fa-print"></i> طباعة الإيصال
                 </button>
                 <button onclick="closeReceiptModal()" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl font-bold transition">إغلاق</button>
@@ -199,14 +211,13 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل تفاصيل الاشتراك -->
+    <!-- نافذة تعديل بيانات الاشتراك -->
     <div id="editSubModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm overflow-y-auto">
         <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-2xl shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b border-gray-800 pb-3">
                 <h3 class="text-xl font-black text-white"><i class="fa-solid fa-pen-to-square text-blue-500 ml-2"></i> تعديل بيانات الاشتراك بالكامل</h3>
                 <button onclick="closeEditSubModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
             </div>
-            
             <form onsubmit="updateSubData(event)" class="space-y-4">
                 <input type="hidden" id="editSubId">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -239,7 +250,6 @@
                         <input type="number" id="editSubTotal" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2 text-sm font-bold">
                     </div>
                 </div>
-
                 <div class="border-t border-gray-800 pt-4 space-y-4">
                     <h4 class="text-sm font-bold text-emerald-400">سجل الدفعات</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[#0b0f19] p-4 rounded-xl border border-gray-800">
@@ -274,7 +284,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="flex gap-3 pt-4">
                     <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold transition text-sm">حفظ التعديلات</button>
                     <button type="button" onclick="closeEditSubModal()" class="flex-1 bg-transparent hover:bg-gray-800 border border-gray-700 text-white px-4 py-2.5 rounded-xl font-bold transition text-sm">إلغاء</button>
@@ -291,8 +300,8 @@
                 <input type="text" id="profile-name-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
                 <input type="email" id="profile-email-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
                 <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">حفظ</button>
-                    <button type="button" onclick="closeProfileModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2 rounded-xl font-bold">إلغاء</button>
+                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-bold">حفظ</button>
+                    <button type="button" onclick="closeProfileModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2 rounded-bold">إلغاء</button>
                 </div>
             </form>
         </div>
@@ -373,14 +382,18 @@
                 let paid1 = Math.floor(total * (Math.random() * 0.5 + 0.5));
                 let rest = total - paid1;
 
-                let installments = [{ amount: paid1, source: sources[Math.floor(Math.random() * sources.length)], date: '01/11/2026' }];
+                let day = (i % 28) + 1;
+                let formattedDay = day < 10 ? '0' + day : day;
+                let rawDateStr = `2026-11-${formattedDay}`;
+                let dateStr = `${formattedDay}/11/2026`;
+
+                let installments = [{ amount: paid1, source: sources[Math.floor(Math.random() * sources.length)], date: dateStr, rawDate: rawDateStr }];
                 if (rest > 0 && Math.random() > 0.5) {
                     let paid2 = rest;
                     rest = 0;
-                    installments.push({ amount: paid2, source: sources[Math.floor(Math.random() * sources.length)], date: '15/11/2026' });
+                    installments.push({ amount: paid2, source: sources[Math.floor(Math.random() * sources.length)], date: dateStr, rawDate: rawDateStr });
                 }
 
-                // إذا كان دبلومة نعتبر الـ ID هو رقم الموبايل، وإذا كورس أو برنامج نضع له رقم تسلسلي
                 let subId = (item.type === 'دبلومة') ? mobile : (3000 + i);
 
                 subscriptionsList.push({
@@ -393,22 +406,67 @@
                     spec: specName,
                     total: total,
                     installments: installments,
+                    rawDate: rawDateStr,
                     nextDate: rest > 0 ? "01/12/2026" : "-"
                 });
             }
             localStorage.setItem('tobim_subscriptions_v12', JSON.stringify(subscriptionsList));
         }
 
+        function onTypeFilterChange() {
+            const type = document.getElementById('filter-type').value;
+            const wrapper = document.getElementById('sub-filter-wrapper');
+            const specSelect = document.getElementById('filter-spec');
+            
+            specSelect.innerHTML = '<option value="الكل">كل التخصصات</option>';
+
+            if (type === 'دبلومة') {
+                wrapper.classList.remove('hidden');
+                specSelect.innerHTML += '<option value="دبلومة الإنشائي">دبلومة الإنشائي</option><option value="دبلومة المعماري">دبلومة المعماري</option>';
+            } else if (type === 'كورس') {
+                wrapper.classList.remove('hidden');
+                specSelect.innerHTML += '<option value="3ds Max">3ds Max</option><option value="ريفيت معماري">ريفيت معماري</option><option value="ريفيت إنشائي">ريفيت إنشائي</option>';
+            } else if (type === 'برنامج') {
+                wrapper.classList.remove('hidden');
+                specSelect.innerHTML += '<option value="برنامج أوتوديسك">برنامج أوتوديسك</option>';
+            } else {
+                wrapper.classList.add('hidden');
+            }
+            renderSubscriptions();
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-sales').value = 'الجميع';
+            document.getElementById('filter-type').value = 'الجميع';
+            document.getElementById('sub-filter-wrapper').classList.add('hidden');
+            document.getElementById('date-from').value = '';
+            document.getElementById('date-to').value = '';
+            renderSubscriptions();
+        }
+
         function getFilteredSubscriptions() {
             const search = document.getElementById('search-input').value.toLowerCase();
             const filterSales = document.getElementById('filter-sales').value;
             const filterType = document.getElementById('filter-type').value;
+            const filterSpec = document.getElementById('filter-spec').value;
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
 
             return subscriptionsList.filter(sub => {
                 let matchSearch = sub.name.toLowerCase().includes(search) || sub.mobile.includes(search) || sub.id.toString().includes(search);
                 let matchSales = filterSales === 'الجميع' || sub.sales === filterSales;
                 let matchType = filterType === 'الجميع' || sub.type === filterType;
-                return matchSearch && matchSales && matchType;
+                let matchSpec = filterSpec === 'الكل' || sub.spec.includes(filterSpec);
+                
+                let matchDate = true;
+                if (dateFrom || dateTo) {
+                    let subRawDate = sub.rawDate || '2026-11-01';
+                    if (dateFrom && subRawDate < dateFrom) matchDate = false;
+                    if (dateTo && subRawDate > dateTo) matchDate = false;
+                }
+
+                return matchSearch && matchSales && matchType && matchSpec && matchDate;
             });
         }
 
@@ -486,8 +544,7 @@
             const sub = subscriptionsList.find(s => s.id == id);
             if(!sub) return;
 
-            let itRequests = JSON.parse(localStorage.getItem('tobim_it_requests_v2') || '[]');
-            // تحديد القسم المناسب في طلبات الـ IT بناءً على نوع المنتج
+            let itRequests = JSON.parse(localStorage.getItem('tobim_it_requests_v3') || '[]');
             let category = 'diplomas';
             if (sub.type === 'كورس') category = 'courses';
             else if (sub.type === 'برنامج') category = 'programs';
@@ -504,7 +561,7 @@
                 status: 'تمت'
             });
 
-            localStorage.setItem('tobim_it_requests_v2', JSON.stringify(itRequests));
+            localStorage.setItem('tobim_it_requests_v3', JSON.stringify(itRequests));
             alert(`تم إرسال طلب العميل (ID: ${sub.id} - ${sub.name}) إلى قسم الـ IT بنجاح!`);
         }
 
@@ -623,7 +680,6 @@
                 subscriptionsList[index].installments = installments;
                 subscriptionsList[index].nextDate = restVal > 0 ? '01/12/2026' : '-';
 
-                // لو المنتج دبلومة نحدث الـ ID برقم الموبايل الجديد
                 if (subscriptionsList[index].type === 'دبلومة') {
                     subscriptionsList[index].id = mobile;
                 }

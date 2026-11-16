@@ -34,6 +34,7 @@
             <nav class="hidden md:flex items-center gap-2 text-sm font-semibold">
                 <a href="dashboard.html" id="nav-finance" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">الماليات</a>
                 <a href="subscriptions.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition">سجل الاشتراكات</a>
+                <a href="pricing.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">قائمة الأسعار</a>
                 <a href="new-sub.html" class="bg-emerald-600/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 px-4 py-2.5 rounded-xl transition flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i> اشتراك جديد
                 </a>
@@ -102,7 +103,7 @@
             </div>
         </div>
 
-        <!-- فلاتر البحث والفلترة الذكية المتطورة -->
+        <!-- فلاتر البحث -->
         <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-magnifying-glass text-blue-500 ml-1"></i> بحث بالاسم أو الموبايل</label>
@@ -151,6 +152,7 @@
                 <table class="w-full text-right text-sm min-w-[1100px]">
                     <thead class="bg-[#0f172a] text-gray-400 text-xs uppercase border-b border-gray-800 sticky top-0 z-20">
                         <tr>
+                            <th class="p-4 w-16 text-center">م</th>
                             <th class="p-4">اسم المشترك</th>
                             <th class="p-4">المبيعات</th>
                             <th class="p-4">المنتج والتخصص والراوند</th>
@@ -260,8 +262,7 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // توليد بيانات ضخمة (أكثر من 50 بند) بالأسعار الدقيقة للأنشائي، المعماري، الماكس، الأوتوديسك والريفيت
-        let subscriptionsList = JSON.parse(localStorage.getItem('tobim_subscriptions_v8'));
+        let subscriptionsList = JSON.parse(localStorage.getItem('tobim_subscriptions_v9'));
         function generateInitialData() {
             if (subscriptionsList && subscriptionsList.length >= 50) return;
             
@@ -283,7 +284,7 @@
             for (let i = 1; i <= 60; i++) {
                 let fName = firstNames[Math.floor(Math.random() * firstNames.length)];
                 let lName = lastNames[Math.floor(Math.random() * lastNames.length)];
-                let fullName = fName + " " + lName + " " + (i);
+                let fullName = fName + " " + lName;
                 let mobile = "01" + Math.floor(100000000 + Math.random() * 900000000);
                 let sales = salesTeam[Math.floor(Math.random() * salesTeam.length)];
                 
@@ -324,7 +325,7 @@
                     nextDate: rest > 0 ? "01/12/2026" : "-"
                 });
             }
-            localStorage.setItem('tobim_subscriptions_v8', JSON.stringify(subscriptionsList));
+            localStorage.setItem('tobim_subscriptions_v9', JSON.stringify(subscriptionsList));
         }
 
         function onTypeFilterChange() {
@@ -385,7 +386,7 @@
             let totalPaidAll = 0;
             let totalRestAll = 0;
 
-            filtered.forEach(sub => {
+            filtered.forEach((sub, index) => {
                 let paidSum = sub.installments.reduce((acc, curr) => acc + curr.amount, 0);
                 let restVal = sub.total - paidSum;
                 if (restVal < 0) restVal = 0;
@@ -398,6 +399,7 @@
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-800/30 transition">
+                        <td class="p-4 text-center font-bold text-gray-400">${index + 1}</td>
                         <td class="p-4 font-bold text-white">${sub.name}<div class="text-xs text-gray-400 font-normal">${sub.mobile}</div></td>
                         <td class="p-4 text-blue-400 font-semibold">${sub.sales}</td>
                         <td class="p-4 text-gray-300">${sub.spec}</td>
@@ -464,7 +466,7 @@
             if(!isAdmin) return;
             if(confirm("هل أنت متأكد من حذف هذا الاشتراك؟")) {
                 subscriptionsList = subscriptionsList.filter(s => s.id !== id);
-                localStorage.setItem('tobim_subscriptions_v8', JSON.stringify(subscriptionsList));
+                localStorage.setItem('tobim_subscriptions_v9', JSON.stringify(subscriptionsList));
                 renderSubscriptions();
             }
         }

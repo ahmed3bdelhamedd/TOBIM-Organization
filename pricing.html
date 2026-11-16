@@ -66,6 +66,7 @@
                 <h2 class="text-2xl font-black text-white">قائمة الأسعار الرسمية</h2>
                 <p class="text-sm text-gray-400 mt-1">استعراض أسعار الدبلومات، الكورسات، والبرامج الهندسية المعتمدة</p>
             </div>
+            <!-- زر الإضافة يظهر للمدير فقط -->
             <button id="add-price-btn" onclick="openPriceModal()" class="hidden bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> إضافة خدمة / سعر جديد
             </button>
@@ -87,7 +88,7 @@
                         <tr>
                             <th class="p-4">اسم الكورس / الدبلومة / الباكدج</th>
                             <th class="p-4 text-emerald-400">السعر الرسمي (ج.م)</th>
-                            <th class="p-4 text-center admin-col hidden">إجراءات الإدارة</th>
+                            <th class="p-4 text-center admin-col hidden">إجراءات الإدارة (للمدير فقط)</th>
                         </tr>
                     </thead>
                     <tbody id="prices-tbody" class="divide-y divide-gray-800/50">
@@ -173,7 +174,6 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // قائمة الأسعار الرسمية التي أرسلتها بالكامل
         let pricesCatalog = JSON.parse(localStorage.getItem('tobim_prices_catalog')) || [
             { id: 1, name: "Revit Architecture", price: 5000 },
             { id: 2, name: "Revit Structural", price: 4000 },
@@ -270,7 +270,7 @@
             document.getElementById('newPriceVal').value = '';
         }
 
-.      function deletePrice(id) {
+        function deletePrice(id) {
             if(!isAdmin) return;
             if(confirm("هل أنت متأكد من حذف هذا السعر من الكتالوج؟")) {
                 pricesCatalog = pricesCatalog.filter(p => p.id !== id);

@@ -17,7 +17,7 @@
 </head>
 <body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
 
-    <!-- الهيدر الموحد مع بروفايل الحساب -->
+    <!-- الهيدر الموحد -->
     <header class="bg-[#0f172a]/90 backdrop-blur-md border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50">
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-3 group cursor-pointer" onclick="location.href='subscriptions.html'">
@@ -28,6 +28,7 @@
                 <a href="dashboard.html" id="nav-finance" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">الماليات</a>
                 <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">سجل الاشتراكات</a>
                 <a href="pricing.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">قائمة الأسعار</a>
+                <a href="it-requests.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">طلبات IT</a>
                 <a href="new-sub.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i> اشتراك جديد
                 </a>
@@ -65,7 +66,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-black text-white">تسجيل اشتراك جديد</h2>
-                <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعات بدقة (الأسعار تسحب تلقائياً من قائمة الأسعار)</p>
+                <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعات (تظهر الخدمات بدون أسعار وتسحب الأسعار تلقائياً بالأسفل)</p>
             </div>
             <button type="button" onclick="window.history.back()" class="bg-[#111827] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
                 <i class="fa-solid fa-arrow-left ml-2"></i> رجوع
@@ -153,7 +154,7 @@
                 <!-- ملخص السعر والمتبقي -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-[#0b0f19] p-5 rounded-2xl border border-gray-800">
                     <div>
-                        <label class="block text-sm text-gray-400 mb-2">سعر البيع الإجمالي (ج.م) [يُسحب تلقائياً وقابل للتعديل] *</label>
+                        <label class="block text-sm text-gray-400 mb-2">سعر البيع الإجمالي (ج.م) [يسحب تلقائياً وقابل للتعديل لعمل خصم] *</label>
                         <input type="number" id="sub-total" required oninput="calcRemaining()" placeholder="مثال: 9800" class="w-full bg-[#111827] border border-gray-700 text-white font-bold rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500">
                     </div>
                     <div>
@@ -279,7 +280,7 @@
             document.getElementById('sub-date-1').valueAsDate = new Date();
         });
 
-        function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
+        function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.add('hidden'); }
         function openProfileModal() {
             document.getElementById('profile-dropdown').classList.add('hidden');
             document.getElementById('profile-name-input').value = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
@@ -296,7 +297,7 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // قائمة الكورسات والأسعار المسحوبة من الكتالوج
+        // قائمة الكورسات والأسعار المسحوبة من الكتالوج (بدون إظهار السعر في القائمة)
         const catalogPrices = JSON.parse(localStorage.getItem('tobim_prices_catalog_v2')) || [
             { name: "دبلومة الإنشائي", price: 9800 },
             { name: "دبلومة المعماري", price: 8900 },
@@ -356,30 +357,29 @@
             round.disabled = true;
 
             if (type === 'دبلومة') {
-                spec.innerHTML += '<option value="دبلومة الإنشائي">دبلومة الإنشائي (9,800 ج.م)</option>';
-                spec.innerHTML += '<option value="دبلومة المعماري">دبلومة المعماري (8,900 ج.م)</option>';
+                spec.innerHTML += '<option value="دبلومة الإنشائي">دبلومة الإنشائي</option>';
+                spec.innerHTML += '<option value="دبلومة المعماري">دبلومة المعماري</option>';
                 document.getElementById('transfer-wrapper').classList.remove('hidden');
             } else if (type === 'كورس') {
                 catalogPrices.filter(c => c.price !== 600 && !c.name.includes('دبلومة')).forEach(c => {
-                    spec.innerHTML += `<option value="${c.name}">${c.name} (${c.price.toLocaleString()} ج.م)</option>`;
+                    spec.innerHTML += `<option value="${c.name}">${c.name}</option>`;
                 });
                 document.getElementById('transfer-wrapper').classList.add('hidden');
             } else if (type === 'برنامج') {
-                spec.innerHTML += '<option value="برنامج أوتوديسك">برنامج أوتوديسك (600 ج.م)</option>';
+                spec.innerHTML += '<option value="برنامج أوتوديسك">برنامج أوتوديسك</option>';
                 catalogPrices.filter(c => c.price === 600 || c.name.includes('ACC') || c.name.includes('PRIMAVERA')).forEach(c => {
-                    if(!spec.innerHTML.includes(c.name)) spec.innerHTML += `<option value="${c.name}">${c.name} (${c.price.toLocaleString()} ج.م)</option>`;
+                    if(!spec.innerHTML.includes(c.name)) spec.innerHTML += `<option value="${c.name}">${c.name}</option>`;
                 });
                 document.getElementById('transfer-wrapper').classList.add('hidden');
             }
         }
 
-        // عند اختيار التخصص، يتم سحب السعر تلقائياً وضعه في حقل السعر الإجمالي
+        // سحب السعر تلقائياً عند اختيار الكورس بدون إظهاره في القائمة
         function onSpecChange() {
             updateRounds();
             const specName = document.getElementById('sub-spec').value;
             const totalInput = document.getElementById('sub-total');
 
-            // البحث عن السعر المطابق في الكتالوج
             let found = catalogPrices.find(c => specName.includes(c.name) || c.name.includes(specName));
             if (specName.includes('دبلومة الإنشائي')) found = { price: 9800 };
             if (specName.includes('دبلومة المعماري')) found = { price: 8900 };
@@ -467,7 +467,7 @@
             const source2 = document.getElementById('sub-source-2').value;
             const nextDate = document.getElementById('sub-next-date').value;
 
-            let subs = JSON.parse(localStorage.getItem('tobim_subscriptions_v10') || '[]');
+            let subs = JSON.parse(localStorage.getItem('tobim_subscriptions_v11') || '[]');
             
             let installments = [{ amount: paid1, source: source1, date: new Date().toLocaleDateString('en-GB') }];
             if(paid2 > 0) {
@@ -488,7 +488,7 @@
             };
 
             subs.unshift(newSub);
-            localStorage.setItem('tobim_subscriptions_v10', JSON.stringify(subs));
+            localStorage.setItem('tobim_subscriptions_v11', JSON.stringify(subs));
 
             alert("تم تسجيل الاشتراك بنجاح!");
             window.location.href = 'subscriptions.html';
@@ -496,4 +496,3 @@
     </script>
 </body>
 </html>
-```[cite: 10, 16, 17]

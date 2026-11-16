@@ -17,7 +17,7 @@
 </head>
 <body class="text-gray-100 min-h-screen flex flex-col bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0b0f19] to-[#0b0f19]">
 
-    <!-- الهيدر الموحد مع بروفايل الحساب -->
+    <!-- الهيدر الموحد المتضمن لصفحة طلبات IT -->
     <header class="bg-[#0f172a]/90 backdrop-blur-md border-b border-gray-800 h-20 flex items-center px-6 justify-between sticky top-0 z-50">
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-3 group cursor-pointer" onclick="location.href='subscriptions.html'">
@@ -28,6 +28,7 @@
                 <a href="dashboard.html" id="nav-finance" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">الماليات</a>
                 <a href="subscriptions.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">سجل الاشتراكات</a>
                 <a href="pricing.html" class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] transition">قائمة الأسعار</a>
+                <a href="it-requests.html" class="text-gray-400 hover:text-white px-4 py-2.5 rounded-xl transition">طلبات IT</a>
                 <a href="new-sub.html" class="bg-emerald-600/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 px-4 py-2.5 rounded-xl transition flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i> اشتراك جديد
                 </a>
@@ -191,51 +192,53 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // قائمة الأسعار مع دعم حقل الخصم والسعر الأصلي
         let pricesCatalog = JSON.parse(localStorage.getItem('tobim_prices_catalog_v2')) || [
-            { id: 1, name: "Revit Architecture", price: 5000, discount: 0 },
-            { id: 2, name: "Revit Structural", price: 4000, discount: 0 },
-            { id: 3, name: "Shopdrawing Reinforcement", price: 5000, discount: 500 },
-            { id: 4, name: "Structural BIM Technical Office", price: 15000, discount: 1000 },
-            { id: 5, name: "BIM Architecture Diploma", price: 15000, discount: 2000 },
-            { id: 6, name: "CSI", price: 4000, discount: 0 },
-            { id: 7, name: "CSI/REVIT ST package", price: 8000, discount: 1000 },
-            { id: 8, name: "Enscape", price: 2500, discount: 0 },
-            { id: 9, name: "Navisworks 4D & 5D", price: 5000, discount: 0 },
-            { id: 10, name: "Navisworks Coordinator", price: 5000, discount: 0 },
-            { id: 11, name: "Revit Family", price: 5000, discount: 0 },
-            { id: 12, name: "Revit MEP", price: 3000, discount: 0 },
-            { id: 13, name: "Revit Schedule", price: 3000, discount: 0 },
-            { id: 14, name: "Revit Template", price: 3000, discount: 0 },
-            { id: 15, name: "Revit worksharing", price: 3000, discount: 0 },
-            { id: 16, name: "Shopdrawing Concrete", price: 5000, discount: 0 },
-            { id: 17, name: "Twinmotion", price: 3000, discount: 0 },
-            { id: 18, name: "Facebook ADS GUID", price: 1000, discount: 0 },
-            { id: 19, name: "POWER BI", price: 3000, discount: 0 },
-            { id: 20, name: "Photoshop", price: 3000, discount: 0 },
-            { id: 21, name: "3DsMAX", price: 5000, discount: 0 },
-            { id: 22, name: "3DsMAX Masterclass", price: 12000, discount: 1500 },
-            { id: 23, name: "Advanced Rendering Vray", price: 6000, discount: 0 },
-            { id: 24, name: "Advanced Modeling", price: 5000, discount: 0 },
-            { id: 25, name: "AutoCad Workshop", price: 2000, discount: 0 },
-            { id: 26, name: "AutoCad Full Course", price: 3000, discount: 0 },
-            { id: 27, name: "Excel Engineering", price: 3000, discount: 0 },
-            { id: 28, name: "Visualization package", price: 10000, discount: 1000 },
-            { id: 29, name: "Advanced Corona", price: 3000, discount: 0 },
-            { id: 30, name: "Fourest Back", price: 2000, discount: 0 },
-            { id: 31, name: "how to persent your work", price: 2000, discount: 0 },
-            { id: 32, name: "BIM Interior Design", price: 30000, discount: 5000 },
-            { id: 33, name: "linkedin", price: 2000, discount: 0 },
-            { id: 34, name: "Marketing Package", price: 8000, discount: 1000 },
-            { id: 35, name: "presentation Package", price: 8000, discount: 1000 },
-            { id: 36, name: "Reail Clone", price: 2000, discount: 0 },
-            { id: 37, name: "The Perfect Starting", price: 1500, discount: 0 },
-            { id: 38, name: "Long Story Short", price: 6000, discount: 0 },
-            { id: 39, name: "ACC", price: 6000, discount: 0 },
-            { id: 40, name: "Shopdrawing Architecture", price: 6000, discount: 0 },
-            { id: 41, name: "TANK WORKSHOP", price: 6000, discount: 0 },
-            { id: 42, name: "PRIMAVERA", price: 6000, discount: 0 },
-            { id: 43, name: "BUILD CITY", price: 8000, discount: 0 }
+            { id: 1, name: "دبلومة الإنشائي", price: 9800, discount: 0 },
+            { id: 2, name: "دبلومة المعماري", price: 8900, discount: 0 },
+            { id: 3, name: "Revit Architecture", price: 5000, discount: 0 },
+            { id: 4, name: "Revit Structural", price: 4000, discount: 0 },
+            { id: 5, name: "Shopdrawing Reinforcement", price: 5000, discount: 500 },
+            { id: 6, name: "Structural BIM Technical Office", price: 15000, discount: 1000 },
+            { id: 7, name: "BIM Architecture Diploma", price: 15000, discount: 2000 },
+            { id: 8, name: "CSI", price: 4000, discount: 0 },
+            { id: 9, name: "CSI/REVIT ST package", price: 8000, discount: 1000 },
+            { id: 10, name: "Enscape", price: 2500, discount: 0 },
+            { id: 11, name: "Navisworks 4D & 5D", price: 5000, discount: 0 },
+            { id: 12, name: "Navisworks Coordinator", price: 5000, discount: 0 },
+            { id: 13, name: "Revit Family", price: 5000, discount: 0 },
+            { id: 14, name: "Revit MEP", price: 3000, discount: 0 },
+            { id: 15, name: "Revit Schedule", price: 3000, discount: 0 },
+            { id: 16, name: "Revit Template", price: 3000, discount: 0 },
+            { id: 17, name: "Revit worksharing", price: 3000, discount: 0 },
+            { id: 18, name: "Shopdrawing Concrete", price: 5000, discount: 0 },
+            { id: 19, name: "Twinmotion", price: 3000, discount: 0 },
+            { id: 20, name: "Facebook ADS GUID", price: 1000, discount: 0 },
+            { id: 21, name: "POWER BI", price: 3000, discount: 0 },
+            { id: 22, name: "Photoshop", price: 3000, discount: 0 },
+            { id: 23, name: "3DsMAX", price: 5000, discount: 0 },
+            { id: 24, name: "3DsMAX Masterclass", price: 12000, discount: 1500 },
+            { id: 25, name: "Advanced Rendering Vray", price: 6000, discount: 0 },
+            { id: 26, name: "Advanced Modeling", price: 5000, discount: 0 },
+            { id: 27, name: "AutoCad Workshop", price: 2000, discount: 0 },
+            { id: 28, name: "AutoCad Full Course", price: 3000, discount: 0 },
+            { id: 29, name: "Excel Engineering", price: 3000, discount: 0 },
+            { id: 30, name: "Visualization package", price: 10000, discount: 1000 },
+            { id: 31, name: "Advanced Corona", price: 3000, discount: 0 },
+            { id: 32, name: "Fourest Back", price: 2000, discount: 0 },
+            { id: 33, name: "how to persent your work", price: 2000, discount: 0 },
+            { id: 34, name: "BIM Interior Design", price: 30000, discount: 5000 },
+            { id: 35, name: "linkedin", price: 2000, discount: 0 },
+            { id: 36, name: "Marketing Package", price: 8000, discount: 1000 },
+            { id: 37, name: "presentation Package", price: 8000, discount: 1000 },
+            { id: 38, name: "Reail Clone", price: 2000, discount: 0 },
+            { id: 39, name: "The Perfect Starting", price: 1500, discount: 0 },
+            { id: 40, name: "Long Story Short", price: 6000, discount: 0 },
+            { id: 41, name: "ACC", price: 6000, discount: 0 },
+            { id: 42, name: "Shopdrawing Architecture", price: 6000, discount: 0 },
+            { id: 43, name: "TANK WORKSHOP", price: 6000, discount: 0 },
+            { id: 44, name: "PRIMAVERA", price: 6000, discount: 0 },
+            { id: 45, name: "BUILD CITY", price: 8000, discount: 0 },
+            { id: 46, name: "برنامج أوتوديسك", price: 600, discount: 0 }
         ];
 
         function initPrices() {

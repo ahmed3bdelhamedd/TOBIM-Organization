@@ -66,7 +66,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h2 class="text-2xl font-black text-white">تسجيل اشتراك جديد</h2>
-                <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعات (تظهر الخدمات بدون أسعار وتسحب الأسعار تلقائياً بالأسفل)</p>
+                <p class="text-sm text-gray-400 mt-1">أدخل بيانات العميل وتفاصيل الدفعات بدقة</p>
             </div>
             <button type="button" onclick="window.history.back()" class="bg-[#111827] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition">
                 <i class="fa-solid fa-arrow-left ml-2"></i> رجوع
@@ -112,9 +112,9 @@
                         <label class="block text-sm text-gray-400 mb-2">نوع المنتج *</label>
                         <select id="sub-type" required onchange="updateSpecializations()" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-500">
                             <option value="" disabled selected>اختر النوع</option>
-                            <option value="دبلومة">دبلومة</option>
-                            <option value="كورس">كورس</option>
-                            <option value="برنامج">برنامج</option>
+                            <option value="دبلومة">دبلومة (إنشائي ومعماري فقط)</option>
+                            <option value="كورس">كورس (باقي الخدمات)</option>
+                            <option value="برنامج">برنامج (أوتوديسك فقط)</option>
                         </select>
                     </div>
                     
@@ -151,7 +151,6 @@
             <div class="bg-[#111827]/80 backdrop-blur-xl p-6 rounded-3xl border border-gray-800 shadow-xl">
                 <h3 class="text-lg font-bold text-white mb-6 border-b border-gray-800 pb-2"><i class="fa-solid fa-money-bill-1-wave ml-2 text-amber-500"></i> الحسابات وبيانات الدفع</h3>
                 
-                <!-- ملخص السعر والمتبقي -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-[#0b0f19] p-5 rounded-2xl border border-gray-800">
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">سعر البيع الإجمالي (ج.م) [يسحب تلقائياً وقابل للتعديل لعمل خصم] *</label>
@@ -221,7 +220,6 @@
                     </div>
                 </div>
                 
-                <!-- تفاصيل إضافية -->
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#0b0f19] p-5 rounded-2xl border border-gray-800">
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">اسم المحول (إن وُجد)</label>
@@ -230,36 +228,18 @@
                     <div>
                         <label class="block text-sm text-gray-400 mb-2">تاريخ استحقاق الدفعة القادمة (للمتبقي)</label>
                         <input type="date" id="sub-next-date" class="w-full bg-[#111827] border border-gray-700 text-white rounded-xl px-4 py-2.5 focus:outline-none focus:border-amber-500" style="color-scheme: dark;">
-                        <p class="text-[10px] text-gray-500 mt-1">يتحدد تلقائياً بعد شهر من تاريخ التحويل (ويمكنك تعديله يدوياً).</p>
                     </div>
                 </div>
 
             </div>
 
-            <!-- زر الحفظ -->
             <div class="flex justify-end mt-8 pb-10">
                 <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-10 py-3 rounded-xl text-lg font-black transition-all shadow-[0_0_20px_rgba(59,130,246,0.4)] transform hover:scale-105 flex items-center gap-2">
                     <i class="fa-solid fa-check"></i> تسجيل الاشتراك
                 </button>
             </div>
         </form>
-
     </main>
-
-    <!-- نافذة تعديل الحساب -->
-    <div id="profileModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-[#111827] border border-gray-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
-            <h3 class="text-xl font-black text-white mb-6">تعديل بيانات الحساب</h3>
-            <form onsubmit="saveProfileChanges(event)" class="space-y-4">
-                <input type="text" id="profile-name-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
-                <input type="email" id="profile-email-input" required class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-2.5">
-                <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">حفظ</button>
-                    <button type="button" onclick="closeProfileModal()" class="flex-1 bg-transparent border border-gray-700 text-white px-4 py-2 rounded-xl font-bold">إلغاء</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <script>
         const currentUserEmail = localStorage.getItem('tobim_user_email') || 'info@ahmedabdelhamed.com';
@@ -267,7 +247,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
-            document.getElementById('header-useremail').innerText = currentUserEmail;
+            document.getElementById('header-useremail').innerText = savedName;
             document.getElementById('dropdown-email').innerText = currentUserEmail;
             document.getElementById('header-username').innerText = savedName;
             document.getElementById('user-avatar-initial').innerText = savedName.charAt(0);
@@ -280,7 +260,7 @@
             document.getElementById('sub-date-1').valueAsDate = new Date();
         });
 
-        function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.add('hidden'); }
+        function toggleProfileDropdown() { document.getElementById('profile-dropdown').classList.toggle('hidden'); }
         function openProfileModal() {
             document.getElementById('profile-dropdown').classList.add('hidden');
             document.getElementById('profile-name-input').value = localStorage.getItem('tobim_user_name') || 'أحمد عبد الحميد';
@@ -297,7 +277,7 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        // قائمة الكورسات والأسعار المسحوبة من الكتالوج (بدون إظهار السعر في القائمة)
+        // كتالوج الأسعار
         const catalogPrices = JSON.parse(localStorage.getItem('tobim_prices_catalog_v2')) || [
             { name: "دبلومة الإنشائي", price: 9800 },
             { name: "دبلومة المعماري", price: 8900 },
@@ -356,25 +336,26 @@
             round.innerHTML = '<option value="" disabled selected>اختر التخصص أولاً</option>';
             round.disabled = true;
 
+            // الدبلومة: إنشائي ومعماري فقط
             if (type === 'دبلومة') {
                 spec.innerHTML += '<option value="دبلومة الإنشائي">دبلومة الإنشائي</option>';
                 spec.innerHTML += '<option value="دبلومة المعماري">دبلومة المعماري</option>';
                 document.getElementById('transfer-wrapper').classList.remove('hidden');
-            } else if (type === 'كورس') {
+            } 
+            // الكورسات: باقي الخدمات
+            else if (type === 'كورس') {
                 catalogPrices.filter(c => c.price !== 600 && !c.name.includes('دبلومة')).forEach(c => {
                     spec.innerHTML += `<option value="${c.name}">${c.name}</option>`;
                 });
                 document.getElementById('transfer-wrapper').classList.add('hidden');
-            } else if (type === 'برنامج') {
+            } 
+            // البرنامج: أوتوديسك فقط
+            else if (type === 'برنامج') {
                 spec.innerHTML += '<option value="برنامج أوتوديسك">برنامج أوتوديسك</option>';
-                catalogPrices.filter(c => c.price === 600 || c.name.includes('ACC') || c.name.includes('PRIMAVERA')).forEach(c => {
-                    if(!spec.innerHTML.includes(c.name)) spec.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-                });
                 document.getElementById('transfer-wrapper').classList.add('hidden');
             }
         }
 
-        // سحب السعر تلقائياً عند اختيار الكورس بدون إظهاره في القائمة
         function onSpecChange() {
             updateRounds();
             const specName = document.getElementById('sub-spec').value;
@@ -383,6 +364,7 @@
             let found = catalogPrices.find(c => specName.includes(c.name) || c.name.includes(specName));
             if (specName.includes('دبلومة الإنشائي')) found = { price: 9800 };
             if (specName.includes('دبلومة المعماري')) found = { price: 8900 };
+            if (specName.includes('برنامج أوتوديسك')) found = { price: 600 };
 
             if (found) {
                 totalInput.value = found.price;

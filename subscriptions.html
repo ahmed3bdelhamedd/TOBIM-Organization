@@ -72,7 +72,7 @@
         <div class="flex justify-between items-center mb-2 flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-black text-white">سجل الاشتراكات والمبيعات</h2>
-                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، فلاتر دقيقة، وتقسيم الـ ID (دبلومات: موبايل، كورسات: 400+، برامج: 600+)</p>
+                <p class="text-sm text-gray-400 mt-1">عرض وتحليل المبيعات، فلاتر دقيقة، وعرض إيصالات التحويل بكل سهولة</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="exportFilteredToExcel()" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 px-4 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg">
@@ -84,6 +84,7 @@
             </div>
         </div>
 
+        <!-- بطاقات الملخص العلوي -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-[#111827] p-6 rounded-3xl border border-gray-800 shadow-xl flex justify-between items-center">
                 <div>
@@ -108,6 +109,7 @@
             </div>
         </div>
 
+        <!-- فلاتر البحث -->
         <div class="bg-[#111827] p-5 rounded-3xl border border-gray-800 flex flex-wrap items-end gap-4 shadow-lg">
             <div>
                 <label class="block text-sm text-gray-400 mb-2"><i class="fa-solid fa-magnifying-glass text-blue-500 ml-1"></i> بحث بالاسم أو الموبايل أو ID</label>
@@ -156,6 +158,7 @@
             </div>
         </div>
 
+        <!-- جدول الاشتراكات -->
         <div class="bg-[#111827]/80 backdrop-blur-xl rounded-3xl border border-gray-800 overflow-hidden shadow-xl">
             <div class="overflow-x-auto h-[500px]">
                 <table class="w-full text-right text-sm min-w-[1200px]">
@@ -178,33 +181,39 @@
         </div>
     </main>
 
-    <!-- نافذة معاينة وطباعة الإيصال -->
+    <!-- نافذة معاينة وطباعة الإيصال وصورة التحويل -->
     <div id="receiptModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-[#111827] border border-gray-800 p-8 rounded-3xl w-full max-w-2xl shadow-2xl space-y-6 text-gray-100 relative">
+        <div class="bg-[#111827] border border-gray-800 p-8 rounded-3xl w-full max-w-2xl shadow-2xl space-y-6 text-gray-100 relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeReceiptModal()" class="no-print absolute top-6 left-6 text-gray-400 hover:text-white text-2xl">&times;</button>
+            
             <div class="text-center space-y-2 border-b border-gray-800 pb-5">
                 <img src="TobimLogo.jpg" onerror="this.src='https://via.placeholder.com/60'" class="w-16 h-16 rounded-2xl object-cover mx-auto border border-gray-700 shadow-md" alt="Logo">
                 <h3 class="text-xl font-black text-white">TO BIM Training Center</h3>
-                <p class="text-xs text-gray-400">إيصال سداد معتمد — سجل الاشتراكات المالية</p>
+                <p class="text-xs text-gray-400">إيصال سداد ومعاينة صور التحويل المعتمدة</p>
             </div>
+
             <div id="receipt-header-info" class="grid grid-cols-2 gap-4 text-sm bg-[#0b0f19] p-4 rounded-2xl border border-gray-800"></div>
+
             <div class="space-y-2">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">سجل الدفعات (Kind Pay)</h4>
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">سجل الدفعات وصور التحويل</h4>
                 <div class="overflow-x-auto border border-gray-800 rounded-xl">
                     <table class="w-full text-right text-xs">
                         <thead class="bg-[#0f172a] text-gray-400 border-b border-gray-800">
                             <tr>
-                                <th class="p-3 w-16">#</th>
+                                <th class="p-3">#</th>
                                 <th class="p-3">المبلغ (ج.م)</th>
                                 <th class="p-3">طريقة الدفع / المصدر</th>
-                                <th class="p-3">تاريخ الدفعة</th>
+                                <th class="p-3">التاريخ</th>
+                                <th class="p-3 text-center">صورة التحويل / الإيصال</th>
                             </tr>
                         </thead>
                         <tbody id="receipt-installments-tbody" class="divide-y divide-gray-800/50"></tbody>
                     </table>
                 </div>
             </div>
+
             <div id="receipt-footer-info" class="flex justify-between items-center bg-[#0b0f19] p-4 rounded-2xl border border-gray-800 text-sm font-bold"></div>
+
             <div class="no-print flex gap-3 pt-2">
                 <button onclick="window.print()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg">
                     <i class="fa-solid fa-print"></i> طباعة الإيصال
@@ -368,7 +377,7 @@
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
 
-        let subscriptionsList = JSON.parse(localStorage.getItem('tobim_subscriptions_v15') || '[]');
+        let subscriptionsList = JSON.parse(localStorage.getItem('tobim_subscriptions_v16') || '[]');
         function generateInitialData() {
             if (subscriptionsList && subscriptionsList.length >= 50) return;
             
@@ -398,7 +407,7 @@
                     total = (i % 2 === 0) ? 9800 : 8900;
                     let roundNum = Math.floor(Math.random() * 15) + 1;
                     specName += ` (Round ${roundNum})`;
-                    subId = mobile; // الدبلومة ID هو رقم الموبايل
+                    subId = mobile;
                 } else if (type === "كورس") {
                     specName = catalogCourses[i % catalogCourses.length];
                     total = 4000;
@@ -406,11 +415,11 @@
                         let roundNum = Math.floor(Math.random() * 10) + 1;
                         specName += ` (Round ${roundNum})`;
                     }
-                    subId = courseSeq++; // الكورسات تبدأ من 400
+                    subId = courseSeq++;
                 } else {
                     specName = "برنامج أوتوديسك";
                     total = 600;
-                    subId = programSeq++; // البرامج تبدأ من 600
+                    subId = programSeq++;
                 }
 
                 let paid1 = Math.floor(total * (Math.random() * 0.5 + 0.5));
@@ -421,11 +430,11 @@
                 let rawDateStr = `2026-11-${formattedDay}`;
                 let dateStr = `${formattedDay}/11/2026`;
 
-                let installments = [{ amount: paid1, source: sources[Math.floor(Math.random() * sources.length)], date: dateStr, rawDate: rawDateStr }];
+                let installments = [{ amount: paid1, source: sources[Math.floor(Math.random() * sources.length)], date: dateStr, rawDate: rawDateStr, receiptImg: "https://via.placeholder.com/300x400.png?text=Receipt+Proof" }];
                 if (rest > 0 && Math.random() > 0.5) {
                     let paid2 = rest;
                     rest = 0;
-                    installments.push({ amount: paid2, source: sources[Math.floor(Math.random() * sources.length)], date: dateStr, rawDate: rawDateStr });
+                    installments.push({ amount: paid2, source: sources[Math.floor(Math.random() * sources.length)], date: dateStr, rawDate: rawDateStr, receiptImg: "https://via.placeholder.com/300x400.png?text=Receipt+Proof+2" });
                 }
 
                 subscriptionsList.push({
@@ -442,7 +451,7 @@
                     nextDate: rest > 0 ? "01/12/2026" : "-"
                 });
             }
-            localStorage.setItem('tobim_subscriptions_v15', JSON.stringify(subscriptionsList));
+            localStorage.setItem('tobim_subscriptions_v16', JSON.stringify(subscriptionsList));
         }
 
         function onTypeFilterChange() {
@@ -565,8 +574,8 @@
                         <td class="p-4 font-bold text-emerald-400">${paidSum.toLocaleString()} ج.م</td>
                         <td class="p-4 font-bold text-amber-400">${restVal > 0 ? restVal.toLocaleString() + ' ج.م' : 'خالص'}</td>
                         <td class="p-4 text-gray-400">${restVal > 0 ? sub.nextDate : '-'}</td>
-                        <td class="p-4 text-center flex items-center justify-center gap-2">
-                            <button onclick="viewReceipt('${sub.id}')" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600/30 transition"><i class="fa-solid fa-print ml-1"></i> طباعة</button>
+                        <td class="p-4 text-center flex items-center justify-center gap-1.5 flex-wrap">
+                            <button onclick="viewReceipt('${sub.id}')" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600/30 transition" title="معاينة إيصال السداد وصورة التحويل"><i class="fa-solid fa-image ml-1"></i> عرض الإيصال</button>
                             <button onclick="sendToIt('${sub.id}')" class="bg-purple-600/20 text-purple-400 border border-purple-500/30 px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-purple-600/30 transition" title="إرسال طلب إلى قسم الـ IT"><i class="fa-solid fa-headset ml-1"></i> اطلب من IT</button>
                             ${adminActions}
                         </td>
@@ -650,19 +659,24 @@
             let instTbody = document.getElementById('receipt-installments-tbody');
             instTbody.innerHTML = '';
             sub.installments.forEach((inst, index) => {
+                let imgHtml = inst.receiptImg 
+                    ? `<a href="${inst.receiptImg}" target="_blank" class="text-blue-400 hover:underline inline-flex items-center gap-1 font-bold"><i class="fa-solid fa-eye"></i> عرض صورة التحويل</a>` 
+                    : '<span class="text-gray-500">لا توجد صورة</span>';
+
                 instTbody.innerHTML += `
                     <tr class="border-b border-gray-800">
                         <td class="p-3">الدفعة ${index + 1}</td>
                         <td class="p-3 font-bold text-emerald-400">${inst.amount.toLocaleString()} ج.م</td>
                         <td class="p-3 text-gray-300">${inst.source}</td>
                         <td class="p-3 text-gray-400">${inst.date}</td>
+                        <td class="p-3 text-center">${imgHtml}</td>
                     </tr>
                 `;
             });
 
             document.getElementById('receipt-footer-info').innerHTML = `
                 <span class="text-emerald-400">إجمالي المدفوع: ${paidSum.toLocaleString()} ج.م</span>
-                <span class="text-amber-400">المتبقي (Rest of amount): ${restVal.toLocaleString()} ج.م</span>
+                <span class="text-amber-400">المتبقي: ${restVal.toLocaleString()} ج.م</span>
             `;
 
             document.getElementById('receiptModal').classList.remove('hidden');
@@ -721,9 +735,9 @@
             let paid2 = parseFloat(document.getElementById('editPaid2').value) || 0;
             let source2 = document.getElementById('editSource2').value;
 
-            let installments = [{ amount: paid1, source: source1, date: new Date().toLocaleDateString('en-GB') }];
+            let installments = [{ amount: paid1, source: source1, date: new Date().toLocaleDateString('en-GB'), receiptImg: "https://via.placeholder.com/300x400.png?text=Receipt+Proof" }];
             if(paid2 > 0 && source2) {
-                installments.push({ amount: paid2, source: source2, date: new Date().toLocaleDateString('en-GB') });
+                installments.push({ amount: paid2, source: source2, date: new Date().toLocaleDateString('en-GB'), receiptImg: "https://via.placeholder.com/300x400.png?text=Receipt+Proof+2" });
             }
 
             let paidSum = installments.reduce((acc, curr) => acc + curr.amount, 0);
@@ -745,7 +759,7 @@
                     subscriptionsList[index].id = mobile;
                 }
 
-                localStorage.setItem('tobim_subscriptions_v15', JSON.stringify(subscriptionsList));
+                localStorage.setItem('tobim_subscriptions_v16', JSON.stringify(subscriptionsList));
                 renderSubscriptions();
                 closeEditSubModal();
                 alert("تم تحديث بيانات الاشتراك والدفعات بنجاح!");
@@ -756,7 +770,7 @@
             if(!isAdmin) return;
             if(confirm("هل أنت متأكد من حذف هذا الاشتراك؟")) {
                 subscriptionsList = subscriptionsList.filter(s => s.id != id);
-                localStorage.setItem('tobim_subscriptions_v15', JSON.stringify(subscriptionsList));
+                localStorage.setItem('tobim_subscriptions_v16', JSON.stringify(subscriptionsList));
                 renderSubscriptions();
             }
         }

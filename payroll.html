@@ -214,17 +214,17 @@
         // قائمة الأقسام والموظفين
         const departmentsList = ['الإدارة', 'المبيعات', 'تقنية المعلومات', 'الجرافيك', 'المدربين', 'السوشيال ميديا'];
         const defaultEmployees = [
-            { id: 1, name: "صلاح البدوي", role: "المدير", bio: "الإدارة العليا", department: "الإدارة", baseSalary: 40000, isManager: true },
-            { id: 2, name: "هشام غيب", role: "محاسب مالي", bio: "الحسابات والمراجعة", department: "الإدارة", baseSalary: 8000, isManager: false },
+            { id: 1, name: "صلاح البدوي", role: "المدير", bio: "الإدارة العليا", department: "الإدارة", baseSalary: 50000, isManager: true },
+            { id: 2, name: "هشام غيب", role: "محاسب مالي", bio: "الحسابات والمراجعة", department: "الإدارة", baseSalary: 10000, isManager: false },
             { id: 7, name: "صلاح الدين", role: "عامل نظافة", bio: "خدمات المقر", department: "الإدارة", baseSalary: 4500, isManager: false },
             { id: 5, name: "صباح شعبان", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
             { id: 6, name: "محسن إسلام", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 10000, isManager: false },
             { id: 4, name: "عمر عبد العزيز", role: "موظف مبيعات", bio: "فريق المبيعات", department: "المبيعات", baseSalary: 6500, isManager: false },
             { id: 3, name: "أحمد عبد الحميد", role: "موظف IT", bio: "تطوير وأنظمة", department: "تقنية المعلومات", baseSalary: 6500, isManager: false },
-            { id: 8, name: "عامر علي", role: "مصمم جرافيك", bio: "التصميم والهوية البصرية", department: "الجرافيك", baseSalary: 16000, isManager: false },
-            { id: 9, name: "حسناء يسري", role: "مدرب معماري", bio: "تدريب هندسي معماري", department: "المدربين", baseSalary: 5500, isManager: false },
-            { id: 10, name: "مصطفى حنفي", role: "مدرب إنشائي", bio: "تدريب هندسي إنشائي", department: "المدربين", baseSalary: 7000, isManager: false },
-            { id: 11, name: "سحر الوزير", role: "أخصائي سوشيال ميديا", bio: "إدارة منصات التواصل", department: "السوشيال ميديا", baseSalary: 7000, isManager: false }
+            { id: 8, name: "عامر علي", role: "مصمم جرافيك", bio: "التصميم والهوية البصرية", department: "الجرافيك", baseSalary: 12000, isManager: false },
+            { id: 9, name: "حسناء يسري", role: "مدرب معماري", bio: "تدريب هندسي معماري", department: "المدربين", baseSalary: 6500, isManager: false },
+            { id: 10, name: "مصطفى حنفي", role: "مدرب إنشائي", bio: "تدريب هندسي إنشائي", department: "المدربين", baseSalary: 6500, isManager: false },
+            { id: 11, name: "سحر الوزير", role: "أخصائي سوشيال ميديا", bio: "إدارة منصات التواصل", department: "السوشيال ميديا", baseSalary: 6500, isManager: false }
         ];
 
         let employees = JSON.parse(localStorage.getItem('tobim_employees_v9')) || defaultEmployees;

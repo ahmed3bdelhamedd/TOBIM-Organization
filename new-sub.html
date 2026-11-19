@@ -163,7 +163,7 @@
                 </div>
 
                 <!-- الدفعة الأولى -->
-                <div class="mb-8 border-r-4 border-emerald-500 pr-4">
+                <div class="mb-6 border-r-4 border-emerald-500 pr-4">
                     <h4 class="font-bold text-emerald-400 mb-4 flex items-center"><i class="fa-solid fa-1 ml-2"></i> بيانات الدفعة الأولى (إجباري)</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         <div>
@@ -195,9 +195,14 @@
                     </div>
                 </div>
 
-                <!-- الدفعة الثانية -->
-                <div class="mb-8 border-r-4 border-blue-500 pr-4">
-                    <h4 class="font-bold text-blue-400 mb-4 flex items-center"><i class="fa-solid fa-2 ml-2"></i> بيانات الدفعة الثانية (اختياري)</h4>
+                <!-- الدفعة الثانية (مخفية افتراضياً) -->
+                <div id="installment-2" class="hidden mb-6 border-r-4 border-blue-500 pr-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-bold text-blue-400 flex items-center"><i class="fa-solid fa-2 ml-2"></i> بيانات الدفعة الثانية (اختياري)</h4>
+                        <button type="button" onclick="hideInstallment(2)" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-3 py-1 rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-xmark"></i> إخفاء
+                        </button>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         <div>
                             <label class="block text-sm text-gray-400 mb-2 text-blue-400">المدفوع كدفعة ثانية (ج.م)</label>
@@ -228,9 +233,14 @@
                     </div>
                 </div>
 
-                <!-- الدفعة الثالثة -->
-                <div class="mb-8 border-r-4 border-purple-500 pr-4">
-                    <h4 class="font-bold text-purple-400 mb-4 flex items-center"><i class="fa-solid fa-3 ml-2"></i> بيانات الدفعة الثالثة (اختياري)</h4>
+                <!-- الدفعة الثالثة (مخفية افتراضياً) -->
+                <div id="installment-3" class="hidden mb-6 border-r-4 border-purple-500 pr-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-bold text-purple-400 flex items-center"><i class="fa-solid fa-3 ml-2"></i> بيانات الدفعة الثالثة (اختياري)</h4>
+                        <button type="button" onclick="hideInstallment(3)" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-3 py-1 rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-xmark"></i> إخفاء
+                        </button>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         <div>
                             <label class="block text-sm text-gray-400 mb-2 text-purple-400">المدفوع كدفعة ثالثة (ج.م)</label>
@@ -261,9 +271,14 @@
                     </div>
                 </div>
 
-                <!-- الدفعة الرابعة -->
-                <div class="border-r-4 border-pink-500 pr-4">
-                    <h4 class="font-bold text-pink-400 mb-4 flex items-center"><i class="fa-solid fa-4 ml-2"></i> بيانات الدفعة الرابعة (اختياري)</h4>
+                <!-- الدفعة الرابعة (مخفية افتراضياً) -->
+                <div id="installment-4" class="hidden mb-6 border-r-4 border-pink-500 pr-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-bold text-pink-400 flex items-center"><i class="fa-solid fa-4 ml-2"></i> بيانات الدفعة الرابعة (اختياري)</h4>
+                        <button type="button" onclick="hideInstallment(4)" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-3 py-1 rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-xmark"></i> إخفاء
+                        </button>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         <div>
                             <label class="block text-sm text-gray-400 mb-2 text-pink-400">المدفوع كدفعة رابعة (ج.م)</label>
@@ -292,6 +307,13 @@
                             <input type="file" id="sub-receipt-4" accept="image/*" class="w-full bg-[#0b0f19] border border-gray-700 text-white rounded-xl px-4 py-1.5 focus:outline-none focus:border-pink-500">
                         </div>
                     </div>
+                </div>
+
+                <!-- زر إضافة دفعة جديدة -->
+                <div id="add-installment-wrapper" class="mt-4">
+                    <button type="button" id="add-installment-btn" onclick="showNextInstallment()" class="bg-[#0b0f19] hover:bg-gray-800 border border-dashed border-gray-600 hover:border-blue-500 text-blue-400 hover:text-blue-300 px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> إضافة دفعة جديدة
+                    </button>
                 </div>
                 
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#0b0f19] p-5 rounded-2xl border border-gray-800">
@@ -373,6 +395,36 @@
             location.reload();
         }
         function logout() { localStorage.removeItem('tobim_user_email'); location.href = 'login.html'; }
+
+        function showNextInstallment() {
+            for (let i = 2; i <= 4; i++) {
+                const el = document.getElementById(`installment-${i}`);
+                if (el.classList.contains('hidden')) {
+                    el.classList.remove('hidden');
+                    break;
+                }
+            }
+            updateAddButtonVisibility();
+        }
+
+        function hideInstallment(num) {
+            const el = document.getElementById(`installment-${num}`);
+            el.classList.add('hidden');
+            document.getElementById(`sub-paid-${num}`).value = '';
+            document.getElementById(`sub-source-${num}`).value = '';
+            document.getElementById(`sub-sender-${num}`).value = '';
+            document.getElementById(`sub-date-${num}`).value = '';
+            document.getElementById(`sub-receipt-${num}`).value = '';
+            calcRemaining();
+            updateAddButtonVisibility();
+        }
+
+        function updateAddButtonVisibility() {
+            const allVisible = [2, 3, 4].every(i => !document.getElementById(`installment-${i}`).classList.contains('hidden'));
+            const wrapper = document.getElementById('add-installment-wrapper');
+            if (allVisible) wrapper.classList.add('hidden');
+            else wrapper.classList.remove('hidden');
+        }
 
         const catalogPrices = JSON.parse(localStorage.getItem('tobim_prices_catalog_v2')) || [
             { name: "دبلومة الإنشائي", price: 9800 },
